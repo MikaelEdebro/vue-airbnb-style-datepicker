@@ -1,0 +1,21 @@
+// fade in
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.2s ease;
+}
+
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+}
+
+// datepicker
+.list-complete-enter,
+.list-complete-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+.list-complete-leave-active {
+  position: absolute;
+  visibility: hidden;
+}
