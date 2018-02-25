@@ -20,7 +20,7 @@
       "rimraf dist/ && bili --plugin vue --format cjs,umd,umd-min,es --vue.css dist/vue-airbnb-style-datepicker.css",
     "dev": "poi --port 5000"
   },
-  "author": "Mikael Edebro <mikael.edebro@gmail.com>",
+  "author": "MikaelEdebro <mikael.edebro@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "node-sass": "^4.7.2",
