@@ -1,0 +1,22 @@
+{
+  "name": "vue-airbnb-style-datepicker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/vue-airbnb-style-datepicker.cjs.js",
+  "module": "dist/vue-airbnb-style-datepicker.es.js",
+  "unpkg": "dist/vue-airbnb-style-datepicker.js",
+  "files": ["dist"],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rimraf dist/ && bili --plugin vue --format cjs,umd,umd-min,es --vue.css dist/vue-airbnb-style-datepicker.css"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "rollup-plugin-vue": "^3.0.0",
+    "vue-template-compiler": "^2.5.13"
+  },
+  "dependencies": {
+    "vue": "^2.5.13"
+  }
+}
