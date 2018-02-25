@@ -1,19 +1,30 @@
+.fade-enter-active[data-v-d7c1db7e],
+.fade-leave-active[data-v-d7c1db7e] {
+  transition: all 0.2s ease; }
+
+.fade-enter[data-v-d7c1db7e],
+.fade-leave-active[data-v-d7c1db7e] {
+  opacity: 0; }
+
+.list-complete-enter[data-v-d7c1db7e],
+.list-complete-leave-to[data-v-d7c1db7e] {
+  opacity: 0;
+  transform: translateY(30px); }
+
+.list-complete-leave-active[data-v-d7c1db7e] {
+  position: absolute;
+  visibility: hidden; }
+
 *[data-v-d7c1db7e],
 *[data-v-d7c1db7e]:after,
 *[data-v-d7c1db7e]:before {
   box-sizing: border-box; }
 
-.ezy-datepicker[data-v-d7c1db7e] {
-  position: relative; }
-
 .datepicker-wrapper[data-v-d7c1db7e] {
-  margin: 0 auto;
   border: 1px solid rgba(0, 0, 0, 0.2);
   white-space: nowrap;
   text-align: center;
   overflow: hidden;
-  z-index: 20;
-  padding-bottom: 30px;
   background-color: white; }
   .datepicker-wrapper.full-screen[data-v-d7c1db7e] {
     position: fixed;
@@ -21,7 +32,8 @@
     right: 0;
     bottom: 0;
     left: 0;
-    border: none; }
+    border: none;
+    z-index: 100; }
 
 .datepicker-inner-wrapper[data-v-d7c1db7e] {
   transition: all 0.3s ease;
@@ -32,7 +44,7 @@
 
 .change-month-button[data-v-d7c1db7e] {
   position: absolute;
-  top: 15px;
+  top: 12px;
   z-index: 10;
   background: white; }
   .change-month-button.previous[data-v-d7c1db7e] {
@@ -41,6 +53,13 @@
   .change-month-button.next[data-v-d7c1db7e] {
     right: 0;
     padding-right: 15px; }
+  .change-month-button button[data-v-d7c1db7e] {
+    background-color: white;
+    border: 1px solid #e4e7e7;
+    border-radius: 3px;
+    padding: 4px 8px; }
+    .change-month-button button[data-v-d7c1db7e]:hover {
+      border: 1px solid #c4c4c4; }
   .change-month-button svg[data-v-d7c1db7e] {
     height: 19px;
     width: 19px;
@@ -133,12 +152,32 @@
       .action-buttons button[data-v-d7c1db7e]:nth-child(2) {
         float: none; } }
 
-.list-complete-enter[data-v-d7c1db7e],
-.list-complete-leave-to[data-v-d7c1db7e] {
-  opacity: 0;
-  transform: translateY(30px); }
+.mobile-header[data-v-d7c1db7e] {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  position: relative;
+  padding: 15px 15px 15px 15px !important;
+  text-align: center;
+  height: 50px; }
+  .mobile-header h3[data-v-d7c1db7e] {
+    font-size: 20px;
+    margin: 0; }
 
-.list-complete-leave-active[data-v-d7c1db7e] {
+.mobile-only[data-v-d7c1db7e] {
+  display: none; }
+  @media (max-width: 600px) {
+    .mobile-only[data-v-d7c1db7e] {
+      display: block; } }
+
+.mobile-close[data-v-d7c1db7e] {
   position: absolute;
-  visibility: hidden; }
+  top: 7px;
+  right: 5px;
+  padding: 5px;
+  z-index: 100;
+  cursor: pointer; }
+  .mobile-close .icon[data-v-d7c1db7e] {
+    position: relative;
+    font-size: 1.6em;
+    font-weight: bold;
+    padding: 0; }
 
