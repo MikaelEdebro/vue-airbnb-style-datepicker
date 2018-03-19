@@ -145,6 +145,8 @@ input {
 .align-right {
   text-align: right;
 }
+.with-input {
+}
 .inline-with-input {
   width: 300px;
   input {

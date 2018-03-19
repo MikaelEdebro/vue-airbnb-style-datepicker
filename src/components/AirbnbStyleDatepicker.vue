@@ -110,7 +110,8 @@ export default {
     endDate: { type: [String, Date] },
     mode: { type: String, default: 'range' },
     dateFormat: { type: String, default: 'YYYY-MM-DD' },
-    offset: { type: Number, default: 0 },
+    offsetY: { type: Number, default: 0 },
+    offsetX: { type: Number, default: 0 },
     monthsToShow: { type: Number, default: 2 },
     startOpen: { type: Boolean },
     fullscreenMobile: { type: Boolean },
@@ -166,9 +167,9 @@ export default {
         position: this.inline ? 'relative' : 'absolute',
         top: this.inline
           ? '0'
-          : this.triggerPosition.height + this.offset + 'px',
-        left: !this.alignRight ? '0' : '',
-        right: this.alignRight ? '0' : '',
+          : this.triggerPosition.height + this.offsetY + 'px',
+        left: !this.alignRight ? this.offsetX + 'px' : '',
+        right: this.alignRight ? this.offsetX + 'px' : '',
         width: this.width * this.showMonths + 'px',
         zIndex: this.inline ? '0' : '100',
         paddingBottom: this.inline ? '0' : '30px'

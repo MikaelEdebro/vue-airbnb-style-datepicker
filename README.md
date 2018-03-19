@@ -140,7 +140,8 @@ The `formatDates()` methods is just an example of how it can be solved.
 | dateTwo  | Model for second date.<br>Type: String, Required if using `mode="range"` |
 | minDate  | Disable dates before this.<br>Type: String |
 | endDate  | Disable dates after this.<br>Type: String |
-| offset  | Offset vertical position of datepicker (in pixels from `.datepicker-trigger` bottom).<br>Type: Number, Default: 0 |
+| offsetY  | Offset vertical position of datepicker (in pixels from `.datepicker-trigger` bottom).<br>Type: Number, Default: 0 |
+| offsetX  | Offset horisontal position of datepicker (in pixels from `.datepicker-trigger` left or right depending on alignment).<br>Type: Number, Default: 0 |
 | monthsToShow  | How many months to show. For mobile it's always 1.<br>Type: Number, Default: 2 |
 | startOpen  | If you want the datepicker start open<br>Type: Boolean, Default: false |
 | fullscreenMobile  | Show fullscreen view on mobile.<br>Type: Boolean, Default: false |
@@ -157,7 +158,7 @@ The `formatDates()` methods is just an example of how it can be solved.
   :date-two="dateTwo"
   :min-date="'2018-10-12'"
   :end-date="'2021-01-01'"
-  :offset="30"
+  :offset-y="30"
   :months-to-show="2"
   :start-open="true"
   :fullscreen-mobile="true"
