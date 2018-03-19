@@ -146,15 +146,8 @@ input {
   text-align: right;
 }
 .with-input {
-  text-align: right;
-  .datepicker-trigger {
-    padding-right: 40px;
-  }
 }
 .with-button {
-  .datepicker-trigger {
-    padding-left: 10px;
-  }
 }
 .inline-with-input {
   width: 300px;
