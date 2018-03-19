@@ -1,8 +1,6 @@
 <template>
   <div>
-    <h1>airbnb-style-datepicker</h1>
-
-    <TestComponent />
+    <!-- <TestComponent /> -->
 
     <div class="datepicker-container with-input">
       <h3>Range datepicker with input</h3>
@@ -23,7 +21,6 @@
           :min-date="'2018-02-28'"
           :months-to-show="2"
           :start-open="false"
-          :mobile-header="'Välj datum'"
           @dateOneSelected="val => { inputDateOne = val }"
           @dateTwoSelected="val => { inputDateTwo = val }"
         />
@@ -109,7 +106,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 html,
 body {
   min-height: 100vh;
@@ -119,6 +116,11 @@ body {
   line-height: 18px;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
+  padding: 10px;
+}
+h1 {
+  font-size: 1.8em;
+  line-height: 1.5em;
 }
 .datepicker-container {
   margin-bottom: 30px;
@@ -137,10 +139,15 @@ body {
 }
 input {
   padding: 6px 10px;
-  border-radius: 4px;
   border: 1px solid rgba(0, 0, 0, 0.2);
 }
 .align-right {
   text-align: right;
+}
+.inline-with-input {
+  width: 300px;
+  input {
+    width: 100%;
+  }
 }
 </style>
