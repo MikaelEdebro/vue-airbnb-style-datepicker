@@ -42,7 +42,7 @@
           :min-date="'2018-02-28'"
           :months-to-show="2"
           :start-open="false"
-          :offset="10"
+          :offset-y="10"
           @dateOneSelected="val => { buttonDateOne = val }"
           @dateTwoSelected="val => { buttonDateTwo = val }"
         />
@@ -146,6 +146,15 @@ input {
   text-align: right;
 }
 .with-input {
+  text-align: right;
+  .datepicker-trigger {
+    padding-right: 40px;
+  }
+}
+.with-button {
+  .datepicker-trigger {
+    padding-left: 10px;
+  }
 }
 .inline-with-input {
   width: 300px;

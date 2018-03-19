@@ -1,11 +1,9 @@
+import './prototypes'
 import AirbnbStyleDatepicker from './components/AirbnbStyleDatepicker.vue'
 import ClickOutside from './directives/ClickOutside'
 
 const AirbnbStyleDatepickerPlugin = {
   install(Vue, options) {
-    Vue.prototype.$viewportWidth = window.innerWidth + 'px'
-    Vue.prototype.$isMobile = window.innerWidth < 768
-
     Vue.directive('click-outside', ClickOutside)
 
     Vue.component(AirbnbStyleDatepicker.name, {

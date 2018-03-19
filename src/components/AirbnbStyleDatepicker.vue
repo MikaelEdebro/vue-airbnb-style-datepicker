@@ -97,7 +97,7 @@ import addMonths from 'date-fns/add_months'
 import getDaysInMonth from 'date-fns/get_days_in_month'
 import isBefore from 'date-fns/is_before'
 import isAfter from 'date-fns/is_after'
-import { debounce, copyObject } from './../helpers'
+import { debounce, copyObject, findAncestor } from './../helpers'
 
 export default {
   name: 'AirbnbStyleDatepicker',
@@ -152,7 +152,11 @@ export default {
       isSelectingDate1: true,
       hoverDate: '',
       alignRight: false,
-      triggerPosition: {}
+      triggerPosition: {},
+      triggerWrapperPosition: {},
+      viewportWidth: window.innerWidth + 'px',
+      isMobile: window.innerWidth < 768,
+      isTablet: window.innerWidth >= 768 && window.innerWidth <= 1024
     }
   },
   computed: {
@@ -164,12 +168,22 @@ export default {
     },
     wrapperStyles() {
       return {
-        position: this.inline ? 'relative' : 'absolute',
+        position: this.inline ? 'static' : 'absolute',
         top: this.inline
           ? '0'
           : this.triggerPosition.height + this.offsetY + 'px',
-        left: !this.alignRight ? this.offsetX + 'px' : '',
-        right: this.alignRight ? this.offsetX + 'px' : '',
+        left: !this.alignRight
+          ? this.triggerPosition.left -
+            this.triggerWrapperPosition.left +
+            this.offsetX +
+            'px'
+          : '',
+        right: this.alignRight
+          ? this.triggerWrapperPosition.right -
+            this.triggerPosition.right +
+            this.offsetX +
+            'px'
+          : '',
         width: this.width * this.showMonths + 'px',
         zIndex: this.inline ? '0' : '100',
         paddingBottom: this.inline ? '0' : '30px'
@@ -178,17 +192,17 @@ export default {
     innerStyles() {
       return {
         'margin-left': this.showFullscreen
-          ? '-' + this.$viewportWidth
+          ? '-' + this.viewportWidth
           : `-${this.width}px`
       }
     },
     monthWidthStyles() {
       return {
-        width: this.showFullscreen ? this.$viewportWidth : this.width + 'px'
+        width: this.showFullscreen ? this.viewportWidth : this.width + 'px'
       }
     },
     showFullscreen() {
-      return this.$isMobile && this.fullscreenMobile
+      return this.isMobile && this.fullscreenMobile
     },
     datesSelected() {
       return !!(
@@ -238,7 +252,13 @@ export default {
     if (this.sundayFirst) {
       this.setSundayToFirstDayInWeek()
     }
-    window.addEventListener('resize', debounce(this.positionDatepicker, 200))
+    window.addEventListener(
+      'resize',
+      debounce(() => {
+        this.positionDatepicker()
+        this.setStartDates()
+      }, 200)
+    )
 
     window.addEventListener('click', event => {
       if (event.target.id === this.triggerElementId) {
@@ -440,7 +460,7 @@ export default {
       }
     },
     openDatepicker() {
-      this.getStartingPosition()
+      this.positionDatepicker()
       this.setStartDates()
       this.showDatepicker = true
     },
@@ -450,27 +470,32 @@ export default {
       }
       this.showDatepicker = false
     },
-    getStartingPosition() {
-      const triggerElement = document.getElementById(this.triggerElementId)
-      this.triggerPosition = triggerElement.getBoundingClientRect()
-
-      setTimeout(() => {
-        this.positionDatepicker()
-      }, 0)
-    },
     positionDatepicker() {
+      const triggerElement = document.getElementById(this.triggerElementId)
+      const triggerWrapperElement = findAncestor(
+        triggerElement,
+        '.datepicker-trigger'
+      )
+      console.log('triggerWrapperElement', triggerWrapperElement)
+      this.triggerPosition = triggerElement.getBoundingClientRect()
+      if (triggerWrapperElement) {
+        this.triggerWrapperPosition = triggerWrapperElement.getBoundingClientRect()
+      } else {
+        this.triggerWrapperPosition = { left: 0, right: 0 }
+      }
+
       const viewPortWidth = Math.max(
         document.documentElement.clientWidth,
         window.innerWidth || 0
       )
-      const isMobile = viewPortWidth < 768
-      const isTablet = viewPortWidth >= 768 && viewPortWidth <= 1024
-      this.showMonths = isMobile
+      this.viewportWidth = viewPortWidth + 'px'
+      this.isMobile = viewPortWidth < 768
+      this.isTablet = viewPortWidth >= 768 && viewPortWidth <= 1024
+      this.showMonths = this.isMobile
         ? 1
-        : isTablet && this.monthsToShow > 2 ? 2 : this.monthsToShow
+        : this.isTablet && this.monthsToShow > 2 ? 2 : this.monthsToShow
 
       this.$nextTick(function() {
-        const triggerElement = document.getElementById(this.triggerElementId)
         const datepickerWrapper = document.getElementById('datepicker-wrapper')
         if (!triggerElement || !datepickerWrapper) {
           return
