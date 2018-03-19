@@ -30,7 +30,7 @@ import Vue from 'vue'
 import App from './App.vue'
 
 // import component and stylesheet
-import VueAirbnbStyleDatepicker from 'vue-airbnb-style-datepicker'
+import AirbnbStyleDatepicker from 'vue-airbnb-style-datepicker'
 import 'vue-airbnb-style-datepicker/dist/styles.css'
 
 // configure global options (optional)
@@ -60,7 +60,7 @@ const datepickerOptions = {
 }
 
 // make sure we can use it in our components
-Vue.use(AirBnbStyleDatepicker, datepickerOptions)
+Vue.use(AirbnbStyleDatepicker, datepickerOptions)
 
 new Vue({
   el: '#app',
