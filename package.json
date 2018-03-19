@@ -1,6 +1,6 @@
 {
   "name": "vue-airbnb-style-datepicker",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A VueJs version of the popular AirBnb datepicker",
   "main": "dist/vue-airbnb-style-datepicker.cjs.js",
   "module": "dist/vue-airbnb-style-datepicker.es.js",
@@ -10,28 +10,33 @@
     "type": "git"
   },
   "files": ["dist"],
-  "poi": {
-    "entry": "dev/index.js",
-    "dist": "dev/dist",
-    "homepage": "/vue-airbnb-style-datepicker/"
-  },
   "scripts": {
     "build":
-      "rimraf dist/ && bili --plugin vue --format cjs,umd,umd-min,es --vue.css dist/vue-airbnb-style-datepicker.css",
+      "rimraf dist/ && bili --plugin vue --format cjs,umd,umd-min,es --vue.css dist/styles.css",
     "dev": "poi --port 5000"
   },
   "author": "MikaelEdebro <mikael.edebro@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "babel-eslint": "^8.2.2",
+    "date-fns": "^1.29.0",
+    "eslint": "^4.19.0",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.7.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "eslint-plugin-vue": "^4.3.0",
     "node-sass": "^4.7.2",
     "poi": "^9.6.13",
+    "poi-preset-eslint": "^9.1.1",
     "rimraf": "^2.6.2",
     "rollup-plugin-vue": "^3.0.0",
     "sass-loader": "^6.0.6",
     "vue-template-compiler": "^2.5.13"
   },
-  "dependencies": {
-    "date-fns": "^1.29.0",
-    "vue": "^2.5.13"
+  "peerDependencies": {
+    "date-fns": "1.x",
+    "vue": "2.x"
   }
 }
