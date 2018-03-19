@@ -29,6 +29,11 @@ First off, tell Vue to use the plugin in your main.js:
 import Vue from 'vue'
 import App from './App.vue'
 
+// import component and stylesheet
+import VueAirbnbStyleDatepicker from 'vue-airbnb-style-datepicker'
+import 'vue-airbnb-style-datepicker/dist/styles.css'
+
+// configure global options (optional)
 const datepickerOptions = {
   sundayFirst: false,
   days: [
@@ -53,6 +58,8 @@ const datepickerOptions = {
     cancel: 'Cancel'
   }
 }
+
+// make sure we can use it in our components
 Vue.use(AirBnbStyleDatepicker, datepickerOptions)
 
 new Vue({
