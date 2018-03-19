@@ -476,7 +476,6 @@ export default {
         triggerElement,
         '.datepicker-trigger'
       )
-      console.log('triggerWrapperElement', triggerWrapperElement)
       this.triggerPosition = triggerElement.getBoundingClientRect()
       if (triggerWrapperElement) {
         this.triggerWrapperPosition = triggerWrapperElement.getBoundingClientRect()

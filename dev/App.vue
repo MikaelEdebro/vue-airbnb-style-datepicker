@@ -5,12 +5,19 @@
     <div class="datepicker-container with-input">
       <h3>Range datepicker with input</h3>
       <div class="datepicker-trigger">
-        <input
+        <!-- <input
           type="text"
           id="datepicker-input-trigger"
           :value="formatDates(inputDateOne, inputDateTwo)"
           placeholder="Select dates"
-        >
+        > -->
+        <Input
+          :value="formatDates(inputDateOne, inputDateTwo)"
+          :id="'datepicker-input-trigger'"
+          :name="'datepicker-input-trigger'"
+          :label="'Dates'"
+          :placeholder="'Select date'"
+        />
 
         <airbnb-style-datepicker
           :trigger-element-id="'datepicker-input-trigger'"
@@ -74,10 +81,12 @@
 <script>
 import format from 'date-fns/format'
 import TestComponent from './TestComponent'
+import Input from './Input'
 
 export default {
   components: {
-    TestComponent
+    TestComponent,
+    Input
   },
   data() {
     return {
@@ -146,8 +155,15 @@ input {
   text-align: right;
 }
 .with-input {
+  text-align: right;
+  .datepicker-trigger {
+    padding-right: 40px;
+  }
 }
 .with-button {
+  .datepicker-trigger {
+    padding-left: 10px;
+  }
 }
 .inline-with-input {
   width: 300px;
