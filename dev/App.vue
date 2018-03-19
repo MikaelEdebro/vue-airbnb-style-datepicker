@@ -2,6 +2,8 @@
   <div>
     <h1>airbnb-style-datepicker</h1>
 
+    <TestComponent />
+
     <div class="datepicker-container with-input">
       <h3>Range datepicker with input</h3>
       <div class="datepicker-trigger">
@@ -73,8 +75,12 @@
 
 <script>
 import format from 'date-fns/format'
+import TestComponent from './TestComponent'
 
 export default {
+  components: {
+    TestComponent
+  },
   data() {
     return {
       dateFormat: 'D MMM',
@@ -115,7 +121,6 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 .datepicker-container {
-  position: relative;
   margin-bottom: 30px;
 }
 
