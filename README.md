@@ -124,7 +124,7 @@ Also note that the id of element that triggers the datepicker needs to be the sa
 This plugin does not dictate how you show the dates. This allows for more flexibility since you can use whatever trigger element you want. The value is being emitted from the component when a date is selected, and handled in the `@dateOneSelected` and `@dateTwoSelected` methods. Then you just assign the value to your data properties. And it is up to you to decide how you want to display the dates.<br>
 The `formatDates()` methods is just an example of how it can be solved.
 
-### Datepicker instance options
+### Properties for `<AirbnbStyleDatepicker />`
 | Prop name  | Value |
 | ------------- | ------------- |
 | triggerElementId  | The id of the element that user clicks on (without #).<br>Type: String, Required  |
