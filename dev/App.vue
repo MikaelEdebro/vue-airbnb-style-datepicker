@@ -5,7 +5,12 @@
     <div class="datepicker-container with-input">
       <h3>Range datepicker with input</h3>
       <div class="datepicker-trigger">
-        <input type="text" :value="formatDates(inputDateOne, inputDateTwo)" id="datepicker-input-trigger" placeholder="Select dates">
+        <input
+          type="text"
+          id="datepicker-input-trigger"
+          :value="formatDates(inputDateOne, inputDateTwo)"
+          placeholder="Select dates"
+        >
 
         <airbnb-style-datepicker
           :trigger-element-id="'datepicker-input-trigger'"
@@ -19,14 +24,14 @@
           :mobile-header="'Välj datum'"
           @dateOneSelected="val => { inputDateOne = val }"
           @dateTwoSelected="val => { inputDateTwo = val }"
-        ></airbnb-style-datepicker>
+        />
       </div>
     </div>
 
     <div class="datepicker-container with-button">
       <h3>Range datepicker with button</h3>
       <div class="datepicker-trigger">
-        <button id="datepicker-button-trigger">{{formatDates(buttonDateOne, buttonDateTwo) || 'Select dates'}}</button>
+        <button id="datepicker-button-trigger">{{ formatDates(buttonDateOne, buttonDateTwo) || 'Select dates' }}</button>
 
         <airbnb-style-datepicker
           :trigger-element-id="'datepicker-button-trigger'"
@@ -40,13 +45,18 @@
           :offset="10"
           @dateOneSelected="val => { buttonDateOne = val }"
           @dateTwoSelected="val => { buttonDateTwo = val }"
-        ></airbnb-style-datepicker>
+        />
       </div>
     </div>
 
     <div class="datepicker-container inline-with-input">
       <h3>Inline datepicker with input</h3>
-      <input type="text" :value="formatDates(inlineDateOne)" id="datepicker-inline-trigger" placeholder="Select date">
+      <input
+        id="datepicker-inline-trigger"
+        :value="formatDates(inlineDateOne)"
+        type="text"
+        placeholder="Select date"
+      >
       <airbnb-style-datepicker
         :trigger-element-id="'datepicker-inline-trigger'"
         :mode="'single'"
@@ -55,7 +65,7 @@
         :date-one="inlineDateOne"
         :months-to-show="1"
         @dateOneSelected="val => { inlineDateOne = val }"
-      ></airbnb-style-datepicker>
+      />
     </div>
 
   </div>

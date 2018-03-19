@@ -1,83 +1,93 @@
 <template>
-<transition name="fade">
-  <div
-    id="datepicker-wrapper"
-    class="datepicker-wrapper"
-    v-if="showDatepicker"
-    :class="wrapperClasses"
-    :style="showFullscreen ? undefined : wrapperStyles"
-    v-click-outside="closeDatepicker"
-  >
-    <div class="mobile-header mobile-only" v-if="showFullscreen">
-      <div class="mobile-close" @click="closeDatepicker">
-        <div class="icon">X</div>
-      </div>
-      <h3>{{mobileHeader}}</h3>
-    </div>
-    <div class="datepicker-header">
-      <div class="change-month-button previous">
-        <button @click="previousMonth">
-          <svg viewBox="0 0 1000 1000"><path d="M336.2 274.5l-210.1 210h805.4c13 0 23 10 23 23s-10 23-23 23H126.1l210.1 210.1c11 11 11 21 0 32-5 5-10 7-16 7s-11-2-16-7l-249.1-249c-11-11-11-21 0-32l249.1-249.1c21-21.1 53 10.9 32 32z"></path></svg>
-        </button>
-      </div>
-      <div class="change-month-button next">
-        <button @click="nextMonth">
-          <svg viewBox="0 0 1000 1000"><path d="M694.4 242.4l249.1 249.1c11 11 11 21 0 32L694.4 772.7c-5 5-10 7-16 7s-11-2-16-7c-11-11-11-21 0-32l210.1-210.1H67.1c-13 0-23-10-23-23s10-23 23-23h805.4L662.4 274.5c-21-21.1 11-53.1 32-32.1z"></path></svg>
-        </button>
-      </div>
-
-      <div class="days-legend" v-for="(month, index) in showMonths" :key="month" :style="[monthWidthStyles, {left: (width * index) + 'px'}]">
-        <div class="day-title" v-for="day in daysShort" :key="day">{{day}}</div>
-      </div>
-    </div>
-
-    <div class="datepicker-inner-wrapper" :style="innerStyles">
-      <transition-group name="list-complete" tag="div">
-        <div
-          v-for="month in months"
-          :key="month.firstDateOfMonth"
-          class="month"
-          :style="monthWidthStyles"
-        >
-          <div class="month-name">{{ month.monthName }} {{month.year}}</div>
-
-          <table class="month-table" role="presentation">
-            <tbody>
-              <tr class="week" v-for="(week, index) in month.weeks" :key="index">
-                <td
-                  class="day"
-                  v-for="({fullDate, dayNumber}, index) in week"
-                  :key="index + '_' + dayNumber"
-                  :class="{
-                    enabled: dayNumber !== 0,
-                    empty: dayNumber === 0,
-                    disabled: (isBeforeMinDate(fullDate) || isAfterEndDate(fullDate)),
-                    selected: selectedDate1 === fullDate || selectedDate2 === fullDate,
-                    'in-range': isInRange(fullDate)
-                  }"
-                  :style="{
-                    background: isSelected(fullDate) ? colors.selected : isInRange(fullDate) ? colors.inRange : 'white',
-                    color: isSelected(fullDate) ? colors.selectedText : isInRange(fullDate) ? colors.selectedText : colors.text,
-                    border: isSelected(fullDate)
-                      ? '1px double ' + colors.selected
-                      : (isInRange(fullDate) && allDatesSelected) ? '1px double ' + colors.inRangeBorder : ''
-                  }"
-                  @mouseover="() => { setHoverDate(fullDate) }"
-                >
-                  <button class="day-button" v-if="dayNumber" :date="fullDate" @click="() => { selectDate(fullDate) }">{{dayNumber}}</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+  <transition name="fade">
+    <div
+      id="datepicker-wrapper"
+      class="datepicker-wrapper"
+      v-if="showDatepicker"
+      :class="wrapperClasses"
+      :style="showFullscreen ? undefined : wrapperStyles"
+      v-click-outside="closeDatepicker"
+    >
+      <div class="mobile-header mobile-only" v-if="showFullscreen">
+        <div class="mobile-close" @click="closeDatepicker">
+          <div class="icon">X</div>
         </div>
-      </transition-group>
+        <h3>{{ mobileHeader }}</h3>
+      </div>
+      <div class="datepicker-header">
+        <div class="change-month-button previous">
+          <button @click="previousMonth">
+            <svg viewBox="0 0 1000 1000"><path d="M336.2 274.5l-210.1 210h805.4c13 0 23 10 23 23s-10 23-23 23H126.1l210.1 210.1c11 11 11 21 0 32-5 5-10 7-16 7s-11-2-16-7l-249.1-249c-11-11-11-21 0-32l249.1-249.1c21-21.1 53 10.9 32 32z" /></svg>
+          </button>
+        </div>
+        <div class="change-month-button next">
+          <button @click="nextMonth">
+            <svg viewBox="0 0 1000 1000"><path d="M694.4 242.4l249.1 249.1c11 11 11 21 0 32L694.4 772.7c-5 5-10 7-16 7s-11-2-16-7c-11-11-11-21 0-32l210.1-210.1H67.1c-13 0-23-10-23-23s10-23 23-23h805.4L662.4 274.5c-21-21.1 11-53.1 32-32.1z" /></svg>
+          </button>
+        </div>
+
+        <div
+          class="days-legend"
+          v-for="(month, index) in showMonths"
+          :key="month"
+          :style="[monthWidthStyles, {left: (width * index) + 'px'}]"
+        >
+          <div class="day-title" v-for="day in daysShort" :key="day">{{ day }}</div>
+        </div>
+      </div>
+
+      <div class="datepicker-inner-wrapper" :style="innerStyles">
+        <transition-group name="list-complete" tag="div">
+          <div
+            v-for="month in months"
+            :key="month.firstDateOfMonth"
+            class="month"
+            :style="monthWidthStyles"
+          >
+            <div class="month-name">{{ month.monthName }} {{ month.year }}</div>
+
+            <table class="month-table" role="presentation">
+              <tbody>
+                <tr class="week" v-for="(week, index) in month.weeks" :key="index">
+                  <td
+                    class="day"
+                    v-for="({fullDate, dayNumber}, index) in week"
+                    :key="index + '_' + dayNumber"
+                    :class="{
+                      enabled: dayNumber !== 0,
+                      empty: dayNumber === 0,
+                      disabled: (isBeforeMinDate(fullDate) || isAfterEndDate(fullDate)),
+                      selected: selectedDate1 === fullDate || selectedDate2 === fullDate,
+                      'in-range': isInRange(fullDate)
+                    }"
+                    :style="{
+                      background: isSelected(fullDate) ? colors.selected : isInRange(fullDate) ? colors.inRange : 'white',
+                      color: isSelected(fullDate) ? colors.selectedText : isInRange(fullDate) ? colors.selectedText : colors.text,
+                      border: isSelected(fullDate)
+                        ? '1px double ' + colors.selected
+                        : (isInRange(fullDate) && allDatesSelected) ? '1px double ' + colors.inRangeBorder : ''
+                    }"
+                    @mouseover="() => { setHoverDate(fullDate) }"
+                  >
+                    <button
+                      class="day-button"
+                      v-if="dayNumber"
+                      :date="fullDate"
+                      @click="() => { selectDate(fullDate) }"
+                    >{{ dayNumber }}</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </transition-group>
+      </div>
+      <div class="action-buttons" v-if="mode !== 'single'">
+        <button @click="closeDatepicker">{{ texts.cancel }}</button>
+        <button @click="closeDatepicker" :style="{color: colors.selected}">{{ texts.apply }}</button>
+      </div>
     </div>
-    <div class="action-buttons" v-if="mode !== 'single'">
-      <button @click="closeDatepicker">{{texts.cancel}}</button>
-      <button @click="closeDatepicker" :style="{color: colors.selected}">{{texts.apply}}</button>
-    </div>
-  </div>
-</transition>
+  </transition>
 </template>
 
 <script>
@@ -90,38 +100,8 @@ import isAfter from 'date-fns/is_after'
 import { debounce, copyObject } from './../helpers'
 
 export default {
-  name: 'airbnb-style-datepicker',
-  created() {
-    this.setupDatepicker()
+  name: 'AirbnbStyleDatepicker',
 
-    if (this.sundayFirst) {
-      this.setSundayToFirstDayInWeek()
-    }
-    window.addEventListener('resize', debounce(this.positionDatepicker, 200))
-
-    window.addEventListener('click', event => {
-      if (event.target.id === this.triggerElementId) {
-        event.stopPropagation()
-        event.preventDefault()
-        this.toggleDatepicker()
-      }
-    })
-  },
-  mounted() {
-    this.setStartDates()
-
-    for (let i = 0; i < this.showMonths + 2; i++) {
-      this.months.push(this.getMonth(this.startingDate))
-      this.startingDate = this.addMonths(this.startingDate)
-    }
-
-    if (this.startOpen || this.inline) {
-      this.openDatepicker()
-    }
-  },
-  beforeDestroy() {
-    window.removeEventListener('resize', this.positionDatepicker)
-  },
   props: {
     triggerElementId: { type: String },
     dateOne: { type: [String, Date], default: format(new Date()) },
@@ -235,6 +215,52 @@ export default {
     datepickerWidth() {
       return this.width * this.showMonths
     }
+  },
+  watch: {
+    selectedDate1(newValue, oldValue) {
+      let newDate =
+        !newValue || newValue === '' ? '' : format(newValue, this.dateFormat)
+      this.$emit('dateOneSelected', newDate)
+    },
+    selectedDate2(newValue, oldValue) {
+      let newDate =
+        !newValue || newValue === '' ? '' : format(newValue, this.dateFormat)
+      this.$emit('dateTwoSelected', newDate)
+    },
+    mode(newValue, oldValue) {
+      this.setStartDates()
+    }
+  },
+  created() {
+    this.setupDatepicker()
+
+    if (this.sundayFirst) {
+      this.setSundayToFirstDayInWeek()
+    }
+    window.addEventListener('resize', debounce(this.positionDatepicker, 200))
+
+    window.addEventListener('click', event => {
+      if (event.target.id === this.triggerElementId) {
+        event.stopPropagation()
+        event.preventDefault()
+        this.toggleDatepicker()
+      }
+    })
+  },
+  mounted() {
+    this.setStartDates()
+
+    for (let i = 0; i < this.showMonths + 2; i++) {
+      this.months.push(this.getMonth(this.startingDate))
+      this.startingDate = this.addMonths(this.startingDate)
+    }
+
+    if (this.startOpen || this.inline) {
+      this.openDatepicker()
+    }
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.positionDatepicker)
   },
   methods: {
     setupDatepicker() {
@@ -455,23 +481,221 @@ export default {
         this.alignRight = rightPosition > viewPortWidth
       })
     }
-  },
-  watch: {
-    selectedDate1(newValue, oldValue) {
-      let newDate =
-        !newValue || newValue === '' ? '' : format(newValue, this.dateFormat)
-      this.$emit('dateOneSelected', newDate)
-    },
-    selectedDate2(newValue, oldValue) {
-      let newDate =
-        !newValue || newValue === '' ? '' : format(newValue, this.dateFormat)
-      this.$emit('dateTwoSelected', newDate)
-    },
-    mode(newValue, oldValue) {
-      this.setStartDates()
-    }
   }
 }
 </script>
 
-<style lang="scss" src="./../styles/datepicker.scss"></style>
+<style lang="scss">
+@import './../styles/transitions';
+
+$tablet: 768px;
+$color-gray: rgba(0, 0, 0, 0.2);
+$border-normal: 1px solid $color-gray;
+$border: 1px solid #e4e7e7;
+$transition-time: 0.3s;
+
+*,
+*:after,
+*:before {
+  box-sizing: border-box;
+}
+
+.datepicker-trigger {
+  position: relative;
+  overflow: visible;
+}
+
+.datepicker-wrapper {
+  border: $border-normal;
+  white-space: nowrap;
+  text-align: center;
+  overflow: hidden;
+  background-color: white;
+
+  &.full-screen {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border: none;
+    z-index: 100;
+  }
+}
+.datepicker-inner-wrapper {
+  transition: all $transition-time ease;
+  position: relative;
+}
+.datepicker-header {
+  position: relative;
+}
+.change-month-button {
+  position: absolute;
+  top: 12px;
+  z-index: 10;
+  background: white;
+  &.previous {
+    left: 0;
+    padding-left: 15px;
+  }
+  &.next {
+    right: 0;
+    padding-right: 15px;
+  }
+
+  button {
+    background-color: white;
+    border: 1px solid #e4e7e7;
+    border-radius: 3px;
+    padding: 4px 8px;
+
+    &:hover {
+      border: 1px solid #c4c4c4;
+    }
+  }
+
+  svg {
+    height: 19px;
+    width: 19px;
+    fill: #82888a;
+  }
+}
+.days-legend {
+  position: absolute;
+  top: 50px;
+  left: 10px;
+  padding: 0 10px;
+}
+.day-title {
+  display: inline-block;
+  width: percentage(1/7);
+  text-align: center;
+  margin-bottom: 4px;
+  color: rgba(0, 0, 0, 0.7);
+  font-size: 0.8em;
+  margin-left: -1px;
+  text-transform: lowercase;
+}
+
+.month-table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  background: white;
+  width: 100%;
+}
+
+.month {
+  transition: all $transition-time ease;
+  display: inline-block;
+  padding: 15px;
+}
+.month-name {
+  font-size: 1.3em;
+  text-align: center;
+  margin: 0 0 30px;
+  line-height: 1.4em;
+  text-transform: lowercase;
+  font-weight: bold;
+}
+
+.day {
+  $size: 38px;
+  line-height: $size;
+  height: $size;
+  padding: 0;
+
+  &.selected,
+  &.in-range {
+    font-weight: bold;
+  }
+  &.enabled {
+    border: 1px solid #e4e7e7;
+  }
+  &.disabled,
+  &.empty {
+    opacity: 0.5;
+  }
+  &.empty {
+    border: none;
+  }
+}
+.day-button {
+  background: transparent;
+  width: 100%;
+  height: 100%;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  color: inherit;
+  text-align: center;
+  user-select: none;
+  font-size: 15px;
+  font-weight: inherit;
+}
+
+.action-buttons {
+  button {
+    display: block;
+    position: relative;
+    background: transparent;
+    border: none;
+    font-weight: bold;
+    font-size: 15px;
+
+    @media (min-width: $tablet) {
+      position: absolute;
+      bottom: 10px;
+    }
+
+    &:hover {
+      text-decoration: underline;
+    }
+    &:nth-child(1) {
+      float: left;
+      left: 15px;
+      @media (min-width: $tablet) {
+        float: none;
+      }
+    }
+    &:nth-child(2) {
+      float: right;
+      right: 15px;
+      @media (min-width: $tablet) {
+        float: none;
+      }
+    }
+  }
+}
+
+.mobile-header {
+  border-bottom: $border-normal;
+  position: relative;
+  padding: 15px 15px 15px 15px !important;
+  text-align: center;
+  height: 50px;
+  h3 {
+    font-size: 20px;
+    margin: 0;
+  }
+}
+.mobile-only {
+  display: none;
+  @media (max-width: 600px) {
+    display: block;
+  }
+}
+.mobile-close {
+  position: absolute;
+  top: 7px;
+  right: 5px;
+  padding: 5px;
+  z-index: 100;
+  cursor: pointer;
+  .icon {
+    position: relative;
+    font-size: 1.6em;
+    font-weight: bold;
+    padding: 0;
+  }
+}
+</style>

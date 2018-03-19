@@ -1,32 +1,36 @@
-.fade-enter-active[data-v-d7c1db7e],
-.fade-leave-active[data-v-d7c1db7e] {
+.fade-enter-active,
+.fade-leave-active {
   transition: all 0.2s ease; }
 
-.fade-enter[data-v-d7c1db7e],
-.fade-leave-active[data-v-d7c1db7e] {
+.fade-enter,
+.fade-leave-active {
   opacity: 0; }
 
-.list-complete-enter[data-v-d7c1db7e],
-.list-complete-leave-to[data-v-d7c1db7e] {
+.list-complete-enter,
+.list-complete-leave-to {
   opacity: 0;
   transform: translateY(30px); }
 
-.list-complete-leave-active[data-v-d7c1db7e] {
+.list-complete-leave-active {
   position: absolute;
   visibility: hidden; }
 
-*[data-v-d7c1db7e],
-*[data-v-d7c1db7e]:after,
-*[data-v-d7c1db7e]:before {
+*,
+*:after,
+*:before {
   box-sizing: border-box; }
 
-.datepicker-wrapper[data-v-d7c1db7e] {
+.datepicker-trigger {
+  position: relative;
+  overflow: visible; }
+
+.datepicker-wrapper {
   border: 1px solid rgba(0, 0, 0, 0.2);
   white-space: nowrap;
   text-align: center;
   overflow: hidden;
   background-color: white; }
-  .datepicker-wrapper.full-screen[data-v-d7c1db7e] {
+  .datepicker-wrapper.full-screen {
     position: fixed;
     top: 0;
     right: 0;
@@ -35,43 +39,43 @@
     border: none;
     z-index: 100; }
 
-.datepicker-inner-wrapper[data-v-d7c1db7e] {
+.datepicker-inner-wrapper {
   transition: all 0.3s ease;
   position: relative; }
 
-.datepicker-header[data-v-d7c1db7e] {
+.datepicker-header {
   position: relative; }
 
-.change-month-button[data-v-d7c1db7e] {
+.change-month-button {
   position: absolute;
   top: 12px;
   z-index: 10;
   background: white; }
-  .change-month-button.previous[data-v-d7c1db7e] {
+  .change-month-button.previous {
     left: 0;
     padding-left: 15px; }
-  .change-month-button.next[data-v-d7c1db7e] {
+  .change-month-button.next {
     right: 0;
     padding-right: 15px; }
-  .change-month-button button[data-v-d7c1db7e] {
+  .change-month-button button {
     background-color: white;
     border: 1px solid #e4e7e7;
     border-radius: 3px;
     padding: 4px 8px; }
-    .change-month-button button[data-v-d7c1db7e]:hover {
+    .change-month-button button:hover {
       border: 1px solid #c4c4c4; }
-  .change-month-button svg[data-v-d7c1db7e] {
+  .change-month-button svg {
     height: 19px;
     width: 19px;
     fill: #82888a; }
 
-.days-legend[data-v-d7c1db7e] {
+.days-legend {
   position: absolute;
   top: 50px;
   left: 10px;
   padding: 0 10px; }
 
-.day-title[data-v-d7c1db7e] {
+.day-title {
   display: inline-block;
   width: 14.28571%;
   text-align: center;
@@ -81,18 +85,18 @@
   margin-left: -1px;
   text-transform: lowercase; }
 
-.month-table[data-v-d7c1db7e] {
+.month-table {
   border-collapse: collapse;
   border-spacing: 0;
   background: white;
   width: 100%; }
 
-.month[data-v-d7c1db7e] {
+.month {
   transition: all 0.3s ease;
   display: inline-block;
   padding: 15px; }
 
-.month-name[data-v-d7c1db7e] {
+.month-name {
   font-size: 1.3em;
   text-align: center;
   margin: 0 0 30px;
@@ -100,20 +104,20 @@
   text-transform: lowercase;
   font-weight: bold; }
 
-.day[data-v-d7c1db7e] {
+.day {
   line-height: 38px;
   height: 38px;
   padding: 0; }
-  .day.selected[data-v-d7c1db7e], .day.in-range[data-v-d7c1db7e] {
+  .day.selected, .day.in-range {
     font-weight: bold; }
-  .day.enabled[data-v-d7c1db7e] {
+  .day.enabled {
     border: 1px solid #e4e7e7; }
-  .day.disabled[data-v-d7c1db7e], .day.empty[data-v-d7c1db7e] {
+  .day.disabled, .day.empty {
     opacity: 0.5; }
-  .day.empty[data-v-d7c1db7e] {
+  .day.empty {
     border: none; }
 
-.day-button[data-v-d7c1db7e] {
+.day-button {
   background: transparent;
   width: 100%;
   height: 100%;
@@ -126,7 +130,7 @@
   font-size: 15px;
   font-weight: inherit; }
 
-.action-buttons button[data-v-d7c1db7e] {
+.action-buttons button {
   display: block;
   position: relative;
   background: transparent;
@@ -134,48 +138,48 @@
   font-weight: bold;
   font-size: 15px; }
   @media (min-width: 768px) {
-    .action-buttons button[data-v-d7c1db7e] {
+    .action-buttons button {
       position: absolute;
       bottom: 10px; } }
-  .action-buttons button[data-v-d7c1db7e]:hover {
+  .action-buttons button:hover {
     text-decoration: underline; }
-  .action-buttons button[data-v-d7c1db7e]:nth-child(1) {
+  .action-buttons button:nth-child(1) {
     float: left;
     left: 15px; }
     @media (min-width: 768px) {
-      .action-buttons button[data-v-d7c1db7e]:nth-child(1) {
+      .action-buttons button:nth-child(1) {
         float: none; } }
-  .action-buttons button[data-v-d7c1db7e]:nth-child(2) {
+  .action-buttons button:nth-child(2) {
     float: right;
     right: 15px; }
     @media (min-width: 768px) {
-      .action-buttons button[data-v-d7c1db7e]:nth-child(2) {
+      .action-buttons button:nth-child(2) {
         float: none; } }
 
-.mobile-header[data-v-d7c1db7e] {
+.mobile-header {
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   position: relative;
   padding: 15px 15px 15px 15px !important;
   text-align: center;
   height: 50px; }
-  .mobile-header h3[data-v-d7c1db7e] {
+  .mobile-header h3 {
     font-size: 20px;
     margin: 0; }
 
-.mobile-only[data-v-d7c1db7e] {
+.mobile-only {
   display: none; }
   @media (max-width: 600px) {
-    .mobile-only[data-v-d7c1db7e] {
+    .mobile-only {
       display: block; } }
 
-.mobile-close[data-v-d7c1db7e] {
+.mobile-close {
   position: absolute;
   top: 7px;
   right: 5px;
   padding: 5px;
   z-index: 100;
   cursor: pointer; }
-  .mobile-close .icon[data-v-d7c1db7e] {
+  .mobile-close .icon {
     position: relative;
     font-size: 1.6em;
     font-weight: bold;

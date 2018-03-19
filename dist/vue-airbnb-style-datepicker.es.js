@@ -10,23 +10,27 @@ import isAfter from 'date-fns/is_after';
 // N milliseconds. If `immediate` is passed, trigger the function on the
 // leading edge, instead of the trailing.
 var debounce = function (func, wait, immediate) {
-	var timeout;
-	return function () {
-		var context = this,
-		    args = arguments;
-		var later = function () {
-			timeout = null;
-			if (!immediate) { func.apply(context, args); }
-		};
-		var callNow = immediate && !timeout;
-		clearTimeout(timeout);
-		timeout = setTimeout(later, wait);
-		if (callNow) { func.apply(context, args); }
-	};
+  var timeout;
+  return function () {
+    var context = this,
+        args = arguments;
+    var later = function () {
+      timeout = null;
+      if (!immediate) { func.apply(context, args); }
+    };
+    var callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) { func.apply(context, args); }
+  };
+};
+
+var copyObject = function (obj) {
+  return JSON.parse(JSON.stringify(obj));
 };
 
 var AirbnbStyleDatepicker = { render: function () {
-    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('transition', { attrs: { "name": "fade" } }, [_vm.showDatepicker ? _c('div', { directives: [{ name: "click-outside", rawName: "v-click-outside", value: _vm.closeDatepicker, expression: "closeDatepicker" }], staticClass: "datepicker-wrapper", class: _vm.wrapperClasses, style: _vm.showFullscreen ? undefined : _vm.wrapperStyles, attrs: { "id": "datepicker-wrapper" } }, [_vm.showFullscreen ? _c('div', { staticClass: "mobile-header mobile-only" }, [_c('div', { staticClass: "mobile-close", on: { "click": _vm.closeDatepicker } }, [_c('div', { staticClass: "icon" }, [_vm._v("X")])]), _vm._v(" "), _c('h3', [_vm._v("Select date(s)")])]) : _vm._e(), _vm._v(" "), _c('div', { staticClass: "datepicker-header" }, [_c('div', { staticClass: "change-month-button previous" }, [_c('button', { on: { "click": _vm.previousMonth } }, [_c('svg', { attrs: { "viewBox": "0 0 1000 1000" } }, [_c('path', { attrs: { "d": "M336.2 274.5l-210.1 210h805.4c13 0 23 10 23 23s-10 23-23 23H126.1l210.1 210.1c11 11 11 21 0 32-5 5-10 7-16 7s-11-2-16-7l-249.1-249c-11-11-11-21 0-32l249.1-249.1c21-21.1 53 10.9 32 32z" } })])])]), _vm._v(" "), _c('div', { staticClass: "change-month-button next" }, [_c('button', { on: { "click": _vm.nextMonth } }, [_c('svg', { attrs: { "viewBox": "0 0 1000 1000" } }, [_c('path', { attrs: { "d": "M694.4 242.4l249.1 249.1c11 11 11 21 0 32L694.4 772.7c-5 5-10 7-16 7s-11-2-16-7c-11-11-11-21 0-32l210.1-210.1H67.1c-13 0-23-10-23-23s10-23 23-23h805.4L662.4 274.5c-21-21.1 11-53.1 32-32.1z" } })])])]), _vm._v(" "), _vm._l(_vm.showMonths, function (month, index) {
+    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('transition', { attrs: { "name": "fade" } }, [_vm.showDatepicker ? _c('div', { directives: [{ name: "click-outside", rawName: "v-click-outside", value: _vm.closeDatepicker, expression: "closeDatepicker" }], staticClass: "datepicker-wrapper", class: _vm.wrapperClasses, style: _vm.showFullscreen ? undefined : _vm.wrapperStyles, attrs: { "id": "datepicker-wrapper" } }, [_vm.showFullscreen ? _c('div', { staticClass: "mobile-header mobile-only" }, [_c('div', { staticClass: "mobile-close", on: { "click": _vm.closeDatepicker } }, [_c('div', { staticClass: "icon" }, [_vm._v("X")])]), _vm._v(" "), _c('h3', [_vm._v(_vm._s(_vm.mobileHeader))])]) : _vm._e(), _vm._v(" "), _c('div', { staticClass: "datepicker-header" }, [_c('div', { staticClass: "change-month-button previous" }, [_c('button', { on: { "click": _vm.previousMonth } }, [_c('svg', { attrs: { "viewBox": "0 0 1000 1000" } }, [_c('path', { attrs: { "d": "M336.2 274.5l-210.1 210h805.4c13 0 23 10 23 23s-10 23-23 23H126.1l210.1 210.1c11 11 11 21 0 32-5 5-10 7-16 7s-11-2-16-7l-249.1-249c-11-11-11-21 0-32l249.1-249.1c21-21.1 53 10.9 32 32z" } })])])]), _vm._v(" "), _c('div', { staticClass: "change-month-button next" }, [_c('button', { on: { "click": _vm.nextMonth } }, [_c('svg', { attrs: { "viewBox": "0 0 1000 1000" } }, [_c('path', { attrs: { "d": "M694.4 242.4l249.1 249.1c11 11 11 21 0 32L694.4 772.7c-5 5-10 7-16 7s-11-2-16-7c-11-11-11-21 0-32l210.1-210.1H67.1c-13 0-23-10-23-23s10-23 23-23h805.4L662.4 274.5c-21-21.1 11-53.1 32-32.1z" } })])])]), _vm._v(" "), _vm._l(_vm.showMonths, function (month, index) {
       return _c('div', { key: month, staticClass: "days-legend", style: [_vm.monthWidthStyles, { left: _vm.width * index + 'px' }] }, _vm._l(_vm.daysShort, function (day) {
         return _c('div', { key: day, staticClass: "day-title" }, [_vm._v(_vm._s(day))]);
       }));
@@ -42,16 +46,18 @@ var AirbnbStyleDatepicker = { render: function () {
               border: _vm.isSelected(fullDate) ? '1px double ' + _vm.colors.selected : _vm.isInRange(fullDate) && _vm.allDatesSelected ? '1px double ' + _vm.colors.inRangeBorder : ''
             }, on: { "mouseover": function () {
                 _vm.setHoverDate(fullDate);
-              } } }, [dayNumber ? _c('button', { staticClass: "day-button", attrs: { "date": fullDate }, on: { "click": function () {
+              } } }, [_vm._v(" H"), dayNumber ? _c('button', { staticClass: "day-button", attrs: { "date": fullDate }, on: { "click": function () {
                 _vm.selectDate(fullDate);
               } } }, [_vm._v(_vm._s(dayNumber))]) : _vm._e()]);
         }));
       }))])]);
-    }))], 1), _vm._v(" "), _vm.mode !== 'single' ? _c('div', { staticClass: "action-buttons" }, [_c('button', { on: { "click": _vm.closeDatepicker } }, [_vm._v("Cancel")]), _vm._v(" "), _c('button', { style: { color: _vm.colors.selected }, on: { "click": _vm.closeDatepicker } }, [_vm._v("Apply")])]) : _vm._e()]) : _vm._e()]);
-  }, staticRenderFns: [], _scopeId: 'data-v-d7c1db7e',
+    }))], 1), _vm._v(" "), _vm.mode !== 'single' ? _c('div', { staticClass: "action-buttons" }, [_c('button', { on: { "click": _vm.closeDatepicker } }, [_vm._v(_vm._s(_vm.texts.cancel))]), _vm._v(" "), _c('button', { style: { color: _vm.colors.selected }, on: { "click": _vm.closeDatepicker } }, [_vm._v(_vm._s(_vm.texts.apply))])]) : _vm._e()]) : _vm._e()]);
+  }, staticRenderFns: [],
   name: 'airbnb-style-datepicker',
   created: function created() {
     var this$1 = this;
+
+    this.setupDatepicker();
 
     if (this.sundayFirst) {
       this.setSundayToFirstDayInWeek();
@@ -60,7 +66,6 @@ var AirbnbStyleDatepicker = { render: function () {
 
     window.addEventListener('click', function (event) {
       if (event.target.id === this$1.triggerElementId) {
-        console.log('click', event.target.id);
         event.stopPropagation();
         event.preventDefault();
         this$1.toggleDatepicker();
@@ -92,29 +97,31 @@ var AirbnbStyleDatepicker = { render: function () {
     endDate: { type: [String, Date] },
     mode: { type: String, default: 'range' },
     dateFormat: { type: String, default: 'YYYY-MM-DD' },
-    sundayFirst: { type: Boolean },
     offset: { type: Number, default: 0 },
     monthsToShow: { type: Number, default: 2 },
     startOpen: { type: Boolean },
     fullscreenMobile: { type: Boolean },
     inline: { type: Boolean },
-    colors: {
-      type: Object,
-      default: function () { return ({
-        selected: '#00a699',
-        inRange: '#66e2da',
-        selectedText: '#fff',
-        text: '#565a5c',
-        inRangeBorder: '#00a699'
-      }); }
-    }
+    mobileHeader: { type: String, default: 'Select date' }
   },
   data: function data() {
     return {
       showDatepicker: false,
       showMonths: 2,
+      colors: {
+        selected: '#00a699',
+        inRange: '#66e2da',
+        selectedText: '#fff',
+        text: '#565a5c',
+        inRangeBorder: '#00a699'
+      },
+      sundayFirst: false,
       days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       daysShort: ['Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun'],
+      texts: {
+        apply: 'Apply',
+        cancel: 'Cancel'
+      },
       startingDate: '',
       months: [],
       width: 300,
@@ -135,10 +142,10 @@ var AirbnbStyleDatepicker = { render: function () {
     },
     wrapperStyles: function wrapperStyles() {
       return {
-        position: this.inline ? 'relative' : 'fixed',
-        top: this.inline ? '0' : this.triggerPosition.bottom + this.offset + 'px',
-        left: !this.alignRight ? this.triggerPosition.left : 'auto',
-        right: this.alignRight ? this.triggerPosition.right : 'auto',
+        position: this.inline ? 'relative' : 'absolute',
+        top: this.inline ? '0' : this.triggerPosition.height + this.offset + 'px',
+        left: !this.alignRight ? '0' : '',
+        right: this.alignRight ? '0' : '',
         width: this.width * this.showMonths + 'px',
         zIndex: this.inline ? '0' : '100',
         paddingBottom: this.inline ? '0' : '30px'
@@ -171,9 +178,29 @@ var AirbnbStyleDatepicker = { render: function () {
     },
     isSingleMode: function isSingleMode() {
       return this.mode === 'single';
+    },
+    datepickerWidth: function datepickerWidth() {
+      return this.width * this.showMonths;
     }
   },
   methods: {
+    setupDatepicker: function setupDatepicker() {
+      if (this.$options.sundayFirst) {
+        this.sundayFirst = copyObject(this.$options.sundayFirst);
+      }
+      if (this.$options.colors) {
+        this.colors = copyObject(this.$options.colors);
+      }
+      if (this.$options.days) {
+        this.days = copyObject(this.$options.days);
+      }
+      if (this.$options.daysShort) {
+        this.daysShort = copyObject(this.$options.daysShort);
+      }
+      if (this.$options.texts) {
+        this.texts = copyObject(this.$options.texts);
+      }
+    },
     setStartDates: function setStartDates() {
       var startDate = this.dateOne || new Date();
       if (this.hasMinDate && isBefore(startDate, this.minDate)) {
@@ -393,13 +420,13 @@ var ClickOutside = {
 };
 
 var AirbnbStyleDatepickerPlugin = {
-  install: function install(Vue) {
+  install: function install(Vue, options) {
     Vue.prototype.$viewportWidth = window.innerWidth + 'px';
     Vue.prototype.$isMobile = window.innerWidth < 768;
 
     Vue.directive('click-outside', ClickOutside);
 
-    Vue.component(AirbnbStyleDatepicker.name, AirbnbStyleDatepicker);
+    Vue.component(AirbnbStyleDatepicker.name, Object.assign({}, options, AirbnbStyleDatepicker));
   }
 };
 // Automatic installation if Vue has been added to the global scope.

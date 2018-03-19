@@ -27,6 +27,7 @@ Vue.use(Datepicker, {
   }
 })
 
+// eslint-disable-next-line
 new Vue({
   el: '#app',
   render: h => h(App)
