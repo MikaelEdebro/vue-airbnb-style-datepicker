@@ -19,6 +19,7 @@
           :date-one="inputDateOne"
           :date-two="inputDateTwo"
           :min-date="'2018-02-28'"
+          :end-date="'2018-05-10'"
           :months-to-show="2"
           :start-open="false"
           @dateOneSelected="val => { inputDateOne = val }"

@@ -614,6 +614,10 @@ $transition-time: 0.3s;
   &.disabled,
   &.empty {
     opacity: 0.5;
+
+    button {
+      cursor: default;
+    }
   }
   &.empty {
     border: none;
