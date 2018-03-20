@@ -182,3 +182,8 @@ npm run dev
 ```
 
 Edit App.vue.
+
+
+## Roadmap/todo:s
+
+- Improve logic for positioning of datepicker. Support for showing the datepicker above the input if it doesn't fit below.
