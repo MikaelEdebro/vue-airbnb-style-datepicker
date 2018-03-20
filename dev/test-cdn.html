@@ -21,17 +21,29 @@
         v-on:date-one-selected="function(val) { date1 = val }"
       ></airbnb-style-datepicker>
     </div>
+
+    <div class="datepicker-trigger">
+        <input type="text" id="trigger-range" :value="date1 + ' - ' + date2">
+        <airbnb-style-datepicker
+          :trigger-element-id="'trigger-range'"
+          :date-one="date1"
+          :date-two="date2"
+          v-on:date-one-selected="function(val) { date1 = val }"
+          v-on:date-two-selected="function(val) { date2 = val }"
+        ></airbnb-style-datepicker>
+      </div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/1.29.0/date_fns.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  <script src="https://unpkg.com/vue-airbnb-style-datepicker@latest/dist/vue-airbnb-style-datepicker.js"></script>
-  <!-- <script src="../dist/vue-airbnb-style-datepicker.js"></script> -->
+  <!-- <script src="https://unpkg.com/vue-airbnb-style-datepicker@latest/dist/vue-airbnb-style-datepicker.js"></script> -->
+  <script src="../dist/vue-airbnb-style-datepicker.js"></script>
   <script>
     var app = new Vue({
       el: '#app',
       data: {
-        date1: ''
+        date1: '',
+        date2: ''
       }
     })
   </script>
