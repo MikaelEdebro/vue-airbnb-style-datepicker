@@ -91,8 +91,8 @@ Add datepicker in your component like this:
         :fullscreen-mobile="true"
         :date-one="dateOne"
         :date-two="dateTwo"
-        @dateOneSelected="val => { dateOne = val }"
-        @dateTwoSelected="val => { dateTwo = val }"
+        @date-one-selected="val => { dateOne = val }"
+        @date-two-selected="val => { dateTwo = val }"
       />
     </div>
   </div>
@@ -128,10 +128,10 @@ export default {
 NB: Note that you need to wrap the datepicker in a `<div class="datepicker-trigger">`. This is used as the base for the positioning of the datepicker.
 Also note that the id of element that triggers the datepicker needs to be the same as prop `:trigger-element`.
 <br><br>
-This plugin does not dictate how you show the dates. This allows for more flexibility since you can use whatever trigger element you want. The value is being emitted from the component when a date is selected, and handled in the `@dateOneSelected` and `@dateTwoSelected` methods. Then you just assign the value to your data properties. And it is up to you to decide how you want to display the dates.<br>
+This plugin does not dictate how you show the dates. This allows for more flexibility since you can use whatever trigger element you want. The value is being emitted from the component when a date is selected, and handled in the `@date-one-selected` and `@date-two-selected` methods. Then you just assign the value to your data properties. And it is up to you to decide how you want to display the dates.<br>
 The `formatDates()` methods is just an example of how it can be solved.
 
-### Properties for `<AirbnbStyleDatepicker />`
+### Properties & events for `<AirbnbStyleDatepicker />`
 | Prop name  | Value |
 | ------------- | ------------- |
 | triggerElementId  | The id of the element that user clicks on (without #).<br>Type: String, Required  |
@@ -147,6 +147,8 @@ The `formatDates()` methods is just an example of how it can be solved.
 | fullscreenMobile  | Show fullscreen view on mobile.<br>Type: Boolean, Default: false |
 | mobileHeader  | Text to show on mobile header<br>Type: String, Default: 'Select dates' |
 | inline  | Use inline mode (datepicker always showing)<br>Type: Boolean, Default: false |
+| @date-one-selected  | Callback to handle saving date<br>Required |
+| @date-two-selected  | Callback to handle saving date<br>Required if using `mode="range"` |
 
 <br><br>
 *Example with all properties (not recommended, only to show values)*:
@@ -164,9 +166,51 @@ The `formatDates()` methods is just an example of how it can be solved.
   :fullscreen-mobile="true"
   :mobile-header="'Mobile header text'"
   :inline="true"
-  @dateOneSelected="val => { dateOne = val }"
-  @dateTwoSelected="val => { dateTwo = val }"
+  @date-one-selected="val => { dateOne = val }"
+  @date-two-selected="val => { dateTwo = val }"
 />
+```
+
+## Usage in non Single Page App (SPA)
+If you're using Vue to enhance your server rendered page, you can use a CDN to load the plugin. This is a simple example:
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Test CDN</title>
+  <link rel="stylesheet" href="https://unpkg.com/vue-airbnb-style-datepicker@latest/dist/styles.css">
+</head>
+
+<body>
+  <div id="app">
+    <div class="datepicker-trigger">
+      <input type="text" id="trigger" :value="date1">
+      <airbnb-style-datepicker
+        :trigger-element-id="'trigger'"
+        :mode="'single'"
+        :date-one="date1"
+        v-on:date-one-selected="function(val) { date1 = val }"
+      ></airbnb-style-datepicker>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/1.29.0/date_fns.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/vue-airbnb-style-datepicker@latest/dist/vue-airbnb-style-datepicker.js"></script>
+  <script>
+    var app = new Vue({
+      el: '#app',
+      data: {
+        date1: ''
+      }
+    })
+  </script>
+</body>
+</html>
 ```
 
 ## Development

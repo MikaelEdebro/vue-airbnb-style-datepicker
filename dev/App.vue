@@ -20,8 +20,8 @@
           :end-date="'2018-05-10'"
           :months-to-show="2"
           :start-open="false"
-          @dateOneSelected="val => { inputDateOne = val }"
-          @dateTwoSelected="val => { inputDateTwo = val }"
+          @date-one-selected="val => { inputDateOne = val }"
+          @date-two-selected="val => { inputDateTwo = val }"
         />
       </div>
     </div>
@@ -41,8 +41,8 @@
           :months-to-show="2"
           :start-open="false"
           :offset-y="10"
-          @dateOneSelected="val => { buttonDateOne = val }"
-          @dateTwoSelected="val => { buttonDateTwo = val }"
+          @date-one-selected="val => { buttonDateOne = val }"
+          @date-two-selected="val => { buttonDateTwo = val }"
         />
       </div>
     </div>
@@ -62,7 +62,7 @@
         :fullscreen-mobile="false"
         :date-one="inlineDateOne"
         :months-to-show="1"
-        @dateOneSelected="val => { inlineDateOne = val }"
+        @date-one-selected="val => { inlineDateOne = val }"
       />
     </div>
 

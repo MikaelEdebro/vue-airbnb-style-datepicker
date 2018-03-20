@@ -235,12 +235,12 @@ export default {
     selectedDate1(newValue, oldValue) {
       let newDate =
         !newValue || newValue === '' ? '' : format(newValue, this.dateFormat)
-      this.$emit('dateOneSelected', newDate)
+      this.$emit('date-one-selected', newDate)
     },
     selectedDate2(newValue, oldValue) {
       let newDate =
         !newValue || newValue === '' ? '' : format(newValue, this.dateFormat)
-      this.$emit('dateTwoSelected', newDate)
+      this.$emit('date-two-selected', newDate)
     },
     mode(newValue, oldValue) {
       this.setStartDates()

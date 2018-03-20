@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Test CDN</title>
+  <link rel="stylesheet" href="https://unpkg.com/vue-airbnb-style-datepicker@latest/dist/styles.css">
+  <!-- <link rel="stylesheet" href="../dist/styles.css"> -->
+</head>
+
+<body>
+  <div id="app">
+    <div class="datepicker-trigger">
+      <input type="text" id="trigger" :value="date1">
+      <airbnb-style-datepicker
+        :trigger-element-id="'trigger'"
+        :mode="'single'"
+        :date-one="date1"
+        v-on:date-one-selected="function(val) { date1 = val }"
+      ></airbnb-style-datepicker>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/1.29.0/date_fns.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/vue-airbnb-style-datepicker@latest/dist/vue-airbnb-style-datepicker.js"></script>
+  <!-- <script src="../dist/vue-airbnb-style-datepicker.js"></script> -->
+  <script>
+    var app = new Vue({
+      el: '#app',
+      data: {
+        date1: ''
+      }
+    })
+  </script>
+</body>
+</html>
