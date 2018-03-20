@@ -1,9 +1,9 @@
 <template>
   <transition name="fade">
     <div
-      id="datepicker-wrapper"
-      class="datepicker-wrapper"
-      v-if="showDatepicker"
+      :id="wrapperId"
+      class="airbnb-style-datepicker-wrapper"
+      v-show="showDatepicker"
       :class="wrapperClasses"
       :style="showFullscreen ? undefined : wrapperStyles"
       v-click-outside="closeDatepicker"
@@ -97,11 +97,10 @@ import addMonths from 'date-fns/add_months'
 import getDaysInMonth from 'date-fns/get_days_in_month'
 import isBefore from 'date-fns/is_before'
 import isAfter from 'date-fns/is_after'
-import { debounce, copyObject, findAncestor } from './../helpers'
+import { debounce, copyObject, findAncestor, randomString } from './../helpers'
 
 export default {
   name: 'AirbnbStyleDatepicker',
-
   props: {
     triggerElementId: { type: String },
     dateOne: { type: [String, Date], default: format(new Date()) },
@@ -120,6 +119,7 @@ export default {
   },
   data() {
     return {
+      wrapperId: 'airbnb-style-datepicker-wrapper-' + randomString(5),
       showDatepicker: false,
       showMonths: 2,
       colors: {
@@ -495,7 +495,7 @@ export default {
         : this.isTablet && this.monthsToShow > 2 ? 2 : this.monthsToShow
 
       this.$nextTick(function() {
-        const datepickerWrapper = document.getElementById('datepicker-wrapper')
+        const datepickerWrapper = document.getElementById(this.wrapperId)
         if (!triggerElement || !datepickerWrapper) {
           return
         }
@@ -530,7 +530,7 @@ $transition-time: 0.3s;
   overflow: visible;
 }
 
-.datepicker-wrapper {
+.airbnb-style-datepicker-wrapper {
   border: $border-normal;
   white-space: nowrap;
   text-align: center;
@@ -546,185 +546,185 @@ $transition-time: 0.3s;
     border: none;
     z-index: 100;
   }
-}
-.datepicker-inner-wrapper {
-  transition: all $transition-time ease;
-  position: relative;
-}
-.datepicker-header {
-  position: relative;
-}
-.change-month-button {
-  position: absolute;
-  top: 12px;
-  z-index: 10;
-  background: white;
-  &.previous {
-    left: 0;
-    padding-left: 15px;
+  .datepicker-inner-wrapper {
+    transition: all $transition-time ease;
+    position: relative;
   }
-  &.next {
-    right: 0;
-    padding-right: 15px;
+  .datepicker-header {
+    position: relative;
   }
-
-  button {
-    background-color: white;
-    border: 1px solid #e4e7e7;
-    border-radius: 3px;
-    padding: 4px 8px;
-
-    &:hover {
-      border: 1px solid #c4c4c4;
+  .change-month-button {
+    position: absolute;
+    top: 12px;
+    z-index: 10;
+    background: white;
+    &.previous {
+      left: 0;
+      padding-left: 15px;
     }
-  }
-
-  svg {
-    height: 19px;
-    width: 19px;
-    fill: #82888a;
-  }
-}
-.days-legend {
-  position: absolute;
-  top: 50px;
-  left: 10px;
-  padding: 0 10px;
-}
-.day-title {
-  display: inline-block;
-  width: percentage(1/7);
-  text-align: center;
-  margin-bottom: 4px;
-  color: rgba(0, 0, 0, 0.7);
-  font-size: 0.8em;
-  margin-left: -1px;
-  text-transform: lowercase;
-}
-
-.month-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-  background: white;
-  width: 100%;
-}
-
-.month {
-  transition: all $transition-time ease;
-  display: inline-block;
-  padding: 15px;
-}
-.month-name {
-  font-size: 1.3em;
-  text-align: center;
-  margin: 0 0 30px;
-  line-height: 1.4em;
-  text-transform: lowercase;
-  font-weight: bold;
-}
-
-.day {
-  $size: 38px;
-  line-height: $size;
-  height: $size;
-  padding: 0;
-
-  &.selected,
-  &.in-range {
-    font-weight: bold;
-  }
-  &.enabled {
-    border: 1px solid #e4e7e7;
-  }
-  &.disabled,
-  &.empty {
-    opacity: 0.5;
+    &.next {
+      right: 0;
+      padding-right: 15px;
+    }
 
     button {
-      cursor: default;
-    }
-  }
-  &.empty {
-    border: none;
-  }
-}
-.day-button {
-  background: transparent;
-  width: 100%;
-  height: 100%;
-  border: none;
-  cursor: pointer;
-  outline: none;
-  color: inherit;
-  text-align: center;
-  user-select: none;
-  font-size: 15px;
-  font-weight: inherit;
-}
+      background-color: white;
+      border: 1px solid #e4e7e7;
+      border-radius: 3px;
+      padding: 4px 8px;
 
-.action-buttons {
-  button {
-    display: block;
-    position: relative;
-    background: transparent;
-    border: none;
-    font-weight: bold;
-    font-size: 15px;
-
-    @media (min-width: $tablet) {
-      position: absolute;
-      bottom: 10px;
-    }
-
-    &:hover {
-      text-decoration: underline;
-    }
-    &:nth-child(1) {
-      float: left;
-      left: 15px;
-      @media (min-width: $tablet) {
-        float: none;
+      &:hover {
+        border: 1px solid #c4c4c4;
       }
     }
-    &:nth-child(2) {
-      float: right;
-      right: 15px;
-      @media (min-width: $tablet) {
-        float: none;
-      }
+
+    svg {
+      height: 19px;
+      width: 19px;
+      fill: #82888a;
     }
   }
-}
+  .days-legend {
+    position: absolute;
+    top: 50px;
+    left: 10px;
+    padding: 0 10px;
+  }
+  .day-title {
+    display: inline-block;
+    width: percentage(1/7);
+    text-align: center;
+    margin-bottom: 4px;
+    color: rgba(0, 0, 0, 0.7);
+    font-size: 0.8em;
+    margin-left: -1px;
+    text-transform: lowercase;
+  }
 
-.mobile-header {
-  border-bottom: $border-normal;
-  position: relative;
-  padding: 15px 15px 15px 15px !important;
-  text-align: center;
-  height: 50px;
-  h3 {
-    font-size: 20px;
-    margin: 0;
+  .month-table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    background: white;
+    width: 100%;
   }
-}
-.mobile-only {
-  display: none;
-  @media (max-width: 600px) {
-    display: block;
+
+  .month {
+    transition: all $transition-time ease;
+    display: inline-block;
+    padding: 15px;
   }
-}
-.mobile-close {
-  position: absolute;
-  top: 7px;
-  right: 5px;
-  padding: 5px;
-  z-index: 100;
-  cursor: pointer;
-  .icon {
-    position: relative;
-    font-size: 1.6em;
+  .month-name {
+    font-size: 1.3em;
+    text-align: center;
+    margin: 0 0 30px;
+    line-height: 1.4em;
+    text-transform: lowercase;
     font-weight: bold;
+  }
+
+  .day {
+    $size: 38px;
+    line-height: $size;
+    height: $size;
     padding: 0;
+
+    &.selected,
+    &.in-range {
+      font-weight: bold;
+    }
+    &.enabled {
+      border: 1px solid #e4e7e7;
+    }
+    &.disabled,
+    &.empty {
+      opacity: 0.5;
+
+      button {
+        cursor: default;
+      }
+    }
+    &.empty {
+      border: none;
+    }
+  }
+  .day-button {
+    background: transparent;
+    width: 100%;
+    height: 100%;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    color: inherit;
+    text-align: center;
+    user-select: none;
+    font-size: 15px;
+    font-weight: inherit;
+  }
+
+  .action-buttons {
+    button {
+      display: block;
+      position: relative;
+      background: transparent;
+      border: none;
+      font-weight: bold;
+      font-size: 15px;
+
+      @media (min-width: $tablet) {
+        position: absolute;
+        bottom: 10px;
+      }
+
+      &:hover {
+        text-decoration: underline;
+      }
+      &:nth-child(1) {
+        float: left;
+        left: 15px;
+        @media (min-width: $tablet) {
+          float: none;
+        }
+      }
+      &:nth-child(2) {
+        float: right;
+        right: 15px;
+        @media (min-width: $tablet) {
+          float: none;
+        }
+      }
+    }
+  }
+
+  .mobile-header {
+    border-bottom: $border-normal;
+    position: relative;
+    padding: 15px 15px 15px 15px !important;
+    text-align: center;
+    height: 50px;
+    h3 {
+      font-size: 20px;
+      margin: 0;
+    }
+  }
+  .mobile-only {
+    display: none;
+    @media (max-width: 600px) {
+      display: block;
+    }
+  }
+  .mobile-close {
+    position: absolute;
+    top: 7px;
+    right: 5px;
+    padding: 5px;
+    z-index: 100;
+    cursor: pointer;
+    .icon {
+      position: relative;
+      font-size: 1.6em;
+      font-weight: bold;
+      padding: 0;
+    }
   }
 }
 </style>
