@@ -25,6 +25,9 @@ export const copyObject = obj => {
 }
 
 export const findAncestor = (element, selector) => {
+  if (!element) {
+    return null
+  }
   if (typeof element.closest === 'function') {
     return element.closest(selector) || null
   }
