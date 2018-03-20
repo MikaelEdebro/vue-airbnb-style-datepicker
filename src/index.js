@@ -1,4 +1,4 @@
-import './prototypes'
+import './polyfills'
 import AirbnbStyleDatepicker from './components/AirbnbStyleDatepicker.vue'
 import ClickOutside from './directives/ClickOutside'
 
