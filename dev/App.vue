@@ -8,12 +8,12 @@
           id="datepicker-input-trigger"
           :value="formatDates(inputDateOne, inputDateTwo)"
           placeholder="Select dates"
+          readonly
         >
 
         <airbnb-style-datepicker
           :trigger-element-id="'datepicker-input-trigger'"
           :mode="'range'"
-          :fullscreen-mobile="true"
           :date-one="inputDateOne"
           :date-two="inputDateTwo"
           :min-date="'2018-02-28'"
@@ -34,7 +34,6 @@
         <airbnb-style-datepicker
           :trigger-element-id="'datepicker-button-trigger'"
           :mode="'range'"
-          :fullscreen-mobile="true"
           :date-one="buttonDateOne"
           :date-two="buttonDateTwo"
           :min-date="'2018-02-28'"

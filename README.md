@@ -213,9 +213,19 @@ If you're using Vue to enhance your server rendered page, you can use a CDN to l
 </html>
 ```
 
-## Development
+## Browser support
+This datepicker have been tested with the following browsers:
 
-If you want to fiddle around with the code, there is an example project included in the repo that showcases some different datepicker configurations.
+IE: 9 and higher
+Safari: 7.1 and higher
+
+However, these tests have not been extensive. More or less just trying the datepicker out, and see that it doesn't throw any console errors etc. If you're planning on using this in production, make sure that it runs smoothly in the browsers that you're planning on supporting.
+
+## Contribute
+
+I gladly accept contributions to improve this datepicker. However, to avoid you doing a bunch of work in vain, please first create a PR discussion so we can agree that the changes makes sense.
+
+It's very easy to start the development workflow. Just run the commands below.
 
 ```
 git clone https://github.com/MikaelEdebro/vue-airbnb-style-datepicker.git
@@ -225,7 +235,7 @@ npm install
 npm run dev
 ```
 
-Edit App.vue.
+This will start the development server and serve the content in `/dev` folder. Then you can just start hacking away.
 
 
 ## Roadmap/todo:s

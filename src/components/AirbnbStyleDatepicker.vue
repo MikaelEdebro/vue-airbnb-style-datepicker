@@ -569,7 +569,7 @@ $transition-time: 0.3s;
 
     button {
       background-color: white;
-      border: 1px solid #e4e7e7;
+      border: $border;
       border-radius: 3px;
       padding: 4px 8px;
 
@@ -606,6 +606,7 @@ $transition-time: 0.3s;
     border-spacing: 0;
     background: white;
     width: 100%;
+    max-width: 100%;
   }
 
   .month {
@@ -627,13 +628,14 @@ $transition-time: 0.3s;
     line-height: $size;
     height: $size;
     padding: 0;
+    overflow: hidden;
 
     &.selected,
     &.in-range {
       font-weight: bold;
     }
     &.enabled {
-      border: 1px solid #e4e7e7;
+      border: $border;
     }
     &.disabled,
     &.empty {
@@ -659,6 +661,7 @@ $transition-time: 0.3s;
     user-select: none;
     font-size: 15px;
     font-weight: inherit;
+    padding: 0;
   }
 
   .action-buttons {
