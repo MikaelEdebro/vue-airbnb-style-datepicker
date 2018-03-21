@@ -214,10 +214,15 @@ If you're using Vue to enhance your server rendered page, you can use a CDN to l
 ```
 
 ## Browser support
-This datepicker have been tested with the following browsers:
+This datepicker have been tested with the following browsers/OS:
 
+Chrome
+Firefox
+Edge
+Android
 IE: 9 and higher
 Safari: 7.1 and higher
+iOS: 6 and higher
 
 However, these tests have not been extensive. More or less just trying the datepicker out, and see that it doesn't throw any console errors etc. If you're planning on using this in production, make sure that it runs smoothly in the browsers that you're planning on supporting.
 

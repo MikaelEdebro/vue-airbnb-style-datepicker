@@ -61,6 +61,7 @@
                       'in-range': isInRange(fullDate)
                     }"
                     :style="{
+                      width: (width - 30) / 7 + 'px',
                       background: isSelected(fullDate) ? colors.selected : isInRange(fullDate) ? colors.inRange : 'white',
                       color: isSelected(fullDate) ? colors.selectedText : isInRange(fullDate) ? colors.selectedText : colors.text,
                       border: isSelected(fullDate)
