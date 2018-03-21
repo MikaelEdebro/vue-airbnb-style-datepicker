@@ -5,11 +5,11 @@ export default {
         vnode.context[binding.expression](event)
       }
     }
-    const touchEvent = 'ontouchstart' in window ? 'touchstart' : 'click'
-    document.body.addEventListener(touchEvent, el.event)
+    document.body.addEventListener('click', el.event)
+    document.body.addEventListener('touchstart', el.event)
   },
   unbind: function(el) {
-    const touchEvent = 'ontouchstart' in window ? 'touchstart' : 'click'
-    document.body.removeEventListener(touchEvent, el.event)
+    document.body.removeEventListener('click', el.event)
+    document.body.removeEventListener('touchstart', el.event)
   }
 }
