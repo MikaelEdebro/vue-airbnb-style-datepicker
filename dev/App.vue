@@ -37,6 +37,7 @@
           :date-one="buttonDateOne"
           :date-two="buttonDateTwo"
           :min-date="'2018-02-28'"
+          :fullscreen-mobile="true"
           :months-to-show="2"
           :start-open="false"
           :offset-y="10"
