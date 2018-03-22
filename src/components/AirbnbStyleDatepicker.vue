@@ -6,7 +6,7 @@
       v-show="showDatepicker"
       :class="wrapperClasses"
       :style="showFullscreen ? undefined : wrapperStyles"
-      v-click-outside="closeDatepickerCancel"
+      v-click-outside="closeDatepicker"
     >
       <div class="mobile-header mobile-only" v-if="showFullscreen">
         <div class="mobile-close" @click="closeDatepicker">
@@ -84,7 +84,7 @@
       </div>
       <div class="action-buttons" v-if="mode !== 'single'">
         <button @click="closeDatepickerCancel">{{ texts.cancel }}</button>
-        <button @click="closeDatepickerApply" :style="{color: colors.selected}">{{ texts.apply }}</button>
+        <button @click="closeDatepicker" :style="{color: colors.selected}">{{ texts.apply }}</button>
       </div>
     </div>
   </transition>
@@ -113,7 +113,6 @@ export default {
     offsetX: { type: Number, default: 0 },
     monthsToShow: { type: Number, default: 2 },
     startOpen: { type: Boolean },
-    requireApply: { type: Boolean, default: false },
     fullscreenMobile: { type: Boolean },
     inline: { type: Boolean },
     mobileHeader: { type: String, default: 'Select date' }
@@ -469,20 +468,17 @@ export default {
     },
     closeDatepickerCancel() {
       if (this.showDatepicker) {
-        if (this.requireApply) {
-          this.selectedDate1 = this.initialDate1
-          this.selectedDate2 = this.initialDate2
-        }
+        this.selectedDate1 = this.initialDate1
+        this.selectedDate2 = this.initialDate2
         this.closeDatepicker()
       }
-    },
-    closeDatepickerApply() {
-      this.closeDatepicker()
-      this.$emit('dates-applied', this.selectedDate1, this.selectedDate2)
     },
     closeDatepicker() {
       if (this.inline) {
         return
+      }
+      if (this.showDatepicker) {
+        this.$nextTick(() => this.$emit('closed'))
       }
       this.showDatepicker = false
     },

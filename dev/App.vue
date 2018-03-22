@@ -20,10 +20,9 @@
           :end-date="'2018-05-10'"
           :months-to-show="2"
           :start-open="false"
-          :require-apply="true"
           @date-one-selected="val => { inputDateOne = val }"
           @date-two-selected="val => { inputDateTwo = val }"
-          @dates-applied="datesApplied"
+          @closed="onClosed"
         />
       </div>
     </div>
@@ -99,9 +98,9 @@ export default {
       }
       return formattedDates
     },
-    datesApplied(dateOne, dateTwo) {
-      var datesStr = this.formatDates(dateOne, dateTwo)
-      window.alert('Dates Selected: ' + datesStr)
+    onClosed() {
+      var datesStr = this.formatDates(this.inputDateOne, this.inputDateTwo)
+      console.log('Dates Selected: ' + datesStr)
     }
   }
 }
