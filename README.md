@@ -147,8 +147,9 @@ The `formatDates()` methods is just an example of how it can be solved.
 | fullscreenMobile  | Show fullscreen view on mobile.<br>Type: Boolean, Default: false |
 | mobileHeader  | Text to show on mobile header<br>Type: String, Default: 'Select dates' |
 | inline  | Use inline mode (datepicker always showing)<br>Type: Boolean, Default: false |
-| @date-one-selected  | Callback to handle saving date<br>Required |
-| @date-two-selected  | Callback to handle saving date<br>Required if using `mode="range"` |
+| @date-one-selected  | Event emitted when second date is selected.<br>Required |
+| @date-two-selected  | Event emitted when second date is selected.<br>Required if using `mode="range"` |
+| @date-two-selected  | Event emitted when datepicker is closed. |
 
 <br><br>
 *Example with all properties (not recommended, only to show values)*:
@@ -250,19 +251,7 @@ However, these tests have not been extensive. More or less just trying the datep
 
 ## Contribute
 
-I gladly accept contributions to improve this datepicker. However, to avoid you doing a bunch of work in vain, please first create a PR discussion so we can agree that the changes makes sense.
-
-It's very easy to start the development workflow. Just run the commands below.
-
-```
-git clone https://github.com/MikaelEdebro/vue-airbnb-style-datepicker.git
-
-npm install
-
-npm run dev
-```
-
-This will start the development server and serve the content in `/dev` folder. Then you can just start hacking away.
+I gladly accept contributions to improve this datepicker. But before you start hacking away, please first create a PR where you explain the actions, so we can agree that the changes makes sense. I wan't to keep this datepicker as close as possible to the original Airbnb datepicker, and not add strange edge cases that complicates the API and makes the size bigger.
 
 
 ## Roadmap/todo:s
