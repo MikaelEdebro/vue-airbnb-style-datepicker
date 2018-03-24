@@ -147,6 +147,7 @@ The `formatDates()` methods is just an example of how it can be solved.
 | fullscreenMobile | Show fullscreen view on mobile.<br>Type: Boolean, Default: false |
 | mobileHeader | Text to show on mobile header<br>Type: String, Default: 'Select dates' |
 | inline | Use inline mode (datepicker always showing)<br>Type: Boolean, Default: false |
+| disabledDates | Disable specific dates.<br>Type: Array<string> |
 | @date-one-selected | Event emitted when second date is selected.<br>Required |
 | @date-two-selected | Event emitted when second date is selected.<br>Required if using `mode="range"` |
 | @closed | Event emitted when datepicker is closed. |
@@ -167,6 +168,7 @@ The `formatDates()` methods is just an example of how it can be solved.
   :fullscreen-mobile="true"
   :mobile-header="'Mobile header text'"
   :inline="true"
+  :disabled-dates="['2018-10-20', '2018-10-22']"
   @date-one-selected="val => { dateOne = val }"
   @date-two-selected="val => { dateTwo = val }"
 />

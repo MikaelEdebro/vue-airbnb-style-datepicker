@@ -1,9 +1,11 @@
 import { shallow, createLocalVue } from '@vue/test-utils'
 import AirbnbStyleDatepicker from '@/components/AirbnbStyleDatepicker'
 import ClickOutside from '@/directives/ClickOutside'
+import TestHelpers from 'test/test-helpers'
 
 const localVue = createLocalVue()
 localVue.directive('click-outside', ClickOutside)
+let h
 
 const createDatePickerInstance = (propsData, options) => {
   if (!propsData) {
@@ -20,10 +22,12 @@ const createDatePickerInstance = (propsData, options) => {
     ...AirbnbStyleDatepicker,
     ...options
   }
-  return shallow(component, {
+  const wrapper = shallow(component, {
     localVue,
     propsData
   })
+  h = new TestHelpers(wrapper, expect)
+  return wrapper
 }
 const datepickerWrapper = '.airbnb-style-datepicker-wrapper'
 let wrapper
@@ -186,6 +190,23 @@ describe('AirbnbStyleDatepicker', () => {
 
       let dWrapper = wrapper.find(datepickerWrapper)
       expect(dWrapper.classes()).toContain('full-screen')
+    })
+    test('disabled dates are not selectable', () => {
+      wrapper = createDatePickerInstance({
+        mode: 'single',
+        dateOne: '2018-10-10',
+        disabledDates: ['2018-10-20']
+      })
+      wrapper.setData({ triggerElement: document.createElement('div') })
+      wrapper.setData({ showDatepicker: true })
+
+      const disabledDate = wrapper.find('.day[data-date="2018-10-20"]')
+      expect(disabledDate.classes()).toContain('disabled')
+
+      disabledDate.find('button').trigger('click')
+      expect(wrapper.emitted()['date-one-selected'][0]).not.toEqual([
+        '2018-10-20'
+      ])
     })
   })
 })

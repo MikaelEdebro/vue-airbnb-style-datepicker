@@ -63,6 +63,7 @@
         :fullscreen-mobile="false"
         :date-one="inlineDateOne"
         :months-to-show="1"
+        :disabled-dates="['2018-03-30', '2018-04-10']"
         @date-one-selected="val => { inlineDateOne = val }"
       />
     </div>

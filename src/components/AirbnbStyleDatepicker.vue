@@ -53,10 +53,11 @@
                     class="day"
                     v-for="({fullDate, dayNumber}, index) in week"
                     :key="index + '_' + dayNumber"
+                    :data-date="fullDate"
                     :class="{
                       enabled: dayNumber !== 0,
                       empty: dayNumber === 0,
-                      disabled: (isBeforeMinDate(fullDate) || isAfterEndDate(fullDate)),
+                      disabled: isBeforeMinDate(fullDate) || isAfterEndDate(fullDate) || isDateDisabled(fullDate),
                       selected: selectedDate1 === fullDate || selectedDate2 === fullDate,
                       'in-range': isInRange(fullDate)
                     }"
@@ -116,7 +117,8 @@ export default {
     startOpen: { type: Boolean },
     fullscreenMobile: { type: Boolean },
     inline: { type: Boolean },
-    mobileHeader: { type: String, default: 'Select date' }
+    mobileHeader: { type: String, default: 'Select date' },
+    disabledDates: { type: Array, default: () => [] }
   },
   data() {
     return {
@@ -157,7 +159,8 @@ export default {
       triggerWrapperPosition: {},
       viewportWidth: window.innerWidth + 'px',
       isMobile: window.innerWidth < 768,
-      isTablet: window.innerWidth >= 768 && window.innerWidth <= 1024
+      isTablet: window.innerWidth >= 768 && window.innerWidth <= 1024,
+      triggerElement: {}
     }
   },
   computed: {
@@ -270,6 +273,7 @@ export default {
     })
   },
   mounted() {
+    this.triggerElement = document.getElementById(this.triggerElementId)
     this.setStartDates()
 
     for (let i = 0; i < this.showMonths + 2; i++) {
@@ -371,7 +375,11 @@ export default {
       return weeks
     },
     selectDate(date) {
-      if (this.isBeforeMinDate(date) || this.isAfterEndDate(date)) {
+      if (
+        this.isBeforeMinDate(date) ||
+        this.isAfterEndDate(date) ||
+        this.isDateDisabled(date)
+      ) {
         return
       }
 
@@ -431,6 +439,10 @@ export default {
       }
       return isAfter(date, this.endDate)
     },
+    isDateDisabled(date) {
+      const isDisabled = this.disabledDates.indexOf(date) > -1
+      return isDisabled
+    },
     previousMonth() {
       this.startingDate = this.subtractMonths(this.months[0].firstDateOfMonth)
 
@@ -482,12 +494,12 @@ export default {
       this.$emit('closed')
     },
     positionDatepicker() {
-      const triggerElement = document.getElementById(this.triggerElementId)
+      //const triggerElement = document.getElementById(this.triggerElementId)
       const triggerWrapperElement = findAncestor(
-        triggerElement,
+        this.triggerElement,
         '.datepicker-trigger'
       )
-      this.triggerPosition = triggerElement.getBoundingClientRect()
+      this.triggerPosition = this.triggerElement.getBoundingClientRect()
       if (triggerWrapperElement) {
         this.triggerWrapperPosition = triggerWrapperElement.getBoundingClientRect()
       } else {
@@ -507,12 +519,12 @@ export default {
 
       this.$nextTick(function() {
         const datepickerWrapper = document.getElementById(this.wrapperId)
-        if (!triggerElement || !datepickerWrapper) {
+        if (!this.triggerElement || !datepickerWrapper) {
           return
         }
 
         const rightPosition =
-          triggerElement.getBoundingClientRect().left +
+          this.triggerElement.getBoundingClientRect().left +
           datepickerWrapper.getBoundingClientRect().width
         this.alignRight = rightPosition > viewPortWidth
       })
