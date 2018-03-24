@@ -22,6 +22,7 @@
           :start-open="false"
           @date-one-selected="val => { inputDateOne = val }"
           @date-two-selected="val => { inputDateTwo = val }"
+          @closed="onClosed"
         />
       </div>
     </div>
@@ -96,6 +97,10 @@ export default {
         formattedDates += ' - ' + format(dateTwo, this.dateFormat)
       }
       return formattedDates
+    },
+    onClosed() {
+      var datesStr = this.formatDates(this.inputDateOne, this.inputDateTwo)
+      console.log('Dates Selected: ' + datesStr)
     }
   }
 }

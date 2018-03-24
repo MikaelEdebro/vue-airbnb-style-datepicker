@@ -84,7 +84,7 @@
         </transition-group>
       </div>
       <div class="action-buttons" v-if="mode !== 'single'">
-        <button @click="closeDatepicker">{{ texts.cancel }}</button>
+        <button @click="closeDatepickerCancel">{{ texts.cancel }}</button>
         <button @click="closeDatepicker" :style="{color: colors.selected}">{{ texts.apply }}</button>
       </div>
     </div>
@@ -464,10 +464,22 @@ export default {
       this.positionDatepicker()
       this.setStartDates()
       this.showDatepicker = true
+      this.initialDate1 = this.dateOne
+      this.initialDate2 = this.dateTwo
+    },
+    closeDatepickerCancel() {
+      if (this.showDatepicker) {
+        this.selectedDate1 = this.initialDate1
+        this.selectedDate2 = this.initialDate2
+        this.closeDatepicker()
+      }
     },
     closeDatepicker() {
       if (this.inline) {
         return
+      }
+      if (this.showDatepicker) {
+        this.$nextTick(() => this.$emit('closed'))
       }
       this.showDatepicker = false
     },
