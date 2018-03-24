@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="app" :class="{'align-right': alignRight}">
     <div class="datepicker-container with-input">
       <h3>Range datepicker with input</h3>
       <div class="datepicker-trigger">
@@ -68,6 +68,7 @@
       />
     </div>
 
+    <button @click="toggleAlign">Toggle alignment</button>
   </div>
 </template>
 
@@ -84,7 +85,8 @@ export default {
       buttonDateTwo: '',
       inlineDateOne: '',
       sundayDateOne: '',
-      sundayFirst: false
+      sundayFirst: false,
+      alignRight: false
     }
   },
   computed: {},
@@ -102,6 +104,9 @@ export default {
     onClosed() {
       var datesStr = this.formatDates(this.inputDateOne, this.inputDateTwo)
       console.log('Dates Selected: ' + datesStr)
+    },
+    toggleAlign() {
+      this.alignRight = !this.alignRight
     }
   }
 }
@@ -118,6 +123,11 @@ body {
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   padding: 10px;
+}
+.app {
+  &.align-right {
+    text-align: right;
+  }
 }
 h1 {
   font-size: 1.8em;
@@ -142,11 +152,7 @@ input {
   padding: 6px 10px;
   border: 1px solid rgba(0, 0, 0, 0.2);
 }
-.align-right {
-  text-align: right;
-}
 .with-input {
-  text-align: left;
   .datepicker-trigger {
     padding-right: 40px;
   }
