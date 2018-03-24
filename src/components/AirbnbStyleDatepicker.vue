@@ -475,6 +475,7 @@ export default {
     openDatepicker() {
       this.positionDatepicker()
       this.setStartDates()
+      this.triggerElement.classList.add('datepicker-open')
       this.showDatepicker = true
       this.initialDate1 = this.dateOne
       this.initialDate2 = this.dateTwo
@@ -491,10 +492,10 @@ export default {
         return
       }
       this.showDatepicker = false
+      this.triggerElement.classList.remove('datepicker-open')
       this.$emit('closed')
     },
     positionDatepicker() {
-      //const triggerElement = document.getElementById(this.triggerElementId)
       const triggerWrapperElement = findAncestor(
         this.triggerElement,
         '.datepicker-trigger'
