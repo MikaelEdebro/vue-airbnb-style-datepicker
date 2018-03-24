@@ -312,9 +312,9 @@ export default {
       this.selectedDate2 = this.dateTwo
     },
     setSundayToFirstDayInWeek() {
-      let lastDay = this.days.pop()
+      const lastDay = this.days.pop()
       this.days.unshift(lastDay)
-      let lastDayShort = this.daysShort.pop()
+      const lastDayShort = this.daysShort.pop()
       this.daysShort.unshift(lastDayShort)
     },
     getMonth(date) {
@@ -478,10 +478,8 @@ export default {
       if (this.inline) {
         return
       }
-      if (this.showDatepicker) {
-        this.$nextTick(() => this.$emit('closed'))
-      }
       this.showDatepicker = false
+      this.$emit('closed')
     },
     positionDatepicker() {
       const triggerElement = document.getElementById(this.triggerElementId)

@@ -3,7 +3,14 @@ module.exports = {
     parser: 'babel-eslint',
     sourceType: 'module'
   },
+  env: {
+    browser: true,
+    jest: true
+  },
   extends: ['standard', 'plugin:vue/recommended'],
+  globals: {
+    window: true
+  },
   rules: {
     'arrow-parens': 'off',
     'generator-star-spacing': 'off',

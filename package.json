@@ -16,12 +16,20 @@
     "build": "rimraf dist/ && npm run build-main && npm run build-no-dep",
     "build-main": "bili --format cjs,es,umd,umd-min --plugin vue --vue.css dist/styles.css",
     "build-no-dep": "bili --outDir dist/no-dep --format umd,umd-min --plugin vue --vue.css dist/styles.css --no-inline --global.date-fns/format dateFns.format --global.date-fns/add_months dateFns.addMonths --global.date-fns/sub_months dateFns.subMonths --global.date-fns/get_days_in_month dateFns.getDaysInMonth --global.date-fns/is_before dateFns.isBefore --global.date-fns/is_after dateFns.isAfter",
-    "dev": "poi --port 5000"
+    "dev": "poi --port 5000",
+    "t": "jest --watch",
+    "test": "jest --watch",
+    "test-once": "jest --runInBand",
+    "test-debug": "node --inspect --inspect-brk node_modules/jest/bin/jest.js"
   },
   "author": "MikaelEdebro <mikael.edebro@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@vue/test-utils": "^1.0.0-beta.12",
     "babel-eslint": "^8.2.2",
+    "babel-jest": "^22.4.3",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-2": "^6.24.1",
     "date-fns": "^1.29.0",
     "eslint": "^4.19.0",
     "eslint-config-standard": "^11.0.0",
@@ -30,16 +38,36 @@
     "eslint-plugin-promise": "^3.7.0",
     "eslint-plugin-standard": "^3.0.1",
     "eslint-plugin-vue": "^4.3.0",
+    "jest": "^22.4.3",
+    "jest-serializer-vue": "^1.0.0",
     "node-sass": "^4.7.2",
     "poi": "^9.6.13",
     "poi-preset-eslint": "^9.1.1",
     "rimraf": "^2.6.2",
     "rollup-plugin-vue": "^3.0.0",
     "sass-loader": "^6.0.6",
+    "vue-jest": "^2.3.0",
     "vue-template-compiler": "^2.5.13"
   },
   "peerDependencies": {
     "date-fns": "1.x",
     "vue": "2.x"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "vue"
+    ],
+    "transform": {
+      ".*\\.(vue)$": "<rootDir>/node_modules/vue-jest",
+      "^.+\\.js$": "<rootDir>/node_modules/babel-jest"
+    },
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    },
+    "snapshotSerializers": [
+      "<rootDir>/node_modules/jest-serializer-vue"
+    ]
   }
 }
