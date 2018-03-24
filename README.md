@@ -132,24 +132,24 @@ This plugin does not dictate how you show the dates. This allows for more flexib
 The `formatDates()` methods is just an example of how it can be solved.
 
 ### Properties & events for `<AirbnbStyleDatepicker />`
-| Prop name  | Value |
+| Prop name | Value |
 | ------------- | ------------- |
-| triggerElementId  | The id of the element that user clicks on (without #).<br>Type: String, Required  |
-| mode  | If datepicker should select a range or just a single date.<br>Type: String, Required, Values: `'single|range'`, Default: `'range'`  |
-| dateOne  | Model for first date.<br>Type: String, Required  |
-| dateTwo  | Model for second date.<br>Type: String, Required if using `mode="range"` |
-| minDate  | Disable dates before this.<br>Type: String |
-| endDate  | Disable dates after this.<br>Type: String |
-| offsetY  | Offset vertical position of datepicker (in pixels from `.datepicker-trigger` bottom).<br>Type: Number, Default: 0 |
-| offsetX  | Offset horisontal position of datepicker (in pixels from `.datepicker-trigger` left or right depending on alignment).<br>Type: Number, Default: 0 |
-| monthsToShow  | How many months to show. For mobile it's always 1.<br>Type: Number, Default: 2 |
-| startOpen  | If you want the datepicker start open<br>Type: Boolean, Default: false |
-| fullscreenMobile  | Show fullscreen view on mobile.<br>Type: Boolean, Default: false |
-| mobileHeader  | Text to show on mobile header<br>Type: String, Default: 'Select dates' |
-| inline  | Use inline mode (datepicker always showing)<br>Type: Boolean, Default: false |
-| @date-one-selected  | Event emitted when second date is selected.<br>Required |
-| @date-two-selected  | Event emitted when second date is selected.<br>Required if using `mode="range"` |
-| @date-two-selected  | Event emitted when datepicker is closed. |
+| triggerElementId | The id of the element that user clicks on (without #).<br>Type: String, Required  |
+| mode | If datepicker should select a range or just a single date.<br>Type: String, Required, Values: `'single|range'`, Default: `'range'`  |
+| dateOne | Model for first date.<br>Type: String, Required |
+| dateTwo | Model for second date.<br>Type: String, Required if using `mode="range"` |
+| minDate | Disable dates before this.<br>Type: String |
+| endDate | Disable dates after this.<br>Type: String |
+| offsetY | Offset vertical position of datepicker (in pixels from `triggerElementId` bottom).<br>Type: Number, Default: 0 |
+| offsetX | Offset horisontal position of datepicker (in pixels from `triggerElementId` left or right depending on alignment).<br>Type: Number, Default: 0 |
+| monthsToShow | How many months to show. For mobile it's always 1.<br>Type: Number, Default: 2 |
+| startOpen | If you want the datepicker start open<br>Type: Boolean, Default: false |
+| fullscreenMobile | Show fullscreen view on mobile.<br>Type: Boolean, Default: false |
+| mobileHeader | Text to show on mobile header<br>Type: String, Default: 'Select dates' |
+| inline | Use inline mode (datepicker always showing)<br>Type: Boolean, Default: false |
+| @date-one-selected | Event emitted when second date is selected.<br>Required |
+| @date-two-selected | Event emitted when second date is selected.<br>Required if using `mode="range"` |
+| @closed | Event emitted when datepicker is closed. |
 
 <br><br>
 *Example with all properties (not recommended, only to show values)*:
