@@ -7,35 +7,158 @@
   <title>Test CDN</title>
   <link rel="stylesheet" href="https://unpkg.com/vue-airbnb-style-datepicker@latest/dist/styles.css">
   <style>
-  html, body {
-    min-height: 100vh;
-  }
+    html,
+    body {
+      min-height: 100vh;
+      font-size: 14px;
+      font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+        Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+      line-height: 18px;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      padding: 10px;
+    }
+      .align-right {
+        text-align: right;
+      }
+    h1 {
+      font-size: 1.8em;
+      line-height: 1.5em;
+    }
+    .datepicker-container {
+      margin-bottom: 30px;
+    }
+
+    #datepicker-button-trigger {
+      background: #008489;
+      border: 1px solid #008489;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 15px;
+      font-weight: bold;
+      text-align: center;
+      min-width: 200px;
+    }
+    input {
+      padding: 6px 10px;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .inline-with-input {
+      width: 300px;
+    }
+    .inline-with-input input {
+      width: 100%;
+    }
   </style>
 </head>
 
 <body>
-  <div id="app">
-    <div class="datepicker-trigger">
-      <input type="text" id="trigger-range" :value="date1 + ' - ' + date2" readonly>
+  <div id="app" class="app" :class="{'align-right': alignRight}">
+    <div class="datepicker-container with-input">
+      <h3>Range datepicker with input</h3>
+      <div class="datepicker-trigger">
+        <input
+          type="text"
+          id="datepicker-input-trigger"
+          :value="formatDates(inputDateOne, inputDateTwo)"
+          placeholder="Select dates"
+          readonly
+        >
+
+        <airbnb-style-datepicker
+          :trigger-element-id="'datepicker-input-trigger'"
+          :mode="'range'"
+          :date-one="inputDateOne"
+          :date-two="inputDateTwo"
+          :min-date="'2018-02-28'"
+          :end-date="'2018-05-10'"
+          v-on:date-one-selected="function(val) { inputDateOne = val }"
+          v-on:date-two-selected="function(val) { inputDateTwo = val }"
+          v-on:closed="onClosed"
+        ></airbnb-style-datepicker>
+      </div>
+    </div>
+
+    <div class="datepicker-container with-button">
+      <h3>Range datepicker with button</h3>
+      <div class="datepicker-trigger">
+        <button id="datepicker-button-trigger">{{ formatDates(buttonDateOne, buttonDateTwo) || 'Select dates' }}</button>
+
+        <airbnb-style-datepicker
+          :trigger-element-id="'datepicker-button-trigger'"
+          :mode="'range'"
+          :date-one="buttonDateOne"
+          :date-two="buttonDateTwo"
+          :min-date="'2018-02-28'"
+          :fullscreen-mobile="true"
+          :months-to-show="2"
+          :offset-y="10"
+          v-on:date-one-selected="function(val) { buttonDateOne = val }"
+          v-on:date-two-selected="function(val) { buttonDateTwo = val }"
+        ></airbnb-style-datepicker>
+      </div>
+    </div>
+
+    <div class="datepicker-container inline-with-input">
+      <h3>Inline datepicker with input</h3>
+      <input
+        id="datepicker-inline-trigger"
+        :value="formatDates(inlineDateOne)"
+        type="text"
+        placeholder="Select date"
+      >
       <airbnb-style-datepicker
-        :trigger-element-id="'trigger-range'"
-        :date-one="date1"
-        :date-two="date2"
-        v-on:date-one-selected="function(val) { date1 = val }"
-        v-on:date-two-selected="function(val) { date2 = val }"
+        :trigger-element-id="'datepicker-inline-trigger'"
+        :mode="'single'"
+        :inline="true"
+        :fullscreen-mobile="false"
+        :date-one="inlineDateOne"
+        :months-to-show="1"
+        :disabled-dates="['2018-03-30', '2018-04-10']"
+        v-on:date-one-selected="function(val) { inlineDateOne = val }"
       ></airbnb-style-datepicker>
     </div>
+
+    <button v-on:click="toggleAlign">Toggle alignment</button>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/1.29.0/date_fns.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="https://unpkg.com/vue-airbnb-style-datepicker@latest/dist/vue-airbnb-style-datepicker.min.js"></script>
   <script>
     var app = new Vue({
       el: '#app',
       data: {
-        date1: '',
-        date2: ''
+        dateFormat: 'D MMM',
+        inputDateOne: '',
+        inputDateTwo: '',
+        buttonDateOne: '',
+        buttonDateTwo: '',
+        inlineDateOne: '',
+        sundayDateOne: '',
+        sundayFirst: false,
+        alignRight: false
+    },
+    methods: {
+      formatDates: function(dateOne, dateTwo) {
+        let formattedDates = ''
+        if (dateOne) {
+          formattedDates = dateFns.format(dateOne, this.dateFormat)
+        }
+        if (dateTwo) {
+          formattedDates += ' - ' + dateFns.format(dateTwo, this.dateFormat)
+        }
+        return formattedDates
+      },
+      onClosed: function() {
+        var datesStr = this.formatDates(this.inputDateOne, this.inputDateTwo)
+        console.log('Dates Selected: ' + datesStr)
+      },
+      toggleAlign: function() {
+        this.alignRight = !this.alignRight
       }
+    }
     })
   </script>
 </body>
