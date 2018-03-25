@@ -1,5 +1,4 @@
 ## Installation
-
 With NPM:
 
 ```
@@ -64,7 +63,6 @@ new Vue({
 The `options` is optional. It is only needed if you want to overwrite default colors, texts etc. For example if your site uses another language than english. Note that `days` and `daysShort` always should start with Monday.
 
 ## Use plugin
-
 Add datepicker in your component like this:
 
 ```html
