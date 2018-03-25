@@ -60,4 +60,5 @@ import addMonths from 'date-fns/add_months'
 import getDaysInMonth from 'date-fns/get_days_in_month'
 import isBefore from 'date-fns/is_before'
 import isAfter from 'date-fns/is_after'
+import isValid from 'date-fns/is_valid'
 ```

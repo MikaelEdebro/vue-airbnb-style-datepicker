@@ -2,7 +2,9 @@ import Vue from 'vue'
 import App from './App.vue'
 import AirBnbStyleDatepicker from './../src/index'
 
-Vue.use(AirBnbStyleDatepicker, {})
+Vue.use(AirBnbStyleDatepicker, {
+  sundayFirst: false
+})
 
 // eslint-disable-next-line
 new Vue({

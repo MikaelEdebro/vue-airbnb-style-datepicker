@@ -9,13 +9,13 @@
     "url": "MikaelEdebro/vue-airbnb-style-datepicker",
     "type": "git"
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "scripts": {
     "build": "rimraf dist/ && npm run build-main && npm run build-no-dep",
-    "build-main": "bili --format cjs,es,umd,umd-min --plugin vue --vue.css dist/styles.css",
-    "build-no-dep": "bili --outDir dist/no-dep --format umd,umd-min --plugin vue --vue.css dist/styles.css --no-inline --global.date-fns/format dateFns.format --global.date-fns/add_months dateFns.addMonths --global.date-fns/sub_months dateFns.subMonths --global.date-fns/get_days_in_month dateFns.getDaysInMonth --global.date-fns/is_before dateFns.isBefore --global.date-fns/is_after dateFns.isAfter",
+    "build-main":
+      "bili --format cjs,es,umd,umd-min --plugin vue --vue.css dist/styles.css",
+    "build-no-dep":
+      "bili --outDir dist/no-dep --format umd,umd-min --plugin vue --vue.css dist/styles.css --no-inline --global.date-fns/format dateFns.format --global.date-fns/add_months dateFns.addMonths --global.date-fns/sub_months dateFns.subMonths --global.date-fns/get_days_in_month dateFns.getDaysInMonth --global.date-fns/is_before dateFns.isBefore --global.date-fns/is_after dateFns.isAfter --global.date-fns/is_valid dateFns.isValid",
     "dev": "poi --port 5000",
     "t": "jest --watch",
     "test": "jest --watch",
@@ -54,11 +54,7 @@
     "vue": "2.x"
   },
   "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "vue"
-    ],
+    "moduleFileExtensions": ["js", "json", "vue"],
     "transform": {
       ".*\\.(vue)$": "<rootDir>/node_modules/vue-jest",
       "^.+\\.js$": "<rootDir>/node_modules/babel-jest"
@@ -67,8 +63,6 @@
       "^@/(.*)$": "<rootDir>/src/$1",
       "^test/(.*)$": "<rootDir>/test/$1"
     },
-    "snapshotSerializers": [
-      "<rootDir>/node_modules/jest-serializer-vue"
-    ]
+    "snapshotSerializers": ["<rootDir>/node_modules/jest-serializer-vue"]
   }
 }

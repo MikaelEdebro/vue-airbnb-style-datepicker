@@ -17,7 +17,7 @@
           :date-one="inputDateOne"
           :date-two="inputDateTwo"
           :min-date="'2018-02-28'"
-          :end-date="'2018-05-10'"
+          :months-to-show="2"
           @date-one-selected="val => { inputDateOne = val }"
           @date-two-selected="val => { inputDateTwo = val }"
           @closed="onClosed"
@@ -61,12 +61,12 @@
         :fullscreen-mobile="false"
         :date-one="inlineDateOne"
         :months-to-show="1"
-        :disabled-dates="['2018-03-30', '2018-04-10']"
+        :disabled-dates="['2018-03-30', '2018-04-10', '2018-12-14']"
         @date-one-selected="val => { inlineDateOne = val }"
       />
     </div>
 
-    <!-- <button @click="toggleAlign">Toggle alignment</button> -->
+    <button @click="toggleAlign">Toggle alignment</button>
   </div>
 </template>
 
@@ -88,6 +88,12 @@ export default {
     }
   },
   computed: {},
+  created() {
+    // setTimeout(() => {
+    //   this.inputDateOne = '2019-01-12'
+    //   this.inputDateTwo = '2019-01-15'
+    // }, 5000)
+  },
   methods: {
     formatDates(dateOne, dateTwo) {
       let formattedDates = ''

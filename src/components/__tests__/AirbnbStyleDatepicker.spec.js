@@ -111,7 +111,10 @@ describe('AirbnbStyleDatepicker', () => {
       expect(wrapper.vm.months[0].monthName).not.toEqual(lastMonth.monthName)
     })
     test('closeDatepicker sets correct value', () => {
-      wrapper.setData({ showDatepicker: true })
+      wrapper.setData({
+        triggerElement: document.createElement('div'),
+        showDatepicker: true
+      })
       wrapper.vm.closeDatepicker()
       expect(wrapper.vm.showDatepicker).toBe(false)
     })
@@ -141,6 +144,7 @@ describe('AirbnbStyleDatepicker', () => {
     })
     test('emits closed event on datepicker close', () => {
       wrapper = createDatePickerInstance()
+      wrapper.setData({ triggerElement: document.createElement('div') })
       wrapper.vm.closeDatepicker()
       wrapper.vm.$nextTick(function() {
         expect(wrapper.emitted().closed).toBeTruthy()
@@ -197,8 +201,10 @@ describe('AirbnbStyleDatepicker', () => {
         dateOne: '2018-10-10',
         disabledDates: ['2018-10-20']
       })
-      wrapper.setData({ triggerElement: document.createElement('div') })
-      wrapper.setData({ showDatepicker: true })
+      wrapper.setData({
+        triggerElement: document.createElement('div'),
+        showDatepicker: true
+      })
 
       const disabledDate = wrapper.find('.day[data-date="2018-10-20"]')
       expect(disabledDate.classes()).toContain('disabled')
@@ -207,6 +213,26 @@ describe('AirbnbStyleDatepicker', () => {
       expect(wrapper.emitted()['date-one-selected'][0]).not.toEqual([
         '2018-10-20'
       ])
+    })
+    test('date are set if user types a valid date in input', () => {
+      wrapper = createDatePickerInstance({
+        mode: 'single',
+        dateOne: '',
+        disabledDates: ['2018-10-20']
+      })
+      const triggerElement = document.createElement('input')
+      wrapper.setData({ triggerElement, showDatepicker: true })
+      wrapper.vm.handleTriggerInput({ target: { value: '2018-11-23' } })
+      expect(wrapper.vm.selectedDate1).toEqual('2018-11-23')
+
+      wrapper.vm.handleTriggerInput({ target: { value: '2018-10-20' } })
+      expect(wrapper.vm.selectedDate1).not.toEqual('2018-10-20')
+
+      wrapper.vm.handleTriggerInput({ target: { value: '20.10.2018' } })
+      expect(wrapper.vm.selectedDate1).not.toEqual('2018-10-20')
+
+      wrapper.vm.handleTriggerInput({ target: { value: '32.10.2018' } })
+      expect(wrapper.vm.selectedDate1).not.toEqual('2018-10-32')
     })
   })
 })

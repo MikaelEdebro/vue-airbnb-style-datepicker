@@ -99,6 +99,7 @@ import addMonths from 'date-fns/add_months'
 import getDaysInMonth from 'date-fns/get_days_in_month'
 import isBefore from 'date-fns/is_before'
 import isAfter from 'date-fns/is_after'
+import isValid from 'date-fns/is_valid'
 import { debounce, copyObject, findAncestor, randomString } from './../helpers'
 
 export default {
@@ -110,7 +111,6 @@ export default {
     minDate: { type: [String, Date] },
     endDate: { type: [String, Date] },
     mode: { type: String, default: 'range' },
-    dateFormat: { type: String, default: 'YYYY-MM-DD' },
     offsetY: { type: Number, default: 0 },
     offsetX: { type: Number, default: 0 },
     monthsToShow: { type: Number, default: 2 },
@@ -123,6 +123,7 @@ export default {
   data() {
     return {
       wrapperId: 'airbnb-style-datepicker-wrapper-' + randomString(5),
+      dateFormat: 'YYYY-MM-DD',
       showDatepicker: false,
       showMonths: 2,
       colors: {
@@ -160,7 +161,7 @@ export default {
       viewportWidth: window.innerWidth + 'px',
       isMobile: window.innerWidth < 768,
       isTablet: window.innerWidth >= 768 && window.innerWidth <= 1024,
-      triggerElement: {}
+      triggerElement: undefined
     }
   },
   computed: {
@@ -233,6 +234,16 @@ export default {
     },
     datepickerWidth() {
       return this.width * this.showMonths
+    },
+    datePropsCompound() {
+      // used to watch for changes in props, and update GUI accordingly
+      return this.dateOne + this.dateTwo
+    },
+    isDateTwoBeforeDateOne() {
+      if (!this.dateTwo) {
+        return false
+      }
+      return isBefore(this.dateTwo, this.dateOne)
     }
   },
   watch: {
@@ -248,6 +259,17 @@ export default {
     },
     mode(newValue, oldValue) {
       this.setStartDates()
+    },
+    datePropsCompound(newValue) {
+      if (this.dateOne !== this.selectedDate1) {
+        this.startingDate = this.dateOne
+        this.setStartDates()
+        this.generateMonths()
+      }
+      if (this.isDateTwoBeforeDateOne) {
+        this.selectedDate2 = ''
+        this.$emit('date-two-selected', '')
+      }
     }
   },
   created() {
@@ -274,12 +296,14 @@ export default {
   },
   mounted() {
     this.triggerElement = document.getElementById(this.triggerElementId)
-    this.setStartDates()
 
-    for (let i = 0; i < this.showMonths + 2; i++) {
-      this.months.push(this.getMonth(this.startingDate))
-      this.startingDate = this.addMonths(this.startingDate)
+    // set date if user types a valid date
+    if (this.mode === 'single' && this.triggerElement) {
+      this.triggerElement.addEventListener('keyup', this.handleTriggerInput)
     }
+
+    this.setStartDates()
+    this.generateMonths()
 
     if (this.startOpen || this.inline) {
       this.openDatepicker()
@@ -289,6 +313,45 @@ export default {
     window.removeEventListener('resize', this.positionDatepicker)
   },
   methods: {
+    handleTriggerInput(event) {
+      let value = event.target.value
+      if (value.length < 10) {
+        return
+      }
+      // is date format DD.MM.YYYY
+      const isFormatDayFirst = value.match(
+        /^(0[1-9]|1[0-9]|2[0-9]|3[0-1])[.](0[1-9]|1[0-2])[.](\d{4})$/
+      )
+      if (isFormatDayFirst) {
+        //convert to YYYY-MM-DD
+        value = `${value.substring(6, 10)}-${value.substring(
+          3,
+          5
+        )}-${value.substring(0, 2)}`
+      }
+      const valueAsDateObject = new Date(value)
+      if (!isValid(valueAsDateObject)) {
+        return
+      }
+      const formattedDate = format(valueAsDateObject, this.dateFormat)
+      if (
+        this.isDateDisabled(formattedDate) ||
+        this.isBeforeMinDate(formattedDate) ||
+        this.isAfterEndDate(formattedDate)
+      ) {
+        return
+      }
+      this.startingDate = subMonths(formattedDate, 1)
+      this.generateMonths()
+      this.selectDate(formattedDate)
+    },
+    generateMonths() {
+      this.months = []
+      for (let i = 0; i < this.showMonths + 2; i++) {
+        this.months.push(this.getMonth(this.startingDate))
+        this.startingDate = this.addMonths(this.startingDate)
+      }
+    },
     setupDatepicker() {
       if (this.$options.sundayFirst) {
         this.sundayFirst = copyObject(this.$options.sundayFirst)
