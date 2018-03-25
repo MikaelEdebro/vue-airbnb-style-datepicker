@@ -318,10 +318,17 @@ export default {
       if (value.length < 10) {
         return
       }
-      // is date format DD.MM.YYYY
+      // make sure format is either 'YYYY-MM-DD' or 'DD.MM.YYYY'
+      const isFormatYearFirst = value.match(
+        /^(\d{4})-(0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-9]|3[0-1])$/
+      )
       const isFormatDayFirst = value.match(
         /^(0[1-9]|1[0-9]|2[0-9]|3[0-1])[.](0[1-9]|1[0-2])[.](\d{4})$/
       )
+
+      if (!isFormatYearFirst && !isFormatDayFirst) {
+        return
+      }
       if (isFormatDayFirst) {
         //convert to YYYY-MM-DD
         value = `${value.substring(6, 10)}-${value.substring(
@@ -329,6 +336,7 @@ export default {
           5
         )}-${value.substring(0, 2)}`
       }
+
       const valueAsDateObject = new Date(value)
       if (!isValid(valueAsDateObject)) {
         return
