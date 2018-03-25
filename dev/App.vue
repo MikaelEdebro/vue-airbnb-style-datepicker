@@ -18,8 +18,6 @@
           :date-two="inputDateTwo"
           :min-date="'2018-02-28'"
           :end-date="'2018-05-10'"
-          :months-to-show="2"
-          :start-open="false"
           @date-one-selected="val => { inputDateOne = val }"
           @date-two-selected="val => { inputDateTwo = val }"
           @closed="onClosed"
@@ -68,7 +66,7 @@
       />
     </div>
 
-    <button @click="toggleAlign">Toggle alignment</button>
+    <!-- <button @click="toggleAlign">Toggle alignment</button> -->
   </div>
 </template>
 
@@ -154,12 +152,12 @@ input {
 }
 .with-input {
   .datepicker-trigger {
-    padding-right: 40px;
+    //padding-right: 40px;
   }
 }
 .with-button {
   .datepicker-trigger {
-    padding-left: 10px;
+    //padding-left: 10px;
   }
 }
 .inline-with-input {
