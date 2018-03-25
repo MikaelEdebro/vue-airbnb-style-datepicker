@@ -1,6 +1,6 @@
 # vue-airbnb-style-datepicker
 
-This is a VueJs version of the popular AirBnb datepicker. Supports range selection, disabling of date, custom configuration, and many more things. Really lightweight and good browser support!<br>
+This is a VueJs version of the popular AirBnb datepicker. Supports range selection, disabling of dates, custom configuration, and many more things. Really lightweight and good browser support!<br>
 [Examples](https://mikaeledebro.gitbooks.io/vue-airbnb-style-datepicker/examples.html)
 
 <img src="https://raw.githubusercontent.com/MikaelEdebro/vue-airbnb-style-datepicker/master/docs/images/datepicker-tablet.gif" width="1124" alt="Datepicker on tablet">
