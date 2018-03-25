@@ -128,7 +128,7 @@ The `formatDates()` methods is just an example of how it can be solved.
 | Prop name | Value |
 | ------------- | ------------- |
 | triggerElementId | The id of the element that user clicks on (without #).<br>Type: String, Required  |
-| mode | If datepicker should select a range or just a single date.<br>Type: String, Required, Values: `'single|range'`, Default: `'range'`  |
+| mode | If datepicker should select a range or just a single date.<br>Type: String, Required, Values: `'single'` or `'range'`, Default: `'range'`  |
 | dateOne | Model for first date.<br>Type: String, Required |
 | dateTwo | Model for second date.<br>Type: String, Required if using `mode="range"` |
 | minDate | Disable dates before this.<br>Type: String |
@@ -164,5 +164,6 @@ The `formatDates()` methods is just an example of how it can be solved.
   :disabled-dates="['2018-10-20', '2018-10-22']"
   @date-one-selected="val => { dateOne = val }"
   @date-two-selected="val => { dateTwo = val }"
+  @closed="onClosedMethod"
 />
 ```

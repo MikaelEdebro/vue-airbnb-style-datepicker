@@ -1,5 +1,5 @@
 ## Usage in non Single Page App (SPA)
-If you're using Vue to enhance your server rendered page, you can use a CDN to load the plugin. This is a simple example:
+If you're not using Webpack (or any other JS module bundler), and is just using Vue to enhance your server rendered page, you can use a CDN to load the plugin. This is a simple example:
 ```html
 <!DOCTYPE html>
 <html lang="en">
