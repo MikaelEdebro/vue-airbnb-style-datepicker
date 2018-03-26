@@ -1,4 +1,4 @@
-## Installation
+# Installation
 With NPM:
 
 ```
@@ -13,7 +13,7 @@ yarn add vue-airbnb-style-datepicker
 
 NB: This plugin is dependant on VueJS 2.x and [date-fns](https://date-fns.org/) (for date manipulation). Make sure you have these dependencies installed.
 
-## Enable plugin in your app
+## [Enable plugin in your app](#enable-plugin)
 
 First off, tell Vue to use the plugin in your main.js:
 
@@ -40,7 +40,7 @@ new Vue({
 The `options` is optional. It is only needed if you want to overwrite default colors, texts etc. For example if your site uses another language than english.
 **Note that `days` and `daysShort` always should start with Monday.** So if you want Sunday as the first day in the week, use `sundayFirst: true` (but days and daysShort should still start with Monday)
 
-## Use plugin
+## [Use plugin](#use-plugin)
 Add datepicker in your component like this:
 
 ```html
@@ -100,7 +100,7 @@ Also note that the id of element that triggers the datepicker needs to be the sa
 This plugin does not dictate how you show the dates. This allows for more flexibility since you can use whatever trigger element you want. The value is being emitted from the component when a date is selected, and handled in the `@date-one-selected` and `@date-two-selected` methods. Then you just assign the value to your data properties. And it is up to you to decide how you want to display the dates.<br>
 The `formatDates()` methods is just an example of how it can be solved.
 
-### Options for `Vue.use(AirbnbStyleDatepicker, datepickerOptions)`
+## [Options for `Vue.use(AirbnbStyleDatepicker, datepickerOptions)`](#plugin-options)
 | Prop name | Value |
 | ------------- | ------------- |
 | sundayFirst | Do you want the week to start on sunday.<br>Type: Boolean, Default: false  |
@@ -144,7 +144,7 @@ Vue.use(AirBnbStyleDatepicker, {
 })
 ```
 
-### Properties & events for `<AirbnbStyleDatepicker />`
+## [Properties & events for `<AirbnbStyleDatepicker />`](#props-and-events)
 | Prop name | Value |
 | ------------- | ------------- |
 | triggerElementId | The id of the element that user clicks on (without #).<br>Type: String, Required  |
