@@ -786,6 +786,7 @@ $transition-time: 0.3s;
       border: none;
       font-weight: bold;
       font-size: 15px;
+      cursor: pointer;
 
       &:hover {
         text-decoration: underline;
