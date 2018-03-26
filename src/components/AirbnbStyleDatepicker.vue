@@ -39,9 +39,10 @@
       <div class="datepicker-inner-wrapper" :style="innerStyles">
         <transition-group name="list-complete" tag="div">
           <div
-            v-for="month in months"
+            v-for="(month, monthIndex) in months"
             :key="month.firstDateOfMonth"
             class="month"
+            :class="{hidden: monthIndex === 0 || monthIndex > showMonths}"
             :style="monthWidthStyles"
           >
             <div class="month-name">{{ month.monthName }} {{ month.year }}</div>
@@ -57,13 +58,13 @@
                     :class="{
                       enabled: dayNumber !== 0,
                       empty: dayNumber === 0,
-                      disabled: isBeforeMinDate(fullDate) || isAfterEndDate(fullDate) || isDateDisabled(fullDate),
+                      disabled: isDisabled(fullDate),
                       selected: selectedDate1 === fullDate || selectedDate2 === fullDate,
                       'in-range': isInRange(fullDate)
                     }"
                     :style="{
                       width: (width - 30) / 7 + 'px',
-                      background: isSelected(fullDate) ? colors.selected : isInRange(fullDate) ? colors.inRange : 'white',
+                      background: isSelected(fullDate) ? colors.selected : isInRange(fullDate) ? colors.inRange : '',
                       color: isSelected(fullDate) ? colors.selectedText : isInRange(fullDate) ? colors.selectedText : colors.text,
                       border: isSelected(fullDate)
                         ? '1px double ' + colors.selected
@@ -75,6 +76,7 @@
                       class="day-button"
                       v-if="dayNumber"
                       :date="fullDate"
+                      :disabled="isDisabled(fullDate)"
                       @click="() => { selectDate(fullDate) }"
                     >{{ dayNumber }}</button>
                   </td>
@@ -84,7 +86,7 @@
           </div>
         </transition-group>
       </div>
-      <div class="action-buttons" v-if="mode !== 'single'">
+      <div class="action-buttons" v-if="mode !== 'single' && showActionButtons">
         <button @click="closeDatepickerCancel">{{ texts.cancel }}</button>
         <button @click="closeDatepicker" :style="{color: colors.selected}">{{ texts.apply }}</button>
       </div>
@@ -118,7 +120,8 @@ export default {
     fullscreenMobile: { type: Boolean },
     inline: { type: Boolean },
     mobileHeader: { type: String, default: 'Select date' },
-    disabledDates: { type: Array, default: () => [] }
+    disabledDates: { type: Array, default: () => [] },
+    showActionButtons: { type: Boolean, default: true }
   },
   data() {
     return {
@@ -131,7 +134,7 @@ export default {
         inRange: '#66e2da',
         selectedText: '#fff',
         text: '#565a5c',
-        inRangeBorder: '#00a699'
+        inRangeBorder: '#33dacd'
       },
       sundayFirst: false,
       days: [
@@ -190,8 +193,7 @@ export default {
             'px'
           : '',
         width: this.width * this.showMonths + 'px',
-        zIndex: this.inline ? '0' : '100',
-        paddingBottom: this.inline ? '0' : '30px'
+        zIndex: this.inline ? '0' : '100'
       }
     },
     innerStyles() {
@@ -514,6 +516,13 @@ export default {
       const isDisabled = this.disabledDates.indexOf(date) > -1
       return isDisabled
     },
+    isDisabled(date) {
+      return (
+        this.isDateDisabled(date) ||
+        this.isBeforeMinDate(date) ||
+        this.isAfterEndDate(date)
+      )
+    },
     previousMonth() {
       this.startingDate = this.subtractMonths(this.months[0].firstDateOfMonth)
 
@@ -653,6 +662,7 @@ $transition-time: 0.3s;
     top: 12px;
     z-index: 10;
     background: white;
+
     &.previous {
       left: 0;
       padding-left: 15px;
@@ -667,6 +677,7 @@ $transition-time: 0.3s;
       border: $border;
       border-radius: 3px;
       padding: 4px 8px;
+      cursor: pointer;
 
       &:hover {
         border: 1px solid #c4c4c4;
@@ -708,6 +719,10 @@ $transition-time: 0.3s;
     transition: all $transition-time ease;
     display: inline-block;
     padding: 15px;
+
+    &.hidden {
+      height: 275px;
+    }
   }
   .month-name {
     font-size: 1.3em;
@@ -725,9 +740,12 @@ $transition-time: 0.3s;
     padding: 0;
     overflow: hidden;
 
+    &:not(.disabled):hover {
+      background-color: #e4e7e7;
+    }
+
     &.selected,
     &.in-range {
-      font-weight: bold;
     }
     &.enabled {
       border: $border;
@@ -750,7 +768,6 @@ $transition-time: 0.3s;
     height: 100%;
     border: none;
     cursor: pointer;
-    outline: none;
     color: inherit;
     text-align: center;
     user-select: none;
@@ -760,6 +777,8 @@ $transition-time: 0.3s;
   }
 
   .action-buttons {
+    min-height: 50px;
+    padding-top: 10px;
     button {
       display: block;
       position: relative;
@@ -768,27 +787,16 @@ $transition-time: 0.3s;
       font-weight: bold;
       font-size: 15px;
 
-      @media (min-width: $tablet) {
-        position: absolute;
-        bottom: 10px;
-      }
-
       &:hover {
         text-decoration: underline;
       }
       &:nth-child(1) {
         float: left;
         left: 15px;
-        @media (min-width: $tablet) {
-          float: none;
-        }
       }
       &:nth-child(2) {
         float: right;
         right: 15px;
-        @media (min-width: $tablet) {
-          float: none;
-        }
       }
     }
   }

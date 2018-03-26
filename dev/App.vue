@@ -18,6 +18,7 @@
           :date-two="inputDateTwo"
           :min-date="'2018-02-28'"
           :months-to-show="2"
+          :show-action-buttons="true"
           @date-one-selected="val => { inputDateOne = val }"
           @date-two-selected="val => { inputDateTwo = val }"
           @closed="onClosed"
