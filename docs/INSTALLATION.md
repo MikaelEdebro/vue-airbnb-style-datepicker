@@ -25,31 +25,8 @@ import App from './App.vue'
 import AirbnbStyleDatepicker from 'vue-airbnb-style-datepicker'
 import 'vue-airbnb-style-datepicker/dist/styles.css'
 
-// configure global options (optional)
-const datepickerOptions = {
-  sundayFirst: false,
-  days: [
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Sunday'
-  ],
-  daysShort: ['Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun'],
-  colors: {
-    selected: '#00a699',
-    inRange: '#66e2da',
-    selectedText: '#fff',
-    text: '#565a5c',
-    inRangeBorder: '#00a699'
-  },
-  texts: {
-    apply: 'Apply',
-    cancel: 'Cancel'
-  }
-}
+// see docs for available options
+const datepickerOptions = {}
 
 // make sure we can use it in our components
 Vue.use(AirbnbStyleDatepicker, datepickerOptions)
@@ -60,7 +37,8 @@ new Vue({
 })
 ```
 
-The `options` is optional. It is only needed if you want to overwrite default colors, texts etc. For example if your site uses another language than english. Note that `days` and `daysShort` always should start with Monday.
+The `options` is optional. It is only needed if you want to overwrite default colors, texts etc. For example if your site uses another language than english.
+**Note that `days` and `daysShort` always should start with Monday.** So if you want Sunday as the first day in the week, use `sundayFirst: true` (but days and daysShort should still start with Monday)
 
 ## Use plugin
 Add datepicker in your component like this:
@@ -122,6 +100,50 @@ Also note that the id of element that triggers the datepicker needs to be the sa
 This plugin does not dictate how you show the dates. This allows for more flexibility since you can use whatever trigger element you want. The value is being emitted from the component when a date is selected, and handled in the `@date-one-selected` and `@date-two-selected` methods. Then you just assign the value to your data properties. And it is up to you to decide how you want to display the dates.<br>
 The `formatDates()` methods is just an example of how it can be solved.
 
+### Options for `Vue.use(AirbnbStyleDatepicker, datepickerOptions)`
+| Prop name | Value |
+| ------------- | ------------- |
+| sundayFirst | Do you want the week to start on sunday.<br>Type: Boolean, Default: false  |
+| days | Name of days in your language. **Must start with monday**<br>Type: Array<string>  |
+| daysShort | Short name of days in your language (what's shown in the days legend). **Must start with monday**<br>Type: Array<string>  |
+| monthNames | Names of months in your language.<br>Type: Array<string>  |
+| colors | Override default colors. Use hex values (#efefef)<br>Type: Object  |
+| texts | Override default texts (currently only "Cancel" and "Apply")<br>Type: Object  |
+
+*Example with all available options*:
+```javascript
+Vue.use(AirBnbStyleDatepicker, {
+  sundayFirst: false,
+  days: ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'],
+  daysShort: ['Mån', 'Tis', 'Ons', 'Tors', 'Fre', 'Lör', 'Sön'],
+  monthNames: [
+    'Januari',
+    'Februari',
+    'Mars',
+    'April',
+    'Maj',
+    'Juni',
+    'Juli',
+    'Augusti',
+    'September',
+    'Oktober',
+    'November',
+    'December'
+  ],
+  colors: {
+    selected: '#00a699',
+    inRange: '#66e2da',
+    selectedText: '#fff',
+    text: '#565a5c',
+    inRangeBorder: '#33dacd'
+  },
+  texts: {
+    apply: 'Tillämpa',
+    cancel: 'Avbryt'
+  }
+})
+```
+
 ### Properties & events for `<AirbnbStyleDatepicker />`
 | Prop name | Value |
 | ------------- | ------------- |
@@ -154,6 +176,7 @@ The `formatDates()` methods is just an example of how it can be solved.
   :date-two="dateTwo"
   :min-date="'2018-10-12'"
   :end-date="'2021-01-01'"
+  :offset-x="10"
   :offset-y="30"
   :months-to-show="2"
   :start-open="true"

@@ -137,6 +137,20 @@ export default {
         inRangeBorder: '#33dacd'
       },
       sundayFirst: false,
+      monthNames: [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December'
+      ],
       days: [
         'Monday',
         'Tuesday',
@@ -367,16 +381,28 @@ export default {
         this.sundayFirst = copyObject(this.$options.sundayFirst)
       }
       if (this.$options.colors) {
-        this.colors = copyObject(this.$options.colors)
+        const colors = copyObject(this.$options.colors)
+        this.colors.selected = colors.selected || this.colors.selected
+        this.colors.inRange = colors.inRange || this.colors.inRange
+        this.colors.selectedText =
+          colors.selectedText || this.colors.selectedText
+        this.colors.text = colors.text || this.colors.text
+        this.colors.inRangeBorder =
+          colors.inRangeBorder || this.colors.inRangeBorder
       }
-      if (this.$options.days) {
+      if (this.$options.monthNames && this.$options.monthNames.length === 12) {
+        this.monthNames = copyObject(this.$options.monthNames)
+      }
+      if (this.$options.days && this.$options.days.length === 7) {
         this.days = copyObject(this.$options.days)
       }
-      if (this.$options.daysShort) {
+      if (this.$options.daysShort && this.$options.daysShort.length === 7) {
         this.daysShort = copyObject(this.$options.daysShort)
       }
       if (this.$options.texts) {
-        this.texts = copyObject(this.$options.texts)
+        const texts = copyObject(this.$options.texts)
+        this.texts.apply = texts.apply || this.texts.apply
+        this.texts.cancel = texts.cancel || this.texts.cancel
       }
     },
     setStartDates() {
@@ -397,8 +423,8 @@ export default {
     getMonth(date) {
       const firstDateOfMonth = format(date, 'YYYY-MM-01')
       const year = format(date, 'YYYY')
-      const monthName = format(date, 'MMMM')
       const monthNumber = parseInt(format(date, 'M'))
+      const monthName = this.monthNames[monthNumber - 1]
 
       return {
         year,
@@ -413,15 +439,15 @@ export default {
       const daysInMonth = getDaysInMonth(date)
       const year = format(date, 'YYYY')
       const month = format(date, 'MM')
-      const firstDayName = format(date, 'dddd')
-      const skipDaysUntilFirstInMonth = this.days.findIndex(
-        day => day === firstDayName
-      )
+      let firstDayInWeek = parseInt(format(date, this.sundayFirst ? 'd' : 'E'))
+      if (this.sundayFirst) {
+        firstDayInWeek++
+      }
       let weeks = []
       let week = []
 
       // add empty days to get first day in correct position
-      for (let s = 0; s < skipDaysUntilFirstInMonth; s++) {
+      for (let s = 1; s < firstDayInWeek; s++) {
         week.push(weekDayNotInMonth)
       }
       for (let d = 0; d < daysInMonth; d++) {

@@ -21,7 +21,6 @@
           :show-action-buttons="true"
           @date-one-selected="val => { inputDateOne = val }"
           @date-two-selected="val => { inputDateTwo = val }"
-          @closed="onClosed"
         />
       </div>
     </div>
@@ -61,7 +60,7 @@
         :inline="true"
         :fullscreen-mobile="false"
         :date-one="inlineDateOne"
-        :months-to-show="1"
+        :months-to-show="2"
         :disabled-dates="['2018-03-30', '2018-04-10', '2018-12-14']"
         @date-one-selected="val => { inlineDateOne = val }"
       />
@@ -105,10 +104,6 @@ export default {
         formattedDates += ' - ' + format(dateTwo, this.dateFormat)
       }
       return formattedDates
-    },
-    onClosed() {
-      var datesStr = this.formatDates(this.inputDateOne, this.inputDateTwo)
-      console.log('Dates Selected: ' + datesStr)
     },
     toggleAlign() {
       this.alignRight = !this.alignRight
@@ -168,7 +163,7 @@ input {
   }
 }
 .inline-with-input {
-  width: 300px;
+  width: 600px;
   input {
     width: 100%;
   }
