@@ -31,6 +31,11 @@
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="../../dist/no-dep/vue-airbnb-style-datepicker.min.js"></script>
   <script>
+    var datepickerOptions = {
+      sundayFirst: false
+    }
+    Vue.use(window.AirbnbStyleDatepicker, datepickerOptions)
+
     var app = new Vue({
       el: '#app',
       data: {

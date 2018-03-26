@@ -27,4 +27,3 @@ I gladly accept contributions to improve this datepicker. But before you start h
 
 ## Roadmap/todo:s
 - Improve logic for positioning of datepicker. Support for showing the datepicker above the input if it doesn't fit below.
-- If a valid date is pasted to the input, datepicker should select it.

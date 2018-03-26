@@ -12,10 +12,8 @@ const AirbnbStyleDatepickerPlugin = {
     })
   }
 }
-// Automatic installation if Vue has been added to the global scope.
+// User has to install the component by themselves, to allow to pass options
 if (typeof window !== 'undefined' && window.Vue) {
-  window.Vue.use(AirbnbStyleDatepickerPlugin)
   window.AirbnbStyleDatepicker = AirbnbStyleDatepickerPlugin
 }
 export default AirbnbStyleDatepickerPlugin
-export { AirbnbStyleDatepicker }

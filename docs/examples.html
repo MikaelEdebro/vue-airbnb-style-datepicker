@@ -101,7 +101,7 @@
     </div>
 
     <div class="datepicker-container inline-with-input">
-      <h3>Inline datepicker with input</h3>
+      <h3>Inline datepicker with input (single mode)</h3>
       <input
         id="datepicker-inline-trigger"
         :value="formatDates(inlineDateOne)"
@@ -127,6 +127,9 @@
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="https://unpkg.com/vue-airbnb-style-datepicker@latest/dist/vue-airbnb-style-datepicker.min.js"></script>
   <script>
+    var datepickerOptions = {}
+    Vue.use(window.AirbnbStyleDatepicker, datepickerOptions)
+
     var app = new Vue({
       el: '#app',
       data: {

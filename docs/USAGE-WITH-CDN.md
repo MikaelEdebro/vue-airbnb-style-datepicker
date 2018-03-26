@@ -33,6 +33,13 @@ If you're not using Webpack (or any other JS module bundler), and is just using 
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="https://unpkg.com/vue-airbnb-style-datepicker@latest/dist/vue-airbnb-style-datepicker.min.js"></script>
   <script>
+    // define options (optional)
+    var datepickerOptions = {
+      sundayFirst: true
+    }
+    // install plugin
+    Vue.use(window.AirbnbStyleDatepicker, datepickerOptions)
+
     var app = new Vue({
       el: '#app',
       data: {
