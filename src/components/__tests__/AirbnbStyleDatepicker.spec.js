@@ -210,9 +210,7 @@ describe('AirbnbStyleDatepicker', () => {
       expect(disabledDate.classes()).toContain('disabled')
 
       disabledDate.find('button').trigger('click')
-      expect(wrapper.emitted()['date-one-selected'][0]).not.toEqual([
-        '2018-10-20'
-      ])
+      expect(wrapper.emitted()['date-one-selected']).toBeFalsy()
     })
     test('date are set if user types a valid date in input', () => {
       wrapper = createDatePickerInstance({
