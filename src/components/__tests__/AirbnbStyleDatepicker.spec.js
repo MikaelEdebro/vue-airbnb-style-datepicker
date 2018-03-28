@@ -199,18 +199,18 @@ describe('AirbnbStyleDatepicker', () => {
       wrapper = createDatePickerInstance({
         mode: 'single',
         dateOne: '2018-10-10',
-        disabledDates: ['2018-10-20']
+        disabledDates: ['2018-10-20'],
+        openOnFocus: true
       })
-      wrapper.setData({
-        triggerElement: document.createElement('div'),
-        showDatepicker: true
-      })
-
+      wrapper.vm.triggerElement.dispatchEvent(new Event('focus'))
+      wrapper.update()
       const disabledDate = wrapper.find('.day[data-date="2018-10-20"]')
       expect(disabledDate.classes()).toContain('disabled')
 
       disabledDate.find('button').trigger('click')
-      expect(wrapper.emitted()['date-one-selected']).toBeFalsy()
+      expect(wrapper.emitted()['date-one-selected'][0]).not.toEqual([
+        '2018-10-20'
+      ])
     })
     test('date are set if user types a valid date in input', () => {
       wrapper = createDatePickerInstance({
@@ -218,8 +218,7 @@ describe('AirbnbStyleDatepicker', () => {
         dateOne: '',
         disabledDates: ['2018-10-20']
       })
-      const triggerElement = document.createElement('input')
-      wrapper.setData({ triggerElement, showDatepicker: true })
+      wrapper.setData({ showDatepicker: true })
       wrapper.vm.handleTriggerInput({ target: { value: '2018-11-23' } })
       expect(wrapper.vm.selectedDate1).toEqual('2018-11-23')
 
@@ -232,5 +231,15 @@ describe('AirbnbStyleDatepicker', () => {
       wrapper.vm.handleTriggerInput({ target: { value: '32.10.2018' } })
       expect(wrapper.vm.selectedDate1).not.toEqual('2018-10-32')
     })
+    // test('opens datepicker on focus', () => {
+    //   wrapper = createDatePickerInstance({
+    //     mode: 'single',
+    //     dateOne: '',
+    //     openOnFocus: true
+    //   })
+    //   wrapper.vm.triggerElement.dispatchEvent(new Event('focus'))
+    //   wrapper.update()
+    //   expect(wrapper.classes()).toContain('datepicker-open')
+    // })
   })
 })

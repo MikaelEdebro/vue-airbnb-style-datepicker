@@ -6,7 +6,7 @@
       v-show="showDatepicker"
       :class="wrapperClasses"
       :style="showFullscreen ? undefined : wrapperStyles"
-      v-click-outside="closeDatepicker"
+      v-click-outside="handleClickOutside"
     >
       <div class="mobile-header mobile-only" v-if="showFullscreen">
         <div class="mobile-close" @click="closeDatepicker">
@@ -121,7 +121,11 @@ export default {
     inline: { type: Boolean },
     mobileHeader: { type: String, default: 'Select date' },
     disabledDates: { type: Array, default: () => [] },
-    showActionButtons: { type: Boolean, default: true }
+    showActionButtons: { type: Boolean, default: true },
+    isTest: {
+      type: Boolean,
+      default: () => process.env.NODE_ENV === 'test'
+    }
   },
   data() {
     return {
@@ -184,6 +188,7 @@ export default {
   computed: {
     wrapperClasses() {
       return {
+        'datepicker-open': this.showDatepicker,
         'full-screen': this.showFullscreen,
         inline: this.inline
       }
@@ -294,29 +299,25 @@ export default {
     if (this.sundayFirst) {
       this.setSundayToFirstDayInWeek()
     }
-    window.addEventListener(
-      'resize',
-      debounce(() => {
-        this.positionDatepicker()
-        this.setStartDates()
-      }, 200)
-    )
 
-    window.addEventListener('click', event => {
+    this._handleWindowResizeEvent = debounce(() => {
+      this.positionDatepicker()
+      this.setStartDates()
+    }, 200)
+    this._handleWindowClickEvent = event => {
       if (event.target.id === this.triggerElementId) {
         event.stopPropagation()
         event.preventDefault()
         this.toggleDatepicker()
       }
-    })
+    }
+    window.addEventListener('resize', this._handleWindowResizeEvent)
+    window.addEventListener('click', this._handleWindowClickEvent)
   },
   mounted() {
-    this.triggerElement = document.getElementById(this.triggerElementId)
-
-    // set date if user types a valid date
-    if (this.mode === 'single' && this.triggerElement) {
-      this.triggerElement.addEventListener('keyup', this.handleTriggerInput)
-    }
+    this.triggerElement = this.isTest
+      ? document.createElement('input')
+      : document.getElementById(this.triggerElementId)
 
     this.setStartDates()
     this.generateMonths()
@@ -324,13 +325,60 @@ export default {
     if (this.startOpen || this.inline) {
       this.openDatepicker()
     }
+
+    this.triggerElement.addEventListener('keyup', this.handleTriggerInput)
   },
-  beforeDestroy() {
-    window.removeEventListener('resize', this.positionDatepicker)
+  destroyed() {
+    window.removeEventListener('resize', this._handleWindowResizeEvent)
+    window.removeEventListener('click', this._handleWindowClickEvent)
+
+    this.triggerElement.removeEventListener('keyup', this.handleTriggerInput)
   },
   methods: {
+    handleClickOutside(event) {
+      if (event.target.id === this.triggerElementId) {
+        return
+      }
+      this.closeDatepicker()
+    },
     handleTriggerInput(event) {
-      let value = event.target.value
+      const keys = {
+        arrowDown: 40,
+        arrowUp: 38,
+        arrowRight: 39,
+        arrowLeft: 37
+      }
+      if (
+        event.keyCode === keys.arrowDown &&
+        !event.shiftKey &&
+        !this.showDatepicker
+      ) {
+        this.openDatepicker()
+      } else if (
+        event.keyCode === keys.arrowUp &&
+        !event.shiftKey &&
+        this.showDatepicker
+      ) {
+        this.closeDatepicker()
+      } else if (
+        event.keyCode === keys.arrowRight &&
+        !event.shiftKey &&
+        this.showDatepicker
+      ) {
+        this.nextMonth()
+      } else if (
+        event.keyCode === keys.arrowLeft &&
+        !event.shiftKey &&
+        this.showDatepicker
+      ) {
+        this.previousMonth()
+      } else {
+        if (this.mode === 'single') {
+          this.setDateFromText(event.target.value)
+        }
+      }
+    },
+    setDateFromText(value) {
       if (value.length < 10) {
         return
       }
@@ -748,6 +796,7 @@ $transition-time: 0.3s;
 
     &.hidden {
       height: 275px;
+      visibility: hidden;
     }
   }
   .month-name {
