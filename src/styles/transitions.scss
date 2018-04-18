@@ -1,21 +1,21 @@
 // fade in
-.fade-enter-active,
-.fade-leave-active {
+.asd__fade-enter-active,
+.asd__fade-leave-active {
   transition: all 0.2s ease;
 }
 
-.fade-enter,
-.fade-leave-active {
+.asd__fade-enter,
+.asd__fade-leave-active {
   opacity: 0;
 }
 
 // datepicker
-.list-complete-enter,
-.list-complete-leave-to {
+.asd__list-complete-enter,
+.asd__list-complete-leave-to {
   opacity: 0;
   transform: translateY(30px);
 }
-.list-complete-leave-active {
+.asd__list-complete-leave-active {
   position: absolute;
   visibility: hidden;
 }

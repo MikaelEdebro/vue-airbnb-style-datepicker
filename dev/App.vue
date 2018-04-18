@@ -56,7 +56,7 @@
             :mode="'range'"
             :date-one="buttonDateOne"
             :date-two="buttonDateTwo"
-            :min-date="'2018-02-28'"
+            :min-date="'2018-04-18'"
             :fullscreen-mobile="true"
             :months-to-show="2"
             :start-open="false"
@@ -82,7 +82,7 @@
           :fullscreen-mobile="false"
           :date-one="inlineDateOne"
           :months-to-show="2"
-          :disabled-dates="['2018-03-30', '2018-04-10', '2018-12-14']"
+          :disabled-dates="['2018-04-30', '2018-05-10', '2018-12-14']"
           @date-one-selected="val => { inlineDateOne = val }"
         />
       </div>
@@ -190,10 +190,10 @@ input {
     //padding-left: 10px;
   }
 }
-.inline-with-input {
-  width: 600px;
-  input {
-    width: 100%;
-  }
-}
+// .inline-with-input {
+//   width: 600px;
+//   input {
+//     width: 100%;
+//   }
+// }
 </style>

@@ -29,7 +29,7 @@ const createDatePickerInstance = (propsData, options) => {
   h = new TestHelpers(wrapper, expect)
   return wrapper
 }
-const datepickerWrapper = '.airbnb-style-datepicker-wrapper'
+const datepickerWrapper = '.asd__wrapper'
 let wrapper
 
 describe('AirbnbStyleDatepicker', () => {
@@ -159,8 +159,8 @@ describe('AirbnbStyleDatepicker', () => {
       })
       wrapper.setData({ showDatepicker: true })
 
-      expect(wrapper.contains('.month-name')).toBe(true)
-      expect(wrapper.find('.month-name').text()).toContain('November 2017')
+      expect(wrapper.contains('.asd__month-name')).toBe(true)
+      expect(wrapper.find('.asd__month-name').text()).toContain('November 2017')
     })
     test('datepicker wrapper is correct width', () => {
       wrapper = createDatePickerInstance({
@@ -178,10 +178,10 @@ describe('AirbnbStyleDatepicker', () => {
       })
       wrapper.setData({ showDatepicker: true })
 
-      expect(wrapper.contains('.day.selected')).toBe(true)
-      expect(wrapper.findAll('.day.selected').length).toBe(2)
-      expect(wrapper.contains('.day.in-range')).toBe(true)
-      expect(wrapper.findAll('.day.in-range').length).toBe(4)
+      expect(wrapper.contains('.asd__day--selected')).toBe(true)
+      expect(wrapper.findAll('.asd__day--selected').length).toBe(2)
+      expect(wrapper.contains('.asd__day--in-range')).toBe(true)
+      expect(wrapper.findAll('.asd__day--in-range').length).toBe(4)
     })
     test('is fullscreen on mobile', () => {
       wrapper = createDatePickerInstance({
@@ -193,7 +193,7 @@ describe('AirbnbStyleDatepicker', () => {
       wrapper.setData({ showDatepicker: true })
 
       let dWrapper = wrapper.find(datepickerWrapper)
-      expect(dWrapper.classes()).toContain('full-screen')
+      expect(dWrapper.classes()).toContain('asd__wrapper--full-screen')
     })
     test('disabled dates are not selectable', () => {
       wrapper = createDatePickerInstance({
@@ -204,8 +204,8 @@ describe('AirbnbStyleDatepicker', () => {
       })
       wrapper.vm.triggerElement.dispatchEvent(new Event('focus'))
       wrapper.update()
-      const disabledDate = wrapper.find('.day[data-date="2018-10-20"]')
-      expect(disabledDate.classes()).toContain('disabled')
+      const disabledDate = wrapper.find('.asd__day[data-date="2018-10-20"]')
+      expect(disabledDate.classes()).toContain('asd__day--disabled')
 
       disabledDate.find('button').trigger('click')
       expect(wrapper.emitted()['date-one-selected'][0]).not.toEqual([
