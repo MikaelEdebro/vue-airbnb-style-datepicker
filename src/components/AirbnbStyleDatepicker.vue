@@ -1,79 +1,72 @@
 <template>
-  <transition name="fade">
+  <transition name="asd__fade">
     <div
       :id="wrapperId"
-      class="airbnb-style-datepicker-wrapper"
+      class="asd__wrapper"
       v-show="showDatepicker"
       :class="wrapperClasses"
       :style="showFullscreen ? undefined : wrapperStyles"
       v-click-outside="handleClickOutside"
     >
-      <div class="mobile-header mobile-only" v-if="showFullscreen">
-        <div class="mobile-close" @click="closeDatepicker">
-          <div class="icon">X</div>
+      <div class="asd__mobile-header asd__mobile-only" v-if="showFullscreen">
+        <div class="asd__mobile-close" @click="closeDatepicker">
+          <div class="asd__mobile-close-icon">X</div>
         </div>
         <h3>{{ mobileHeader }}</h3>
       </div>
-      <div class="datepicker-header">
-        <div class="change-month-button previous">
+      <div class="asd__datepicker-header">
+        <div class="asd__change-month-button asd__change-month-button--previous">
           <button @click="previousMonth">
             <svg viewBox="0 0 1000 1000"><path d="M336.2 274.5l-210.1 210h805.4c13 0 23 10 23 23s-10 23-23 23H126.1l210.1 210.1c11 11 11 21 0 32-5 5-10 7-16 7s-11-2-16-7l-249.1-249c-11-11-11-21 0-32l249.1-249.1c21-21.1 53 10.9 32 32z" /></svg>
           </button>
         </div>
-        <div class="change-month-button next">
+        <div class="asd__change-month-button asd__change-month-button--next">
           <button @click="nextMonth">
             <svg viewBox="0 0 1000 1000"><path d="M694.4 242.4l249.1 249.1c11 11 11 21 0 32L694.4 772.7c-5 5-10 7-16 7s-11-2-16-7c-11-11-11-21 0-32l210.1-210.1H67.1c-13 0-23-10-23-23s10-23 23-23h805.4L662.4 274.5c-21-21.1 11-53.1 32-32.1z" /></svg>
           </button>
         </div>
 
         <div
-          class="days-legend"
+          class="asd__days-legend"
           v-for="(month, index) in showMonths"
           :key="month"
           :style="[monthWidthStyles, {left: (width * index) + 'px'}]"
         >
-          <div class="day-title" v-for="day in daysShort" :key="day">{{ day }}</div>
+          <div class="asd__day-title" v-for="day in daysShort" :key="day">{{ day }}</div>
         </div>
       </div>
 
-      <div class="datepicker-inner-wrapper" :style="innerStyles">
-        <transition-group name="list-complete" tag="div">
+      <div class="asd__inner-wrapper" :style="innerStyles">
+        <transition-group name="asd__list-complete" tag="div">
           <div
             v-for="(month, monthIndex) in months"
             :key="month.firstDateOfMonth"
-            class="month"
+            class="asd__month"
             :class="{hidden: monthIndex === 0 || monthIndex > showMonths}"
             :style="monthWidthStyles"
           >
-            <div class="month-name">{{ month.monthName }} {{ month.year }}</div>
+            <div class="asd__month-name">{{ month.monthName }} {{ month.year }}</div>
 
-            <table class="month-table" role="presentation">
+            <table class="asd__month-table" role="presentation">
               <tbody>
-                <tr class="week" v-for="(week, index) in month.weeks" :key="index">
+                <tr class="asd__week" v-for="(week, index) in month.weeks" :key="index">
                   <td
-                    class="day"
+                    class="asd__day"
                     v-for="({fullDate, dayNumber}, index) in week"
                     :key="index + '_' + dayNumber"
                     :data-date="fullDate"
                     :class="{
-                      enabled: dayNumber !== 0,
-                      empty: dayNumber === 0,
-                      disabled: isDisabled(fullDate),
-                      selected: selectedDate1 === fullDate || selectedDate2 === fullDate,
-                      'in-range': isInRange(fullDate)
+                      'asd__day--enabled': dayNumber !== 0,
+                      'asd__day--empty': dayNumber === 0,
+                      'asd__day--disabled': isDisabled(fullDate),
+                      'asd__day--selected': selectedDate1 === fullDate || selectedDate2 === fullDate,
+                      'asd__day--in-range': isInRange(fullDate)
                     }"
-                    :style="{
-                      width: (width - 30) / 7 + 'px',
-                      background: isSelected(fullDate) ? colors.selected : isInRange(fullDate) ? colors.inRange : '',
-                      color: isSelected(fullDate) ? colors.selectedText : isInRange(fullDate) ? colors.selectedText : colors.text,
-                      border: isSelected(fullDate)
-                        ? '1px double ' + colors.selected
-                        : (isInRange(fullDate) && allDatesSelected) ? '1px double ' + colors.inRangeBorder : ''
-                    }"
+                    :style="getDayStyles(fullDate)"
                     @mouseover="() => { setHoverDate(fullDate) }"
                   >
                     <button
-                      class="day-button"
+                      class="asd__day-button"
                       v-if="dayNumber"
                       :date="fullDate"
                       :disabled="isDisabled(fullDate)"
@@ -86,9 +79,9 @@
           </div>
         </transition-group>
       </div>
-      <div class="action-buttons" v-if="mode !== 'single' && showActionButtons">
+      <div class="asd__action-buttons" v-if="mode !== 'single' && showActionButtons">
         <button @click="closeDatepickerCancel">{{ texts.cancel }}</button>
-        <button @click="closeDatepicker" :style="{color: colors.selected}">{{ texts.apply }}</button>
+        <button @click="apply" :style="{color: colors.selected}">{{ texts.apply }}</button>
       </div>
     </div>
   </transition>
@@ -138,7 +131,8 @@ export default {
         inRange: '#66e2da',
         selectedText: '#fff',
         text: '#565a5c',
-        inRangeBorder: '#33dacd'
+        inRangeBorder: '#33dacd',
+        disabled: '#fff'
       },
       sundayFirst: false,
       monthNames: [
@@ -188,9 +182,9 @@ export default {
   computed: {
     wrapperClasses() {
       return {
-        'datepicker-open': this.showDatepicker,
-        'full-screen': this.showFullscreen,
-        inline: this.inline
+        'asd__wrapper--datepicker-open': this.showDatepicker,
+        'asd__wrapper--full-screen': this.showFullscreen,
+        'asd__wrapper--inline': this.inline
       }
     },
     wrapperStyles() {
@@ -335,6 +329,31 @@ export default {
     this.triggerElement.removeEventListener('keyup', this.handleTriggerInput)
   },
   methods: {
+    getDayStyles(date) {
+      const isSelected = this.isSelected(date)
+      const isInRange = this.isInRange(date)
+      const isDisabled = this.isDisabled(date)
+
+      let styles = {
+        width: (this.width - 30) / 7 + 'px',
+        background: isSelected
+          ? this.colors.selected
+          : isInRange ? this.colors.inRange : '',
+        color: isSelected
+          ? this.colors.selectedText
+          : isInRange ? this.colors.selectedText : this.colors.text,
+        border: isSelected
+          ? '1px double ' + this.colors.selected
+          : isInRange && this.allDatesSelected
+            ? '1px double ' + this.colors.inRangeBorder
+            : ''
+      }
+
+      if (isDisabled) {
+        styles.background = this.colors.disabled
+      }
+      return styles
+    },
     handleClickOutside(event) {
       if (event.target.id === this.triggerElementId) {
         return
@@ -437,6 +456,7 @@ export default {
         this.colors.text = colors.text || this.colors.text
         this.colors.inRangeBorder =
           colors.inRangeBorder || this.colors.inRangeBorder
+        this.colors.disabled = colors.disabled || this.colors.disabled
       }
       if (this.$options.monthNames && this.$options.monthNames.length === 12) {
         this.monthNames = copyObject(this.$options.monthNames)
@@ -649,6 +669,10 @@ export default {
       this.triggerElement.classList.remove('datepicker-open')
       this.$emit('closed')
     },
+    apply() {
+      this.$emit('apply')
+      this.closeDatepicker()
+    },
     positionDatepicker() {
       const triggerWrapperElement = findAncestor(
         this.triggerElement,
@@ -661,13 +685,11 @@ export default {
         this.triggerWrapperPosition = { left: 0, right: 0 }
       }
 
-      const viewPortWidth = Math.max(
-        document.documentElement.clientWidth,
-        window.innerWidth || 0
-      )
-      this.viewportWidth = viewPortWidth + 'px'
-      this.isMobile = viewPortWidth < 768
-      this.isTablet = viewPortWidth >= 768 && viewPortWidth <= 1024
+      const viewportWidth =
+        document.documentElement.clientWidth || window.innerWidth
+      this.viewportWidth = viewportWidth + 'px'
+      this.isMobile = viewportWidth < 768
+      this.isTablet = viewportWidth >= 768 && viewportWidth <= 1024
       this.showMonths = this.isMobile
         ? 1
         : this.isTablet && this.monthsToShow > 2 ? 2 : this.monthsToShow
@@ -681,7 +703,7 @@ export default {
         const rightPosition =
           this.triggerElement.getBoundingClientRect().left +
           datepickerWrapper.getBoundingClientRect().width
-        this.alignRight = rightPosition > viewPortWidth
+        this.alignRight = rightPosition > viewportWidth
       })
     }
   }
@@ -708,45 +730,47 @@ $transition-time: 0.3s;
   overflow: visible;
 }
 
-.airbnb-style-datepicker-wrapper {
-  border: $border-normal;
-  white-space: nowrap;
-  text-align: center;
-  overflow: hidden;
-  background-color: white;
+.asd {
+  &__wrapper {
+    border: $border-normal;
+    white-space: nowrap;
+    text-align: center;
+    overflow: hidden;
+    background-color: white;
 
-  &.full-screen {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    border: none;
-    z-index: 100;
+    &--full-screen {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      border: none;
+      z-index: 100;
+    }
   }
-  .datepicker-inner-wrapper {
+  &__inner-wrapper {
     transition: all $transition-time ease;
     position: relative;
   }
-  .datepicker-header {
+  &__datepicker-header {
     position: relative;
   }
-  .change-month-button {
+  &__change-month-button {
     position: absolute;
     top: 12px;
     z-index: 10;
     background: white;
 
-    &.previous {
+    &--previous {
       left: 0;
       padding-left: 15px;
     }
-    &.next {
+    &--next {
       right: 0;
       padding-right: 15px;
     }
 
-    button {
+    > button {
       background-color: white;
       border: $border;
       border-radius: 3px;
@@ -756,21 +780,22 @@ $transition-time: 0.3s;
       &:hover {
         border: 1px solid #c4c4c4;
       }
-    }
 
-    svg {
-      height: 19px;
-      width: 19px;
-      fill: #82888a;
+      > svg {
+        height: 19px;
+        width: 19px;
+        fill: #82888a;
+      }
     }
   }
-  .days-legend {
+
+  &__days-legend {
     position: absolute;
     top: 50px;
     left: 10px;
     padding: 0 10px;
   }
-  .day-title {
+  &__day-title {
     display: inline-block;
     width: percentage(1/7);
     text-align: center;
@@ -781,7 +806,7 @@ $transition-time: 0.3s;
     text-transform: lowercase;
   }
 
-  .month-table {
+  &__month-table {
     border-collapse: collapse;
     border-spacing: 0;
     background: white;
@@ -789,17 +814,17 @@ $transition-time: 0.3s;
     max-width: 100%;
   }
 
-  .month {
+  &__month {
     transition: all $transition-time ease;
     display: inline-block;
     padding: 15px;
 
-    &.hidden {
+    &--hidden {
       height: 275px;
       visibility: hidden;
     }
   }
-  .month-name {
+  &__month-name {
     font-size: 1.3em;
     text-align: center;
     margin: 0 0 30px;
@@ -808,36 +833,37 @@ $transition-time: 0.3s;
     font-weight: bold;
   }
 
-  .day {
+  &__day {
     $size: 38px;
     line-height: $size;
     height: $size;
     padding: 0;
     overflow: hidden;
 
-    &:not(.disabled):hover {
-      background-color: #e4e7e7;
-    }
-
-    &.selected,
-    &.in-range {
-    }
-    &.enabled {
+    &--enabled {
       border: $border;
+      &:hover {
+        background-color: #e4e7e7;
+      }
     }
-    &.disabled,
-    &.empty {
+    &--disabled,
+    &--empty {
       opacity: 0.5;
 
       button {
         cursor: default;
       }
     }
-    &.empty {
+    &--empty {
       border: none;
     }
+    &--disabled {
+      &:hover {
+        background-color: transparent;
+      }
+    }
   }
-  .day-button {
+  &__day-button {
     background: transparent;
     width: 100%;
     height: 100%;
@@ -851,7 +877,7 @@ $transition-time: 0.3s;
     padding: 0;
   }
 
-  .action-buttons {
+  &__action-buttons {
     min-height: 50px;
     padding-top: 10px;
     button {
@@ -877,7 +903,7 @@ $transition-time: 0.3s;
     }
   }
 
-  .mobile-header {
+  &__mobile-header {
     border-bottom: $border-normal;
     position: relative;
     padding: 15px 15px 15px 15px !important;
@@ -888,20 +914,21 @@ $transition-time: 0.3s;
       margin: 0;
     }
   }
-  .mobile-only {
+  &__mobile-only {
     display: none;
     @media (max-width: 600px) {
       display: block;
     }
   }
-  .mobile-close {
+  &__mobile-close {
     position: absolute;
     top: 7px;
     right: 5px;
     padding: 5px;
     z-index: 100;
     cursor: pointer;
-    .icon {
+
+    &__icon {
       position: relative;
       font-size: 1.6em;
       font-weight: bold;

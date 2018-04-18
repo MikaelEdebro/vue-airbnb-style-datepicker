@@ -25,7 +25,8 @@ Vue.use(AirBnbStyleDatepicker, {
     inRange: '#66e2da',
     selectedText: '#fff',
     text: '#565a5c',
-    inRangeBorder: '#33dacd'
+    inRangeBorder: '#33dacd',
+    disabled: '#fff'
   },
   texts: {
     apply: 'Tillämpa',

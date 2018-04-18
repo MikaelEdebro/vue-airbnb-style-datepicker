@@ -135,7 +135,8 @@ Vue.use(AirBnbStyleDatepicker, {
     inRange: '#66e2da',
     selectedText: '#fff',
     text: '#565a5c',
-    inRangeBorder: '#33dacd'
+    inRangeBorder: '#33dacd',
+    disabled: '#fff'
   },
   texts: {
     apply: 'Tillämpa',
@@ -165,6 +166,7 @@ Vue.use(AirBnbStyleDatepicker, {
 | @date-one-selected | Event emitted when second date is selected.<br>Required |
 | @date-two-selected | Event emitted when second date is selected.<br>Required if using `mode="range"` |
 | @closed | Event emitted when datepicker is closed. |
+| @apply | Event emitted when user clicks "Apply" |
 
 <br><br>
 *Example with all properties (not recommended, only to show values)*:
@@ -188,5 +190,6 @@ Vue.use(AirBnbStyleDatepicker, {
   @date-one-selected="val => { dateOne = val }"
   @date-two-selected="val => { dateTwo = val }"
   @closed="onClosedMethod"
+  @apply="onApplyMethod"
 />
 ```
