@@ -22,6 +22,8 @@
             :show-action-buttons="true"
             @date-one-selected="val => { inputDateOne = val }"
             @date-two-selected="val => { inputDateTwo = val }"
+            @apply="applyMethod"
+            @closed="closedMethod"
           />
         </div>
       </div>
@@ -42,6 +44,8 @@
             :date-one="inputSingleDateOne"
             :months-to-show="2"
             @date-one-selected="val => { inputSingleDateOne = val }"
+            @apply="applyMethod"
+            @closed="closedMethod"
           />
         </div>
       </div>
@@ -64,6 +68,7 @@
             @date-one-selected="val => { buttonDateOne = val }"
             @date-two-selected="val => { buttonDateTwo = val }"
             @apply="applyMethod"
+            @closed="closedMethod"
           />
         </div>
       </div>
@@ -85,6 +90,8 @@
           :months-to-show="2"
           :disabled-dates="['2018-04-30', '2018-05-10', '2018-12-14']"
           @date-one-selected="val => { inlineDateOne = val }"
+          @apply="applyMethod"
+          @closed="closedMethod"
         />
       </div>
     </div>
@@ -139,6 +146,9 @@ export default {
     },
     applyMethod() {
       console.log('apply')
+    },
+    closedMethod() {
+      console.log('closed')
     }
   }
 }
