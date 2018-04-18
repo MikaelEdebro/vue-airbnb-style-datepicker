@@ -355,7 +355,11 @@ export default {
       return styles
     },
     handleClickOutside(event) {
-      if (event.target.id === this.triggerElementId) {
+      if (
+        event.target.id === this.triggerElementId ||
+        !this.showDatepicker ||
+        this.inline
+      ) {
         return
       }
       this.closeDatepicker()
