@@ -63,6 +63,7 @@
             :offset-y="10"
             @date-one-selected="val => { buttonDateOne = val }"
             @date-two-selected="val => { buttonDateTwo = val }"
+            @apply="applyMethod"
           />
         </div>
       </div>
@@ -135,6 +136,9 @@ export default {
     },
     toggleDatepickers() {
       this.showDatepickers = !this.showDatepickers
+    },
+    applyMethod() {
+      console.log('apply')
     }
   }
 }
