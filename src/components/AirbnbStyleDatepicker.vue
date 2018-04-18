@@ -666,11 +666,10 @@ export default {
       }
     },
     closeDatepicker() {
-      if (this.inline) {
-        return
+      if (!this.inline) {
+        this.showDatepicker = false
+        this.triggerElement.classList.remove('datepicker-open')
       }
-      this.showDatepicker = false
-      this.triggerElement.classList.remove('datepicker-open')
       this.$emit('closed')
     },
     apply() {
