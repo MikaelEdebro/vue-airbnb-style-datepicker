@@ -94,8 +94,10 @@
           :fullscreen-mobile="true"
           :months-to-show="2"
           :offset-y="10"
+          :trigger="trigger"
           v-on:date-one-selected="function(val) { buttonDateOne = val }"
           v-on:date-two-selected="function(val) { buttonDateTwo = val }"
+          v-on:closed="onClosed"
         ></airbnb-style-datepicker>
       </div>
     </div>
@@ -121,6 +123,7 @@
     </div>
 
     <button v-on:click="toggleAlign">Toggle alignment</button>
+    <button v-on:click="triggerDatepicker">Trigger "Range datepicker with button" datepicker</button>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/1.29.0/date_fns.js"></script>
@@ -141,7 +144,8 @@
         inlineDateOne: '',
         sundayDateOne: '',
         sundayFirst: false,
-        alignRight: false
+        alignRight: false,
+        trigger: false
     },
     methods: {
       formatDates: function(dateOne, dateTwo) {
@@ -157,9 +161,13 @@
       onClosed: function() {
         var datesStr = this.formatDates(this.inputDateOne, this.inputDateTwo)
         console.log('Dates Selected: ' + datesStr)
+        this.trigger = false
       },
       toggleAlign: function() {
         this.alignRight = !this.alignRight
+      },
+      triggerDatepicker: function() {
+        this.trigger = !this.trigger
       }
     }
     })

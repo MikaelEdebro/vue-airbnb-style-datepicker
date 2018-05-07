@@ -119,7 +119,8 @@ export default {
     isTest: {
       type: Boolean,
       default: () => process.env.NODE_ENV === 'test'
-    }
+    },
+    trigger: { type: Boolean, default: false }
   },
   data() {
     return {
@@ -285,6 +286,11 @@ export default {
       if (this.isDateTwoBeforeDateOne) {
         this.selectedDate2 = ''
         this.$emit('date-two-selected', '')
+      }
+    },
+    trigger(newValue, oldValue) {
+      if (newValue) {
+        this.openDatepicker()
       }
     }
   },

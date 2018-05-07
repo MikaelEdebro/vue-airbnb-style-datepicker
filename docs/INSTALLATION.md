@@ -163,6 +163,7 @@ Vue.use(AirBnbStyleDatepicker, {
 | inline | Use inline mode (datepicker always showing)<br>Type: Boolean, Default: false |
 | disabledDates | Disable specific dates.<br>Type: Array<string> |
 | showActionButtons | Show/hide action buttons ("Apply", "Cancel")<br>Type: Boolean, Default: false |
+| trigger | To programmatically show datepicker. For example if you want to open the datepicker by clicking some other HTML element. You manually need to reset this variable though in the @closed method.<br>Type: Boolean, Default: false |
 | @date-one-selected | Event emitted when second date is selected.<br>Required |
 | @date-two-selected | Event emitted when second date is selected.<br>Required if using `mode="range"` |
 | @closed | Event emitted when datepicker is closed. |
@@ -187,6 +188,7 @@ Vue.use(AirBnbStyleDatepicker, {
   :inline="true"
   :disabled-dates="['2018-10-20', '2018-10-22']"
   :show-action-buttons="true"
+  :trigger="someBooleanDataProp"
   @date-one-selected="val => { dateOne = val }"
   @date-two-selected="val => { dateTwo = val }"
   @closed="onClosedMethod"

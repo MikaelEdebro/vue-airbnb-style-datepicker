@@ -63,7 +63,7 @@
             :min-date="'2018-04-18'"
             :fullscreen-mobile="true"
             :months-to-show="2"
-            :start-open="false"
+            :trigger="trigger"
             :offset-y="10"
             @date-one-selected="val => { buttonDateOne = val }"
             @date-two-selected="val => { buttonDateTwo = val }"
@@ -98,6 +98,7 @@
 
     <button @click="toggleDatepickers">Hide datepickers</button>
     <button @click="toggleAlign">Toggle alignment</button>
+    <button @click="toggleTrigger">Toggle trigger</button>
   </div>
 </template>
 
@@ -117,7 +118,8 @@ export default {
       sundayDateOne: '',
       sundayFirst: false,
       alignRight: false,
-      showDatepickers: true
+      showDatepickers: true,
+      trigger: false
     }
   },
   computed: {},
@@ -144,11 +146,15 @@ export default {
     toggleDatepickers() {
       this.showDatepickers = !this.showDatepickers
     },
+    toggleTrigger() {
+      this.trigger = !this.trigger
+    },
     applyMethod() {
       console.log('apply')
     },
     closedMethod() {
       console.log('closed')
+      this.trigger = false
     }
   }
 }
