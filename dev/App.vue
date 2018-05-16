@@ -17,7 +17,33 @@
             :mode="'range'"
             :date-one="inputDateOne"
             :date-two="inputDateTwo"
-            :min-date="'2018-02-28'"
+            :min-date="'28-02-2018'"
+            :months-to-show="2"
+            :show-action-buttons="true"
+            @date-one-selected="val => { inputDateOne = val }"
+            @date-two-selected="val => { inputDateTwo = val }"
+            @apply="applyMethod"
+            @closed="closedMethod"
+          />
+        </div>
+      </div>
+
+      <div class="datepicker-container with-input">
+        <h3>Range monthpicker with input</h3>
+        <div class="datepicker-trigger">
+          <input
+            type="text"
+            id="monthpicker-input-trigger"
+            :value="formatDates(inputDateOne, inputDateTwo)"
+            placeholder="Select dates"
+          >
+
+          <airbnb-style-monthpicker
+            :trigger-element-id="'monthpicker-input-trigger'"
+            :mode="'range'"
+            :date-one="inputDateOne"
+            :date-two="inputDateTwo"
+            :min-date="'28-02-2018'"
             :months-to-show="2"
             :show-action-buttons="true"
             @date-one-selected="val => { inputDateOne = val }"
@@ -60,7 +86,7 @@
             :mode="'range'"
             :date-one="buttonDateOne"
             :date-two="buttonDateTwo"
-            :min-date="'2018-04-18'"
+            :min-date="'18-04-2018'"
             :fullscreen-mobile="true"
             :months-to-show="2"
             :trigger="trigger"
@@ -88,7 +114,6 @@
           :fullscreen-mobile="false"
           :date-one="inlineDateOne"
           :months-to-show="2"
-          :disabled-dates="['2018-04-30', '2018-05-10', '2018-12-14']"
           @date-one-selected="val => { inlineDateOne = val }"
           @apply="applyMethod"
           @closed="closedMethod"
@@ -108,7 +133,7 @@ import format from 'date-fns/format'
 export default {
   data() {
     return {
-      dateFormat: 'YYYY-MM-DD', //'D MMM',
+      dateFormat: 'DD-MM-YYYY', //'D MMM',
       inputDateOne: '',
       inputDateTwo: '',
       inputSingleDateOne: '',

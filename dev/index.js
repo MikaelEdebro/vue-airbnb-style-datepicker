@@ -1,24 +1,24 @@
 import Vue from 'vue'
 import App from './App.vue'
-import AirBnbStyleDatepicker from './../src/index'
+import { AirBnbStyleDatepicker, AirBnbStyleMonthpicker } from './../src/index'
 
 Vue.use(AirBnbStyleDatepicker, {
   sundayFirst: false,
-  days: ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'],
-  daysShort: ['Mån', 'Tis', 'Ons', 'Tors', 'Fre', 'Lör', 'Sön'],
+  days: ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'],
+  daysShort: ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'],
   monthNames: [
-    'Januari',
-    'Februari',
-    'Mars',
-    'April',
-    'Maj',
-    'Juni',
-    'Juli',
-    'Augusti',
-    'September',
-    'Oktober',
-    'November',
-    'December'
+    'Enero',
+    'Febrero',
+    'Marzo',
+    'Abril',
+    'Mayo',
+    'Junio',
+    'Julio',
+    'Agosto',
+    'Septiembre',
+    'Octubre',
+    'Noviembre',
+    'Diciembre'
   ],
   colors: {
     selected: '#00a699',
@@ -29,10 +29,12 @@ Vue.use(AirBnbStyleDatepicker, {
     disabled: '#fff'
   },
   texts: {
-    apply: 'Tillämpa',
-    cancel: 'Avbryt'
+    apply: 'Aceptar',
+    cancel: 'Cancelar'
   }
 })
+
+Vue.use(AirBnbStyleMonthpicker)
 
 // eslint-disable-next-line
 new Vue({

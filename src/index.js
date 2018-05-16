@@ -1,19 +1,33 @@
 import './polyfills'
-import AirbnbStyleDatepicker from './components/AirbnbStyleDatepicker.vue'
+import Datepicker from './components/AirbnbStyleDatepicker.vue'
+import Monthpicker from './components/AirbnbStyleMonthpicker.vue'
 import ClickOutside from './directives/ClickOutside'
 
-const AirbnbStyleDatepickerPlugin = {
+const AirBnbStyleDatepicker = {
   install(Vue, options) {
     Vue.directive('click-outside', ClickOutside)
 
-    Vue.component(AirbnbStyleDatepicker.name, {
+    Vue.component(Datepicker.name, {
       ...options,
-      ...AirbnbStyleDatepicker
+      ...Datepicker
+    })
+  }
+}
+
+const AirBnbStyleMonthpicker = {
+  install(Vue, options) {
+    Vue.directive('click-outside', ClickOutside)
+
+    Vue.component(Monthpicker.name, {
+      ...options,
+      ...Monthpicker
     })
   }
 }
 // User has to install the component by themselves, to allow to pass options
 if (typeof window !== 'undefined' && window.Vue) {
-  window.AirbnbStyleDatepicker = AirbnbStyleDatepickerPlugin
+  window.AirBnbStyleDatepicker = AirBnbStyleDatepicker
+  window.AirBnbStyleMonthpicker = AirBnbStyleMonthpicker
 }
-export default AirbnbStyleDatepickerPlugin
+
+export { AirBnbStyleDatepicker, AirBnbStyleMonthpicker }
