@@ -44,9 +44,14 @@
                   @mouseover="() => { setHoverMonth(month) }"
                 >
                   <button
-                    class="asd__day-button"
+                    class="asd__day-button asd__month--enabled"
                     type="button"
                     @click="() => { selectMonth(month) }"
+                    :class="{
+                      'asd__month--disabled': isMonthDisabled(month),
+                      'asd__month--selected': selectedDate1 === month.firstDay || selectedDate2 === month.lastDay,
+                      'asd__month--in-range': isInMonthRange(month)
+                    }"
                   >{{ month.shortName }}</button>
                 </div>
               </div>
