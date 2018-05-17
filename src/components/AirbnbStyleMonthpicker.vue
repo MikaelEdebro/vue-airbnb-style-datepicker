@@ -58,37 +58,6 @@
                   >{{ month.shortName }}</button>
                 </div>
               </div>
-
-              <!-- <table class="asd__month-table" role="presentation">
-                <tbody>
-                  <tr class="asd__week" v-for="(week, index) in year.weeks" :key="index">
-                    <td
-                      class="asd__day"
-                      v-for="({fullDate, dayNumber}, index) in week"
-                      :key="index + '_' + dayNumber"
-                      :data-date="fullDate"
-                      :class="{
-                        'asd__day--enabled': dayNumber !== 0,
-                        'asd__day--empty': dayNumber === 0,
-                        'asd__day--disabled': isDisabled(fullDate),
-                        'asd__day--selected': selectedDate1 === fullDate || selectedDate2 === fullDate,
-                        'asd__day--in-range': isInRange(fullDate)
-                      }"
-                      :style="getDayStyles(fullDate)"
-                      @mouseover="() => { setHoverDate(fullDate) }"
-                    >
-                      <button
-                        class="asd__day-button"
-                        type="button"
-                        v-if="dayNumber"
-                        :date="fullDate"
-                        :disabled="isDisabled(fullDate)"
-                        @click="() => { selectDate(fullDate) }"
-                      >{{ dayNumber }}</button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table> -->
             </div>
           </transition-group>
         </div>
@@ -187,16 +156,6 @@ export default {
         'Nov',
         'Dec'
       ],
-      days: [
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday',
-        'Sunday'
-      ],
-      daysShort: ['Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun'],
       texts: {
         apply: 'Apply',
         cancel: 'Cancel'
@@ -326,12 +285,12 @@ export default {
       this.$emit('date-two-selected', newDate)
     },
     mode(newValue, oldValue) {
-      this.setStartDates()
+      this.setStartYears()
     },
     datePropsCompound(newValue) {
       if (this.dateOne !== this.selectedDate1) {
         this.startingDate = this.dateOne
-        this.setStartDates()
+        this.setStartYears()
         this.generateMonths()
       }
       if (this.isDateTwoBeforeDateOne) {
@@ -341,20 +300,16 @@ export default {
     },
     trigger(newValue, oldValue) {
       if (newValue) {
-        this.openDatepicker()
+        this.openMonthpicker()
       }
     }
   },
   created() {
-    this.setupDatepicker()
-
-    if (this.sundayFirst) {
-      this.setSundayToFirstDayInWeek()
-    }
+    this.setupMonthpicker()
 
     this._handleWindowResizeEvent = debounce(() => {
-      this.positionDatepicker()
-      this.setStartDates()
+      this.positionMonthpicker()
+      this.setStartYears()
     }, 200)
     this._handleWindowClickEvent = event => {
       if (event.target.id === this.triggerElementId) {
@@ -371,12 +326,11 @@ export default {
       ? document.createElement('input')
       : document.getElementById(this.triggerElementId)
 
-    this.setStartDates()
-    this.generateMonths()
+    this.setStartYears()
     this.generateYears()
 
     if (this.startOpen || this.inline) {
-      this.openDatepicker()
+      this.openMonthpicker()
     }
 
     this.triggerElement.addEventListener('keyup', this.handleTriggerInput)
@@ -463,7 +417,7 @@ export default {
       !event.shiftKey &&
       !this.showDatepicker
       ) {
-        this.openDatepicker()
+        this.openMonthpicker()
       } else if (
         event.keyCode === keys.arrowUp &&
     !event.shiftKey &&
@@ -524,7 +478,6 @@ export default {
         return
       }
       this.startingDate = subYears(formattedDate, 1)
-      this.generateMonths()
       this.generateYears()
       this.selectDate(formattedDate)
     },
@@ -542,10 +495,7 @@ export default {
         this.startingDate = this.addYears(this.startingDate)
       }
     },
-    setupDatepicker() {
-      if (this.$options.sundayFirst) {
-        this.sundayFirst = copyObject(this.$options.sundayFirst)
-      }
+    setupMonthpicker() {
       if (this.$options.colors) {
         const colors = copyObject(this.$options.colors)
         this.colors.selected = colors.selected || this.colors.selected
@@ -560,19 +510,13 @@ export default {
       if (this.$options.monthNames && this.$options.monthNames.length === 12) {
         this.monthNames = copyObject(this.$options.monthNames)
       }
-      if (this.$options.days && this.$options.days.length === 7) {
-        this.days = copyObject(this.$options.days)
-      }
-      if (this.$options.daysShort && this.$options.daysShort.length === 7) {
-        this.daysShort = copyObject(this.$options.daysShort)
-      }
       if (this.$options.texts) {
         const texts = copyObject(this.$options.texts)
         this.texts.apply = texts.apply || this.texts.apply
         this.texts.cancel = texts.cancel || this.texts.cancel
       }
     },
-    setStartDates() {
+    setStartYears() {
       let startDate = this.dateOne || new Date()
       let startYear = this.startYear || getYear(new Date())
       if (this.hasMinYear && isBefore(startYear, this.minYear)) {
@@ -685,7 +629,10 @@ export default {
 
       if (this.mode === 'single') {
         this.selectedDate1 = month.firstDay
+        this.selectedDate2 = month.lastDay
+        console.log('selected one month')
         this.closeDatepicker()
+        return
       }
 
       if (this.isSelectingDate1 || isBefore(month.firstDay, this.selectedDate1)) {
@@ -833,12 +780,12 @@ export default {
       if (this.showDatepicker) {
         this.closeDatepicker()
       } else {
-        this.openDatepicker()
+        this.openMonthpicker()
       }
     },
-    openDatepicker() {
-      this.positionDatepicker()
-      this.setStartDates()
+    openMonthpicker() {
+      this.positionMonthpicker()
+      this.setStartYears()
       this.triggerElement.classList.add('datepicker-open')
       this.showDatepicker = true
       this.initialDate1 = this.dateOne
@@ -883,6 +830,39 @@ export default {
       this.showMonths = this.isMobile
         ? 1
         : this.isTablet && this.monthsToShow > 2 ? 2 : this.monthsToShow
+      this.showYears = this.isMobile
+        ? 1
+        : this.isTablet && this.yearsToShow > 2 ? 2 : this.yearsToShow
+
+      this.$nextTick(function() {
+        const datepickerWrapper = document.getElementById(this.wrapperId)
+        if (!this.triggerElement || !datepickerWrapper) {
+          return
+        }
+
+        const rightPosition =
+      this.triggerElement.getBoundingClientRect().left +
+      datepickerWrapper.getBoundingClientRect().width
+        this.alignRight = rightPosition > viewportWidth
+      })
+    },
+    positionMonthpicker() {
+      const triggerWrapperElement = findAncestor(
+        this.triggerElement,
+        '.monthpicker-trigger'
+      )
+      this.triggerPosition = this.triggerElement.getBoundingClientRect()
+      if (triggerWrapperElement) {
+        this.triggerWrapperPosition = triggerWrapperElement.getBoundingClientRect()
+      } else {
+        this.triggerWrapperPosition = { left: 0, right: 0 }
+      }
+
+      const viewportWidth =
+    document.documentElement.clientWidth || window.innerWidth
+      this.viewportWidth = viewportWidth + 'px'
+      this.isMobile = viewportWidth < 768
+      this.isTablet = viewportWidth >= 768 && viewportWidth <= 1024
       this.showYears = this.isMobile
         ? 1
         : this.isTablet && this.yearsToShow > 2 ? 2 : this.yearsToShow
