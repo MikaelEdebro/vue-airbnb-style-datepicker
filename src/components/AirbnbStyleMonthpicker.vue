@@ -43,9 +43,9 @@
                   :key="mnthIndx"
                 >
                   <button
-                    class="asd__day-button"
+                    class="asd__month-button"
                     type="button"
-                    :disabled="isDisabled(fullDate)"
+                    :disabled="isDisabled(month)"
                     @click="() => { selectMonth(month) }"
                   >{{ month.shortName }}</button>
                 </div>
@@ -856,17 +856,7 @@ export default {
 
 <style lang="scss">
 @import './../styles/transitions';
-.asd__months-list {
-  display: flex;
-  flex-wrap: wrap;
-}
 
-.asd__month-item {
-  flex: 1;
-  flex-basis: 25%;
-  border: 1px solid #e4e7e7;
-  padding: 1rem;
-}
 $tablet: 768px;
 $color-gray: rgba(0, 0, 0, 0.2);
 $border-normal: 1px solid $color-gray;
@@ -906,9 +896,11 @@ $transition-time: 0.3s;
     transition: all $transition-time ease;
     position: relative;
   }
+
   &__datepicker-header {
     position: relative;
   }
+
   &__change-month-button {
     position: absolute;
     top: 12px;
@@ -943,12 +935,13 @@ $transition-time: 0.3s;
     }
   }
 
-  &__month-table {
-    border-collapse: collapse;
-    border-spacing: 0;
-    background: white;
-    width: 100%;
-    max-width: 100%;
+  &__year-name {
+    font-size: 1.3em;
+    text-align: center;
+    margin: 0 0 30px;
+    line-height: 1.4em;
+    text-transform: lowercase;
+    font-weight: bold;
   }
 
   &__month {
@@ -961,46 +954,41 @@ $transition-time: 0.3s;
       visibility: hidden;
     }
   }
-  &__year-name {
-    font-size: 1.3em;
-    text-align: center;
-    margin: 0 0 30px;
-    line-height: 1.4em;
-    text-transform: lowercase;
-    font-weight: bold;
+
+  &__months-list {
+    display: flex;
+    flex-wrap: wrap;
   }
 
-  &__day {
-    $size: 38px;
+  &__month-item {
+    $size: 40px;
+    flex: 1;
+    flex-basis: 30%;
+    border: 1px solid #e4e7e7;
+    margin: 1%;
     line-height: $size;
     height: $size;
     padding: 0;
     overflow: hidden;
-
     &--enabled {
       border: $border;
       &:hover {
         background-color: #e4e7e7;
       }
     }
-    &--disabled,
-    &--empty {
+    &--disabled {
       opacity: 0.5;
+      &:hover {
+        background-color: transparent;
+      }
 
       button {
         cursor: default;
       }
     }
-    &--empty {
-      border: none;
-    }
-    &--disabled {
-      &:hover {
-        background-color: transparent;
-      }
-    }
   }
-  &__day-button {
+
+  &__month-button {
     background: transparent;
     width: 100%;
     height: 100%;
@@ -1051,12 +1039,14 @@ $transition-time: 0.3s;
       margin: 0;
     }
   }
+
   &__mobile-only {
     display: none;
     @media (max-width: 600px) {
       display: block;
     }
   }
+
   &__mobile-close {
     position: absolute;
     top: 7px;
