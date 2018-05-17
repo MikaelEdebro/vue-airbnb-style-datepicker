@@ -16,86 +16,94 @@
       </div>
       <div class="asd__datepicker-header">
         <div class="asd__change-month-button asd__change-month-button--previous">
-          <button @click="previousMonth" type="button">
+          <button @click="previousYear" type="button">
             <svg viewBox="0 0 1000 1000"><path d="M336.2 274.5l-210.1 210h805.4c13 0 23 10 23 23s-10 23-23 23H126.1l210.1 210.1c11 11 11 21 0 32-5 5-10 7-16 7s-11-2-16-7l-249.1-249c-11-11-11-21 0-32l249.1-249.1c21-21.1 53 10.9 32 32z" /></svg>
           </button>
         </div>
         <div class="asd__change-month-button asd__change-month-button--next">
-          <button @click="nextMonth" type="button">
+          <button @click="nextYear" type="button">
             <svg viewBox="0 0 1000 1000"><path d="M694.4 242.4l249.1 249.1c11 11 11 21 0 32L694.4 772.7c-5 5-10 7-16 7s-11-2-16-7c-11-11-11-21 0-32l210.1-210.1H67.1c-13 0-23-10-23-23s10-23 23-23h805.4L662.4 274.5c-21-21.1 11-53.1 32-32.1z" /></svg>
           </button>
         </div>
 
-        <div
-          class="asd__days-legend"
-          v-for="(month, index) in showMonths"
-          :key="month"
-          :style="[monthWidthStyles, {left: (width * index) + 'px'}]"
-        >
-          <div class="asd__day-title" v-for="day in daysShort" :key="day">{{ day }}</div>
+        <div class="asd__inner-wrapper" :style="innerStyles">
+          <transition-group name="asd__list-complete" tag="div">
+            <div
+              v-for="(year, yearIndex) in years"
+              :key="year.firstDateOfMonth"
+              class="asd__month"
+              :class="{hidden: yearIndex === 0 || yearIndex > showYears}"
+              :style="yearWidthStyles"
+            >
+              <div class="asd__year-name">{{ year.name }}</div>
+              <div class="asd__months-list">
+                <div
+                  class="asd__month-item"
+                  v-for="(month,mnthIndx) in year.months"
+                  :key="mnthIndx"
+                >
+                  <button
+                    class="asd__day-button"
+                    type="button"
+                    :disabled="isDisabled(fullDate)"
+                    @click="() => { selectMonth(month) }"
+                  >{{ month.shortName }}</button>
+                </div>
+              </div>
+
+              <!-- <table class="asd__month-table" role="presentation">
+                <tbody>
+                  <tr class="asd__week" v-for="(week, index) in year.weeks" :key="index">
+                    <td
+                      class="asd__day"
+                      v-for="({fullDate, dayNumber}, index) in week"
+                      :key="index + '_' + dayNumber"
+                      :data-date="fullDate"
+                      :class="{
+                        'asd__day--enabled': dayNumber !== 0,
+                        'asd__day--empty': dayNumber === 0,
+                        'asd__day--disabled': isDisabled(fullDate),
+                        'asd__day--selected': selectedDate1 === fullDate || selectedDate2 === fullDate,
+                        'asd__day--in-range': isInRange(fullDate)
+                      }"
+                      :style="getDayStyles(fullDate)"
+                      @mouseover="() => { setHoverDate(fullDate) }"
+                    >
+                      <button
+                        class="asd__day-button"
+                        type="button"
+                        v-if="dayNumber"
+                        :date="fullDate"
+                        :disabled="isDisabled(fullDate)"
+                        @click="() => { selectDate(fullDate) }"
+                      >{{ dayNumber }}</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table> -->
+            </div>
+          </transition-group>
+        </div>
+        <div class="asd__action-buttons" v-if="mode !== 'single' && showActionButtons">
+          <button @click="closeDatepickerCancel" type="button">{{ texts.cancel }}</button>
+          <button @click="apply" :style="{color: colors.selected}" type="button">{{ texts.apply }}</button>
         </div>
       </div>
-
-      <div class="asd__inner-wrapper" :style="innerStyles">
-        <transition-group name="asd__list-complete" tag="div">
-          <div
-            v-for="(month, monthIndex) in months"
-            :key="month.firstDateOfMonth"
-            class="asd__month"
-            :class="{hidden: monthIndex === 0 || monthIndex > showMonths}"
-            :style="monthWidthStyles"
-          >
-            <div class="asd__month-name">{{ month.monthName }} {{ month.year }}</div>
-
-            <table class="asd__month-table" role="presentation">
-              <tbody>
-                <tr class="asd__week" v-for="(week, index) in month.weeks" :key="index">
-                  <td
-                    class="asd__day"
-                    v-for="({fullDate, dayNumber}, index) in week"
-                    :key="index + '_' + dayNumber"
-                    :data-date="fullDate"
-                    :class="{
-                      'asd__day--enabled': dayNumber !== 0,
-                      'asd__day--empty': dayNumber === 0,
-                      'asd__day--disabled': isDisabled(fullDate),
-                      'asd__day--selected': selectedDate1 === fullDate || selectedDate2 === fullDate,
-                      'asd__day--in-range': isInRange(fullDate)
-                    }"
-                    :style="getDayStyles(fullDate)"
-                    @mouseover="() => { setHoverDate(fullDate) }"
-                  >
-                    <button
-                      class="asd__day-button"
-                      type="button"
-                      v-if="dayNumber"
-                      :date="fullDate"
-                      :disabled="isDisabled(fullDate)"
-                      @click="() => { selectDate(fullDate) }"
-                    >{{ dayNumber }}</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </transition-group>
-      </div>
-      <div class="asd__action-buttons" v-if="mode !== 'single' && showActionButtons">
-        <button @click="closeDatepickerCancel" type="button">{{ texts.cancel }}</button>
-        <button @click="apply" :style="{color: colors.selected}" type="button">{{ texts.apply }}</button>
-      </div>
-    </div>
-  </transition>
+  </div></transition>
 </template>
 
 <script>
 import format from 'date-fns/format'
 import subMonths from 'date-fns/sub_months'
+import subYears from 'date-fns/sub_years'
 import addMonths from 'date-fns/add_months'
+import addYears from 'date-fns/add_years'
 import getDaysInMonth from 'date-fns/get_days_in_month'
+import setMonth from 'date-fns/set_month'
 import isBefore from 'date-fns/is_before'
 import isAfter from 'date-fns/is_after'
 import isValid from 'date-fns/is_valid'
+import getYear from 'date-fns/get_year'
 import { debounce, copyObject, findAncestor, randomString } from './../helpers'
 
 export default {
@@ -105,6 +113,7 @@ export default {
     dateOne: { type: [String, Date], default: format(new Date()) },
     dateTwo: { type: [String, Date] },
     minDate: { type: [String, Date] },
+    minYear: { type: [String, Date] },
     endDate: { type: [String, Date] },
     mode: { type: String, default: 'range' },
     offsetY: { type: Number, default: 0 },
@@ -128,6 +137,7 @@ export default {
       dateFormat: 'YYYY-MM-DD',
       showDatepicker: false,
       showMonths: 2,
+      showYears: 2,
       colors: {
         selected: '#00a699',
         inRange: '#66e2da',
@@ -151,6 +161,20 @@ export default {
         'November',
         'December'
       ],
+      monthNamesShort: [
+        'Ene',
+        'Feb',
+        'Mar',
+        'Abr',
+        'May',
+        'Jun',
+        'Jul',
+        'Ago',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec'
+      ],
       days: [
         'Monday',
         'Tuesday',
@@ -167,6 +191,7 @@ export default {
       },
       startingDate: '',
       months: [],
+      years: [],
       width: 300,
       selectedDate1: '',
       selectedDate2: '',
@@ -197,17 +222,17 @@ export default {
           : this.triggerPosition.height + this.offsetY + 'px',
         left: !this.alignRight
           ? this.triggerPosition.left -
-            this.triggerWrapperPosition.left +
-            this.offsetX +
-            'px'
+          this.triggerWrapperPosition.left +
+          this.offsetX +
+          'px'
           : '',
         right: this.alignRight
           ? this.triggerWrapperPosition.right -
-            this.triggerPosition.right +
-            this.offsetX +
-            'px'
+          this.triggerPosition.right +
+          this.offsetX +
+          'px'
           : '',
-        width: this.width * this.showMonths + 'px',
+        width: this.width * this.showYears + 'px',
         zIndex: this.inline ? '0' : '100'
       }
     },
@@ -223,25 +248,33 @@ export default {
         width: this.showFullscreen ? this.viewportWidth : this.width + 'px'
       }
     },
+    yearWidthStyles() {
+      return {
+        width: this.showFullscreen ? this.viewportWidth : this.width + 'px'
+      }
+    },
     showFullscreen() {
       return this.isMobile && this.fullscreenMobile
     },
     datesSelected() {
       return !!(
         (this.selectedDate1 && this.selectedDate1 !== '') ||
-        (this.selectedDate2 && this.selectedDate2 !== '')
+          (this.selectedDate2 && this.selectedDate2 !== '')
       )
     },
     allDatesSelected() {
       return !!(
         this.selectedDate1 &&
-        this.selectedDate1 !== '' &&
-        this.selectedDate2 &&
-        this.selectedDate2 !== ''
+          this.selectedDate1 !== '' &&
+          this.selectedDate2 &&
+          this.selectedDate2 !== ''
       )
     },
     hasMinDate() {
       return !!(this.minDate && this.minDate !== '')
+    },
+    hasMinYear() {
+      return !!(this.minYear && this.minYear !== '')
     },
     isRangeMode() {
       return this.mode === 'range'
@@ -250,7 +283,7 @@ export default {
       return this.mode === 'single'
     },
     datepickerWidth() {
-      return this.width * this.showMonths
+      return this.width * this.showYears
     },
     datePropsCompound() {
       // used to watch for changes in props, and update GUI accordingly
@@ -266,12 +299,12 @@ export default {
   watch: {
     selectedDate1(newValue, oldValue) {
       let newDate =
-        !newValue || newValue === '' ? '' : format(newValue, this.dateFormat)
+      !newValue || newValue === '' ? '' : format(newValue, this.dateFormat)
       this.$emit('date-one-selected', newDate)
     },
     selectedDate2(newValue, oldValue) {
       let newDate =
-        !newValue || newValue === '' ? '' : format(newValue, this.dateFormat)
+      !newValue || newValue === '' ? '' : format(newValue, this.dateFormat)
       this.$emit('date-two-selected', newDate)
     },
     mode(newValue, oldValue) {
@@ -322,6 +355,7 @@ export default {
 
     this.setStartDates()
     this.generateMonths()
+    this.generateYears()
 
     if (this.startOpen || this.inline) {
       this.openDatepicker()
@@ -380,26 +414,26 @@ export default {
       }
       if (
         event.keyCode === keys.arrowDown &&
-        !event.shiftKey &&
-        !this.showDatepicker
+      !event.shiftKey &&
+      !this.showDatepicker
       ) {
         this.openDatepicker()
       } else if (
         event.keyCode === keys.arrowUp &&
-        !event.shiftKey &&
-        this.showDatepicker
+    !event.shiftKey &&
+    this.showDatepicker
       ) {
         this.closeDatepicker()
       } else if (
         event.keyCode === keys.arrowRight &&
-        !event.shiftKey &&
-        this.showDatepicker
+    !event.shiftKey &&
+    this.showDatepicker
       ) {
         this.nextMonth()
       } else if (
         event.keyCode === keys.arrowLeft &&
-        !event.shiftKey &&
-        this.showDatepicker
+    !event.shiftKey &&
+    this.showDatepicker
       ) {
         this.previousMonth()
       } else {
@@ -443,8 +477,9 @@ export default {
       ) {
         return
       }
-      this.startingDate = subMonths(formattedDate, 1)
+      this.startingDate = subYears(formattedDate, 1)
       this.generateMonths()
+      this.generateYears()
       this.selectDate(formattedDate)
     },
     generateMonths() {
@@ -452,6 +487,13 @@ export default {
       for (let i = 0; i < this.showMonths + 2; i++) {
         this.months.push(this.getMonth(this.startingDate))
         this.startingDate = this.addMonths(this.startingDate)
+      }
+    },
+    generateYears() {
+      this.years = []
+      for (let i = 0; i < this.showYears + 2; i++) {
+        this.years.push(this.getYear(this.startingDate))
+        this.startingDate = this.addYears(this.startingDate)
       }
     },
     setupDatepicker() {
@@ -463,10 +505,10 @@ export default {
         this.colors.selected = colors.selected || this.colors.selected
         this.colors.inRange = colors.inRange || this.colors.inRange
         this.colors.selectedText =
-          colors.selectedText || this.colors.selectedText
+      colors.selectedText || this.colors.selectedText
         this.colors.text = colors.text || this.colors.text
         this.colors.inRangeBorder =
-          colors.inRangeBorder || this.colors.inRangeBorder
+      colors.inRangeBorder || this.colors.inRangeBorder
         this.colors.disabled = colors.disabled || this.colors.disabled
       }
       if (this.$options.monthNames && this.$options.monthNames.length === 12) {
@@ -486,10 +528,14 @@ export default {
     },
     setStartDates() {
       let startDate = this.dateOne || new Date()
-      if (this.hasMinDate && isBefore(startDate, this.minDate)) {
+      let startYear = this.startYear || getYear(new Date())
+      if (this.hasMinYear && isBefore(startYear, this.minYear)) {
+        startYear = this.minYear
+      }
+      if (this.hasMinDate && isBefore(startDate, getYear(this.minDate))) {
         startDate = this.minDate
       }
-      this.startingDate = this.subtractMonths(startDate)
+      this.startingDate = this.subtractYears(startDate)
       this.selectedDate1 = this.dateOne
       this.selectedDate2 = this.dateTwo
     },
@@ -512,6 +558,38 @@ export default {
         monthNumber,
         weeks: this.getWeeks(firstDateOfMonth)
       }
+    },
+    getYear(date) {
+      const monthsOfYear = this.monthNamesShort
+      const firstDateOfMonth = format(date, 'YYYY-MM-01')
+      const year = format(date, 'YYYY')
+      const monthNumber = parseInt(format(date, 'M'))
+      const monthName = this.monthNames[monthNumber - 1]
+      const name = format(date, 'YYYY')
+
+      return {
+        year,
+        firstDateOfMonth,
+        monthName,
+        monthNumber,
+        monthsOfYear,
+        name,
+        months: this.getMonths(date),
+        weeks: this.getWeeks(firstDateOfMonth)
+      }
+    },
+    getMonths(date) {
+      const months = []
+      for (let month of this.monthNames.keys()) {
+        let data = {}
+        data.shortName = this.monthNames[month].slice(0, 3)
+        data.name = this.monthNames[month]
+        let monthNumber = month + 1
+
+        data.firstDay = setMonth(date, monthNumber)
+        months.push(data)
+      }
+      return months
     },
     getWeeks(date) {
       const weekDayNotInMonth = { dayNumber: 0 }
@@ -551,6 +629,35 @@ export default {
         }
       }
       return weeks
+    },
+    selectMonth(month) {
+      if (
+        this.isBeforeMinDate(month.firstDay) ||
+        this.isAfterEndDate(month.firstDay) ||
+        this.isDateDisabled(month.firstDay)) {
+        return
+      }
+
+      if (this.mode === 'single') {
+        this.selectedDate1 = month.firstDay
+        this.closeDatepicker()
+      }
+
+      // if (this.isSelectingDate1 || isBefore(month.firstDay, this.selectedDate1)) {
+      //   this.selectedDate1 = month.firstDay
+      //   this.isSelectingDate1 = false
+
+      //   if (isBefore(this.selectedDate2, date)) {
+      //     this.selectedDate2 = ''
+      //   }
+      // } else {
+      //   this.selectedDate2 = date
+      //   this.isSelectingDate1 = true
+
+      //   if (isAfter(this.selectedDate1, date)) {
+      //     this.selectedDate1 = ''
+      //   }
+      // }
     },
     selectDate(date) {
       if (
@@ -599,10 +706,10 @@ export default {
 
       return (
         (isAfter(date, this.selectedDate1) &&
-          isBefore(date, this.selectedDate2)) ||
-        (isAfter(date, this.selectedDate1) &&
-          isBefore(date, this.hoverDate) &&
-          !this.allDatesSelected)
+        isBefore(date, this.selectedDate2)) ||
+      (isAfter(date, this.selectedDate1) &&
+        isBefore(date, this.hoverDate) &&
+        !this.allDatesSelected)
       )
     },
     isBeforeMinDate(date) {
@@ -624,9 +731,25 @@ export default {
     isDisabled(date) {
       return (
         this.isDateDisabled(date) ||
-        this.isBeforeMinDate(date) ||
-        this.isAfterEndDate(date)
+      this.isBeforeMinDate(date) ||
+      this.isAfterEndDate(date)
       )
+    },
+    previousYear() {
+      this.startingDate = this.subtractYears(this.years[0].firstDateOfMonth)
+
+      this.years.unshift(this.getYear(this.startingDate))
+      this.years.splice(this.years.length - 1, 1)
+    },
+    nextYear() {
+      this.startingDate = this.addYears(
+        this.years[this.years.length - 1].firstDateOfMonth
+      )
+      this.years.push(this.getYear(this.startingDate))
+
+      setTimeout(() => {
+        this.years.splice(0, 1)
+      }, 100)
     },
     previousMonth() {
       this.startingDate = this.subtractMonths(this.months[0].firstDateOfMonth)
@@ -634,6 +757,7 @@ export default {
       this.months.unshift(this.getMonth(this.startingDate))
       this.months.splice(this.months.length - 1, 1)
     },
+
     nextMonth() {
       this.startingDate = this.addMonths(
         this.months[this.months.length - 1].firstDateOfMonth
@@ -644,11 +768,17 @@ export default {
         this.months.splice(0, 1)
       }, 100)
     },
+    subtractYears(date) {
+      return format(subYears(date, 1), this.dateFormat)
+    },
     subtractMonths(date) {
       return format(subMonths(date, 1), this.dateFormat)
     },
     addMonths(date) {
       return format(addMonths(date, 1), this.dateFormat)
+    },
+    addYears(date) {
+      return format(addYears(date, 1), this.dateFormat)
     },
     toggleDatepicker() {
       if (this.showDatepicker) {
@@ -697,13 +827,16 @@ export default {
       }
 
       const viewportWidth =
-        document.documentElement.clientWidth || window.innerWidth
+    document.documentElement.clientWidth || window.innerWidth
       this.viewportWidth = viewportWidth + 'px'
       this.isMobile = viewportWidth < 768
       this.isTablet = viewportWidth >= 768 && viewportWidth <= 1024
       this.showMonths = this.isMobile
         ? 1
         : this.isTablet && this.monthsToShow > 2 ? 2 : this.monthsToShow
+      this.showYears = this.isMobile
+        ? 1
+        : this.isTablet && this.yearsToShow > 2 ? 2 : this.yearsToShow
 
       this.$nextTick(function() {
         const datepickerWrapper = document.getElementById(this.wrapperId)
@@ -712,8 +845,8 @@ export default {
         }
 
         const rightPosition =
-          this.triggerElement.getBoundingClientRect().left +
-          datepickerWrapper.getBoundingClientRect().width
+      this.triggerElement.getBoundingClientRect().left +
+      datepickerWrapper.getBoundingClientRect().width
         this.alignRight = rightPosition > viewportWidth
       })
     }
@@ -723,7 +856,17 @@ export default {
 
 <style lang="scss">
 @import './../styles/transitions';
+.asd__months-list {
+  display: flex;
+  flex-wrap: wrap;
+}
 
+.asd__month-item {
+  flex: 1;
+  flex-basis: 25%;
+  border: 1px solid #e4e7e7;
+  padding: 1rem;
+}
 $tablet: 768px;
 $color-gray: rgba(0, 0, 0, 0.2);
 $border-normal: 1px solid $color-gray;
@@ -800,23 +943,6 @@ $transition-time: 0.3s;
     }
   }
 
-  &__days-legend {
-    position: absolute;
-    top: 50px;
-    left: 10px;
-    padding: 0 10px;
-  }
-  &__day-title {
-    display: inline-block;
-    width: percentage(1/7);
-    text-align: center;
-    margin-bottom: 4px;
-    color: rgba(0, 0, 0, 0.7);
-    font-size: 0.8em;
-    margin-left: -1px;
-    text-transform: lowercase;
-  }
-
   &__month-table {
     border-collapse: collapse;
     border-spacing: 0;
@@ -835,7 +961,7 @@ $transition-time: 0.3s;
       visibility: hidden;
     }
   }
-  &__month-name {
+  &__year-name {
     font-size: 1.3em;
     text-align: center;
     margin: 0 0 30px;
