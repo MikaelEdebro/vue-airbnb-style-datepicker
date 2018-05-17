@@ -41,11 +41,11 @@
                   class="asd__month-item"
                   v-for="(month,mnthIndx) in year.months"
                   :key="mnthIndx"
+                  @mouseover="() => { setHoverMonth(month) }"
                 >
                   <button
                     class="asd__day-button"
                     type="button"
-                    :disabled="isDisabled(fullDate)"
                     @click="() => { selectMonth(month) }"
                   >{{ month.shortName }}</button>
                 </div>
@@ -94,6 +94,7 @@
 
 <script>
 import format from 'date-fns/format'
+import lastDayOfMonth from 'date-fns/last_day_of_month'
 import subMonths from 'date-fns/sub_months'
 import subYears from 'date-fns/sub_years'
 import addMonths from 'date-fns/add_months'
@@ -101,6 +102,7 @@ import addYears from 'date-fns/add_years'
 import getDaysInMonth from 'date-fns/get_days_in_month'
 import setMonth from 'date-fns/set_month'
 import isBefore from 'date-fns/is_before'
+import parse from 'date-fns/parse'
 import isAfter from 'date-fns/is_after'
 import isValid from 'date-fns/is_valid'
 import getYear from 'date-fns/get_year'
@@ -561,7 +563,7 @@ export default {
     },
     getYear(date) {
       const monthsOfYear = this.monthNamesShort
-      const firstDateOfMonth = format(date, 'YYYY-MM-01')
+      const firstDateOfMonth = format(date, 'YYYY-01-DD')
       const year = format(date, 'YYYY')
       const monthNumber = parseInt(format(date, 'M'))
       const monthName = this.monthNames[monthNumber - 1]
@@ -574,8 +576,7 @@ export default {
         monthNumber,
         monthsOfYear,
         name,
-        months: this.getMonths(date),
-        weeks: this.getWeeks(firstDateOfMonth)
+        months: this.getMonths(date)
       }
     },
     getMonths(date) {
@@ -584,9 +585,9 @@ export default {
         let data = {}
         data.shortName = this.monthNames[month].slice(0, 3)
         data.name = this.monthNames[month]
-        let monthNumber = month + 1
 
-        data.firstDay = setMonth(date, monthNumber)
+        data.firstDay = parse(setMonth(date, month).setDate(1))
+        data.lastDay = lastDayOfMonth(setMonth(date, month))
         months.push(data)
       }
       return months
@@ -643,21 +644,21 @@ export default {
         this.closeDatepicker()
       }
 
-      // if (this.isSelectingDate1 || isBefore(month.firstDay, this.selectedDate1)) {
-      //   this.selectedDate1 = month.firstDay
-      //   this.isSelectingDate1 = false
+      if (this.isSelectingDate1 || isBefore(month.firstDay, this.selectedDate1)) {
+        this.selectedDate1 = month.firstDay
+        this.isSelectingDate1 = false
 
-      //   if (isBefore(this.selectedDate2, date)) {
-      //     this.selectedDate2 = ''
-      //   }
-      // } else {
-      //   this.selectedDate2 = date
-      //   this.isSelectingDate1 = true
+        if (isBefore(this.selectedDate2, month.lastDay)) {
+          this.selectedDate2 = ''
+        }
+      } else {
+        this.selectedDate2 = month.lastDay
+        this.isSelectingDate1 = true
 
-      //   if (isAfter(this.selectedDate1, date)) {
-      //     this.selectedDate1 = ''
-      //   }
-      // }
+        if (isAfter(this.selectedDate1, month.lastDay)) {
+          this.selectedDate1 = ''
+        }
+      }
     },
     selectDate(date) {
       if (
@@ -693,11 +694,27 @@ export default {
     setHoverDate(date) {
       this.hoverDate = date
     },
+    setHoverMonth(month) {
+      this.hoverMonth = month
+    },
     isSelected(date) {
       if (!date) {
         return
       }
       return this.selectedDate1 === date || this.selectedDate2 === date
+    },
+    isInMonthRange(date) {
+      if (!this.allDatesSelected || this.isSingleMode) {
+        return false
+      }
+
+      return (
+        (isAfter(date, this.selectedDate1) &&
+        isBefore(date, this.selectedDate2)) ||
+      (isAfter(date, this.selectedDate1) &&
+        isBefore(date, this.hoverDate) &&
+        !this.allDatesSelected)
+      )
     },
     isInRange(date) {
       if (!this.allDatesSelected || this.isSingleMode) {
@@ -733,6 +750,13 @@ export default {
         this.isDateDisabled(date) ||
       this.isBeforeMinDate(date) ||
       this.isAfterEndDate(date)
+      )
+    },
+    isDisabledMonth(month) {
+      return (
+        this.isDateDisabled(month.firstDay) ||
+      this.isBeforeMinDate(month.firstDay) ||
+      this.isAfterEndDate(month.lastDay)
       )
     },
     previousYear() {
