@@ -180,6 +180,7 @@
           :fullscreen-mobile="false"
           :date-one="inlineDateOne"
           :months-to-show="2"
+          :disabled-months="[new Date()]"
           @date-one-selected="val => { inlineDateOne = val }"
           @apply="applyMethod"
           @closed="closedMethod"

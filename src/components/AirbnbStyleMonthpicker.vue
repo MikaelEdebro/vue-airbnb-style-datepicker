@@ -41,18 +41,20 @@
                   class="asd__month-item"
                   v-for="(month,mnthIndx) in year.months"
                   :key="mnthIndx"
+                  :class="{
+                    'asd__month-item--disabled': isDisabled(month),
+                    'asd__month-item--enabled' : !isDisabled(month),
+                    'asd__month-item--selected': isSameMonth(selectedDate1 , month.firstDay) || isSameMonth(selectedDate2 , month.lastDay),
+                    'asd__month-item--in-range': isInRange(month)
+                  }"
+                  :style="getMonthStyles(month)"
                   @mouseover="() => { setHoverMonth(month) }"
                 >
                   <button
-                    class="asd__month-button asd__month--enabled"
+                    class="asd__month-button"
                     type="button"
                     :disabled="isDisabled(month)"
                     @click="() => { selectMonth(month) }"
-                    :class="{
-                      'asd__month--disabled': isMonthDisabled(month),
-                      'asd__month--selected': selectedDate1 === month.firstDay || selectedDate2 === month.lastDay,
-                      'asd__month--in-range': isInMonthRange(month)
-                    }"
                   >{{ month.shortName }}</button>
                 </div>
               </div>
@@ -100,6 +102,7 @@
 
 <script>
 import format from 'date-fns/format'
+import isSameMonth from 'date-fns/is_same_month'
 import lastDayOfMonth from 'date-fns/last_day_of_month'
 import subMonths from 'date-fns/sub_months'
 import subYears from 'date-fns/sub_years'
@@ -132,6 +135,7 @@ export default {
     inline: { type: Boolean },
     mobileHeader: { type: String, default: 'Select date' },
     disabledDates: { type: Array, default: () => [] },
+    disabledMonths: { type: Array, default: () => [] },
     showActionButtons: { type: Boolean, default: true },
     isTest: {
       type: Boolean,
@@ -205,6 +209,7 @@ export default {
       selectedDate2: '',
       isSelectingDate1: true,
       hoverDate: '',
+      hoverMonth: '',
       alignRight: false,
       triggerPosition: {},
       triggerWrapperPosition: {},
@@ -271,11 +276,16 @@ export default {
       )
     },
     allDatesSelected() {
+      if (this.isSingleMode) {
+        return !!(this.selectedDate1 &&
+          this.selectedDate !== '')
+      }
       return !!(
         this.selectedDate1 &&
           this.selectedDate1 !== '' &&
           this.selectedDate2 &&
-          this.selectedDate2 !== ''
+          this.selectedDate2 !== '' &&
+          !isSameMonth(this.selectedDate2, this.selectedDate1)
       )
     },
     hasMinDate() {
@@ -378,10 +388,38 @@ export default {
     this.triggerElement.removeEventListener('keyup', this.handleTriggerInput)
   },
   methods: {
+    isSameMonth(month1, month2) {
+      return isSameMonth(month1, month2)
+    },
     getDayStyles(date) {
       const isSelected = this.isSelected(date)
       const isInRange = this.isInRange(date)
       const isDisabled = this.isDisabled(date)
+
+      let styles = {
+        width: (this.width - 30) / 7 + 'px',
+        background: isSelected
+          ? this.colors.selected
+          : isInRange ? this.colors.inRange : '',
+        color: isSelected
+          ? this.colors.selectedText
+          : isInRange ? this.colors.selectedText : this.colors.text,
+        border: isSelected
+          ? '1px double ' + this.colors.selected
+          : isInRange && this.allDatesSelected
+            ? '1px double ' + this.colors.inRangeBorder
+            : ''
+      }
+
+      if (isDisabled) {
+        styles.background = this.colors.disabled
+      }
+      return styles
+    },
+    getMonthStyles(month) {
+      const isSelected = this.isSelected(month)
+      const isInRange = this.isInRange(month)
+      const isDisabled = this.isDisabled(month)
 
       let styles = {
         width: (this.width - 30) / 7 + 'px',
@@ -701,38 +739,24 @@ export default {
       this.hoverDate = date
     },
     setHoverMonth(month) {
-      this.hoverMonth = month
+      this.hoverDate = month.firstDay
     },
-    isSelected(date) {
-      if (!date) {
+    isSelected(month) {
+      if (!month) {
         return
       }
-      return this.selectedDate1 === date || this.selectedDate2 === date
+      return isSameMonth(this.selectedDate1, month.firstDay) || isSameMonth(this.selectedDate2, month.firstDay)
     },
-    isInMonthRange(date) {
+    isInRange(month) {
       if (!this.allDatesSelected || this.isSingleMode) {
         return false
       }
-
       return (
-        (isAfter(date, this.selectedDate1) &&
-        isBefore(date, this.selectedDate2)) ||
-      (isAfter(date, this.selectedDate1) &&
-        isBefore(date, this.hoverDate) &&
-        !this.allDatesSelected)
-      )
-    },
-    isInRange(date) {
-      if (!this.allDatesSelected || this.isSingleMode) {
-        return false
-      }
-
-      return (
-        (isAfter(date, this.selectedDate1) &&
-        isBefore(date, this.selectedDate2)) ||
-      (isAfter(date, this.selectedDate1) &&
-        isBefore(date, this.hoverDate) &&
-        !this.allDatesSelected)
+        (isAfter(month.firstDay, this.selectedDate1) &&
+          isBefore(month.firstDay, this.selectedDate2)) ||
+        (isAfter(month.firstDay, this.selectedDate1) &&
+          isBefore(month.firstDay, this.hoverDate) &&
+          !this.allDatesSelected)
       )
     },
     isBeforeMinDate(date) {
@@ -751,19 +775,14 @@ export default {
       const isDisabled = this.disabledDates.indexOf(date) > -1
       return isDisabled
     },
-    isDisabled(date) {
-      return (
-        this.isDateDisabled(date) ||
-      this.isBeforeMinDate(date) ||
-      this.isAfterEndDate(date)
-      )
-    },
     isMonthDisabled(month) {
-      return (
-        this.isDateDisabled(month.firstDay) ||
-      this.isBeforeMinDate(month.firstDay) ||
-      this.isAfterEndDate(month.lastDay)
-      )
+      for (var i = this.disabledMonths.length - 1; i >= 0; i--) {
+        if (isSameMonth(month.firstDay, this.disabledMonths[i])) { return true }
+      }
+      return false
+    },
+    isDisabled(month) {
+      return (this.isMonthDisabled(month))
     },
     previousYear() {
       this.startingDate = this.subtractYears(this.years[0].firstDateOfMonth)
