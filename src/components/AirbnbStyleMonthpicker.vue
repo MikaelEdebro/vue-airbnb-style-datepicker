@@ -758,7 +758,7 @@ export default {
       this.isAfterEndDate(date)
       )
     },
-    isDisabledMonth(month) {
+    isMonthDisabled(month) {
       return (
         this.isDateDisabled(month.firstDay) ||
       this.isBeforeMinDate(month.firstDay) ||
