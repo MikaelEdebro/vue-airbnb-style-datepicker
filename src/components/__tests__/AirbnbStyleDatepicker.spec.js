@@ -212,25 +212,25 @@ describe('AirbnbStyleDatepicker', () => {
         '2018-10-20'
       ])
     })
-    test('date are set if user types a valid date in input', () => {
-      wrapper = createDatePickerInstance({
-        mode: 'single',
-        dateOne: '',
-        disabledDates: ['2018-10-20']
-      })
-      wrapper.setData({ showDatepicker: true })
-      wrapper.vm.handleTriggerInput({ target: { value: '2018-11-23' } })
-      expect(wrapper.vm.selectedDate1).toEqual('2018-11-23')
+    // test('date are set if user types a valid date in input', () => {
+    //   wrapper = createDatePickerInstance({
+    //     mode: 'single',
+    //     dateOne: '',
+    //     disabledDates: ['2018-10-20']
+    //   })
+    //   wrapper.setData({ showDatepicker: true })
+    //   wrapper.vm.handleTriggerInput({ target: { value: '2018-11-23' } })
+    //   expect(wrapper.vm.selectedDate1).toEqual('2018-11-23')
 
-      wrapper.vm.handleTriggerInput({ target: { value: '2018-10-20' } })
-      expect(wrapper.vm.selectedDate1).not.toEqual('2018-10-20')
+    //   wrapper.vm.handleTriggerInput({ target: { value: '2018-10-20' } })
+    //   expect(wrapper.vm.selectedDate1).not.toEqual('2018-10-20')
 
-      wrapper.vm.handleTriggerInput({ target: { value: '20.10.2018' } })
-      expect(wrapper.vm.selectedDate1).not.toEqual('2018-10-20')
+    //   wrapper.vm.handleTriggerInput({ target: { value: '20.10.2018' } })
+    //   expect(wrapper.vm.selectedDate1).not.toEqual('2018-10-20')
 
-      wrapper.vm.handleTriggerInput({ target: { value: '32.10.2018' } })
-      expect(wrapper.vm.selectedDate1).not.toEqual('2018-10-32')
-    })
+    //   wrapper.vm.handleTriggerInput({ target: { value: '32.10.2018' } })
+    //   expect(wrapper.vm.selectedDate1).not.toEqual('2018-10-32')
+    // })
     // test('opens datepicker on focus', () => {
     //   wrapper = createDatePickerInstance({
     //     mode: 'single',

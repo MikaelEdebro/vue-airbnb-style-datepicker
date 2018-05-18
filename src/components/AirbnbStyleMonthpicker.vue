@@ -30,7 +30,7 @@
           <transition-group name="asd__list-complete" tag="div">
             <div
               v-for="(year, yearIndex) in years"
-              :key="year.firstDateOfMonth"
+              :key="year.name"
               class="asd__month"
               :class="{hidden: yearIndex === 0 || yearIndex > showYears}"
               :style="yearWidthStyles"
@@ -55,6 +55,13 @@
                     type="button"
                     :disabled="isDisabled(month)"
                     @click="() => { selectMonth(month) }"
+                    :class="{
+                      'asd__month-item--disabled': isDisabled(month),
+                      'asd__month-item--enabled' : !isDisabled(month),
+                      'asd__month-item--selected': isSameMonth(selectedDate1 , month.firstDay) || isSameMonth(selectedDate2 , month.lastDay),
+                      'asd__month-item--in-range': isInRange(month)
+                    }"
+                    :data-date="month.firstDay"
                     v-if="isMobile"
                   >{{ month.shortName }}</button>
                   <button
@@ -62,6 +69,11 @@
                     type="button"
                     :disabled="isDisabled(month)"
                     @click="() => { selectMonth(month) }"
+                    :data-date="month.firstDay"
+                    :class="{
+                      'asd__month-button--disabled': isDisabled(month),
+                      'asd__month-button--enabled' : !isDisabled(month),
+                    }"
                     v-else
                   >{{ month.name }}</button>
                 </div>
@@ -163,7 +175,7 @@ export default {
         apply: 'Apply',
         cancel: 'Cancel'
       },
-      startingMonth: '',
+      startingYear: '',
       years: [],
       width: 300,
       selectedDate1: '',
@@ -195,15 +207,15 @@ export default {
           : this.triggerPosition.height + this.offsetY + 'px',
         left: !this.alignRight
           ? this.triggerPosition.left -
-          this.triggerWrapperPosition.left +
-          this.offsetX +
-          'px'
+        this.triggerWrapperPosition.left +
+        this.offsetX +
+        'px'
           : '',
         right: this.alignRight
           ? this.triggerWrapperPosition.right -
-          this.triggerPosition.right +
-          this.offsetX +
-          'px'
+        this.triggerPosition.right +
+        this.offsetX +
+        'px'
           : '',
         width: this.width * this.showYears + 'px',
         zIndex: this.inline ? '0' : '100'
@@ -232,7 +244,7 @@ export default {
     monthsSelected() {
       return !!(
         (this.selectedDate1 && this.selectedDate1 !== '') ||
-          (this.selectedDate2 && this.selectedDate2 !== '')
+        (this.selectedDate2 && this.selectedDate2 !== '')
       )
     },
     allMonthsSelected() {
@@ -242,10 +254,10 @@ export default {
       }
       return !!(
         this.selectedDate1 &&
-          this.selectedDate1 !== '' &&
-          this.selectedDate2 &&
-          this.selectedDate2 !== '' &&
-          !isSameMonth(this.selectedDate2, this.selectedDate1)
+        this.selectedDate1 !== '' &&
+        this.selectedDate2 &&
+        this.selectedDate2 !== '' &&
+        !isSameMonth(this.selectedDate2, this.selectedDate1)
       )
     },
     hasMinDate() {
@@ -293,9 +305,9 @@ export default {
     },
     datePropsCompound(newValue) {
       if (this.dateOne !== this.selectedDate1) {
-        this.startingMonth = this.dateOne
+        this.startingYear = this.dateOne
         this.setStartMonths()
-        this.generateMonths()
+        // this.generateMonths()
       }
       if (this.isDateTwoBeforeDateOne) {
         this.selectedDate2 = ''
@@ -431,7 +443,6 @@ export default {
       const isFormatDayFirst = value.match(
         /^(0[1-9]|1[0-9]|2[0-9]|3[0-1])[.](0[1-9]|1[0-2])[.](\d{4})$/
       )
-
       if (!isFormatYearFirst && !isFormatDayFirst) {
         return
       }
@@ -442,7 +453,6 @@ export default {
           5
         )}-${value.substring(0, 2)}`
       }
-
       const valueAsDateObject = new Date(value)
       if (!isValid(valueAsDateObject)) {
         return
@@ -455,15 +465,17 @@ export default {
       ) {
         return
       }
-      this.startingMonth = subYears(formattedDate, 1)
+      this.startingYear = subYears(formattedDate, 1)
       this.generateYears()
-      this.selectMonth(formattedDate)
+      let d = new Date(value)
+      let m = this.getMonthData(d.getMonth(), value)
+      this.selectMonth(m)
     },
     generateYears() {
       this.years = []
       for (let i = 0; i < this.showYears + 2; i++) {
-        this.years.push(this.getYear(this.startingMonth))
-        this.startingMonth = this.addYears(this.startingMonth)
+        this.years.push(this.getYear(this.startingYear))
+        this.startingYear = this.addYears(this.startingYear)
       }
     },
     setupMonthpicker() {
@@ -488,22 +500,22 @@ export default {
       }
     },
     setStartMonths() {
-      let startMonth
+      let startYear
       if (this.monthOne !== '') {
-        startMonth = startOfMonth(this.monthOne)
+        startYear = startOfMonth(this.monthOne)
       } else {
-        startMonth = startOfMonth(new Date())
+        startYear = startOfMonth(new Date())
       }
-      if (this.hasMinMonth && isBefore(startMonth, this.minMonth)) {
-        startMonth = startOfMonth(this.minMonth)
+      if (this.hasMinMonth && isBefore(startYear, this.minMonth)) {
+        startYear = startOfMonth(this.minMonth)
       }
-      this.startingMonth = this.subtractYears(startMonth)
+      this.startingYear = this.subtractYears(startYear)
       if (this.isSingleMode) {
         if (this.monthOne && this.monthOne !== '') {
           this.selectedDate1 = startOfMonth(this.monthOne)
           this.selectedDate2 = lastDayOfMonth(this.monthOne)
         }
-      } else if (this.isRangeMode) {
+      } else {
         if (this.monthOne && this.monthOne !== '') {
           this.selectedDate1 = startOfMonth(this.monthOne)
         }
@@ -514,17 +526,11 @@ export default {
     },
     getYear(date) {
       const monthsOfYear = this.monthNamesShort
-      const firstDateOfMonth = format(date, 'YYYY-01-DD')
       const year = format(date, 'YYYY')
-      const monthNumber = parseInt(format(date, 'M'))
-      const monthName = this.monthNames[monthNumber - 1]
       const name = format(date, 'YYYY')
 
       return {
         year,
-        firstDateOfMonth,
-        monthName,
-        monthNumber,
         monthsOfYear,
         name,
         months: this.getMonths(date)
@@ -533,28 +539,31 @@ export default {
     getMonths(date) {
       const months = []
       for (let month of this.monthNames.keys()) {
-        let data = {}
-        data.shortName = this.monthNames[month].slice(0, 3)
-        data.name = this.monthNames[month]
-
-        data.firstDay = startOfMonth(setMonth(date, month))
-        data.lastDay = lastDayOfMonth(setMonth(date, month))
+        let data = this.getMonthData(month, date)
         months.push(data)
       }
       return months
     },
+    getMonthData(monthNumber, date) {
+      return {
+        shortName: this.monthNamesShort[monthNumber],
+        name: this.monthNames[monthNumber],
+        firstDay: startOfMonth(setMonth(date, monthNumber)),
+        lastDay: lastDayOfMonth(setMonth(date, monthNumber))
+
+      }
+    },
     selectMonth(month) {
       if (
         this.isBeforeMinMonth(month.firstDay) ||
-        this.isAfterEndMonth(month.firstDay) ||
-        this.isDateDisabled(month.firstDay)) {
+      this.isAfterEndMonth(month.firstDay) ||
+      this.isDateDisabled(month.firstDay)) {
         return
       }
 
       if (this.mode === 'single') {
         this.selectedDate1 = month.firstDay
         this.selectedDate2 = month.lastDay
-        console.log('selected one month')
         this.closeMonthpicker()
         return
       }
@@ -590,10 +599,10 @@ export default {
       }
       return (
         (isAfter(month.firstDay, this.selectedDate1) &&
-          isBefore(month.firstDay, this.selectedDate2)) ||
-        (isAfter(month.firstDay, this.selectedDate1) &&
-          isBefore(month.firstDay, this.hoverMonth) &&
-          !this.allMonthsSelected)
+      isBefore(month.lastDay, this.selectedDate2)) ||
+    (isAfter(month.firstDay, this.selectedDate1) &&
+      isBefore(month.firstDay, this.hoverMonth) &&
+      !this.allMonthsSelected)
       )
     },
     isBeforeMinMonth(month) {
@@ -621,19 +630,19 @@ export default {
     isDisabled(month) {
       return (
         this.isMonthDisabled(month) ||
-        this.isBeforeMinMonth(month) ||
-        this.isAfterEndMonth(month)
+    this.isBeforeMinMonth(month) ||
+    this.isAfterEndMonth(month)
       )
     },
     previousYear() {
-      this.startingYear = this.subtractYears(this.years[0].firstDateOfMonth)
+      this.startingYear = this.subtractYears(this.years[0].name)
 
       this.years.unshift(this.getYear(this.startingYear))
       this.years.splice(this.years.length - 1, 1)
     },
     nextYear() {
       this.startingYear = this.addYears(
-        this.years[this.years.length - 1].firstDateOfMonth
+        this.years[this.years.length - 1].name
       )
       this.years.push(this.getYear(this.startingYear))
 
@@ -700,7 +709,7 @@ export default {
       }
 
       const viewportWidth =
-    document.documentElement.clientWidth || window.innerWidth
+  document.documentElement.clientWidth || window.innerWidth
       this.viewportWidth = viewportWidth + 'px'
       this.isMobile = viewportWidth < 768
       this.isTablet = viewportWidth >= 768 && viewportWidth <= 1024
@@ -715,8 +724,8 @@ export default {
         }
 
         const rightPosition =
-      this.triggerElement.getBoundingClientRect().left +
-      monthpickerWrapper.getBoundingClientRect().width
+    this.triggerElement.getBoundingClientRect().left +
+    monthpickerWrapper.getBoundingClientRect().width
         this.alignRight = rightPosition > viewportWidth
       })
     }

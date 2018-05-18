@@ -17,6 +17,8 @@
             :date-one="inputDateOne"
             :date-two="inputDateTwo"
             :min-date="'2018-02-28'"
+            :open-on-focus="true"
+
             :months-to-show="2"
             :show-action-buttons="true"
             @date-one-selected="val => { inputDateOne = val }"
@@ -167,8 +169,8 @@
           <button id="monthpicker-button-trigger">{{ formatMonths(buttonDateOne, buttonDateTwo) || 'Select dates' }}</button>
 
           <airbnb-style-monthpicker
-            :month-one="'Febrero 2018'"
-            :month-two="''"
+            :month-one="'Abril 2020'"
+            :month-two="'Junio 2020'"
             :trigger-element-id="'monthpicker-button-trigger'"
             :mode="'range'"
             :inline="true"
@@ -193,8 +195,8 @@
           placeholder="Select date"
         >
         <airbnb-style-monthpicker
-          :month-one="''"
-          :min-month="'Marzo 2020'"
+          :min-month="'March 2020'"
+          :disabled-months="['June 2020']"
           :trigger-element-id="'monthpicker-inline-trigger'"
           :mode="'single'"
           :inline="true"
