@@ -3,7 +3,7 @@
     <div v-if="showDatepickers">
       <!--  <div class="monthpicker-container with-input">
         <h3>Range monthpicker with input</h3>
-        <div class="datepicker-trigger">
+        <div class="monthpicker-trigger">
           <input
             type="text"
             id="monthpicker-input-trigger"
@@ -28,7 +28,7 @@
       <!--
       <div class="monthpicker-container single-with-input">
         <h3>Single monthpicker with input</h3>
-        <div class="datepicker-trigger">
+        <div class="monthpicker-trigger">
           <input
             type="text"
             id="monthpicker-input-single-trigger"
@@ -49,7 +49,7 @@
 
       <div class="monthpicker-container with-button">
         <h3>Range monthpicker with button</h3>
-        <div class="datepicker-trigger">
+        <div class="monthpicker-trigger">
           <button id="monthpicker-button-trigger-1">{{ formatDates(buttonDateOne, buttonDateTwo) || 'Select dates' }}</button>
 
           <airbnb-style-monthpicker
@@ -71,7 +71,7 @@
 
       <div class="monthpicker-container with-button">
         <h3>Range monthpicker with button</h3>
-        <div class="datepicker-trigger">
+        <div class="monthpicker-trigger">
           <button id="monthpicker-button-trigger">{{ formatDates(buttonDateOne, buttonDateTwo) || 'Select dates' }}</button>
 
           <airbnb-style-monthpicker
@@ -115,7 +115,7 @@
       </div>
     </div>
 
-    <button @click="toggleDatepickers">Hide datepickers</button>
+    <button @click="toggleDatepickers">Hide monthpickers</button>
     <button @click="toggleAlign">Toggle alignment</button>
     <button @click="toggleTrigger">Toggle trigger</button>
   </div>
@@ -200,11 +200,11 @@ h1 {
   font-size: 1.8em;
   line-height: 1.5em;
 }
-.datepicker-container {
+.monthpicker-container {
   margin-bottom: 30px;
 }
 
-#datepicker-button-trigger {
+#monthpicker-button-trigger {
   background: #008489;
   border: 1px solid #008489;
   color: white;
@@ -220,12 +220,12 @@ input {
   border: 1px solid rgba(0, 0, 0, 0.2);
 }
 .with-input {
-  .datepicker-trigger {
+  .monthpicker-trigger {
     //padding-right: 40px;
   }
 }
 .with-button {
-  .datepicker-trigger {
+  .monthpicker-trigger {
     //padding-left: 10px;
   }
 }

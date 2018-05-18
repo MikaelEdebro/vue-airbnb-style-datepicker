@@ -14,7 +14,7 @@
         </div>
         <h3>{{ mobileHeader }}</h3>
       </div>
-      <div class="asd__datepicker-header">
+      <div class="asd__monthpicker-header">
         <div class="asd__change-year-button asd__change-year-button--previous">
           <button @click="previousYear" type="button">
             <svg viewBox="0 0 1000 1000"><path d="M336.2 274.5l-210.1 210h805.4c13 0 23 10 23 23s-10 23-23 23H126.1l210.1 210.1c11 11 11 21 0 32-5 5-10 7-16 7s-11-2-16-7l-249.1-249c-11-11-11-21 0-32l249.1-249.1c21-21.1 53 10.9 32 32z" /></svg>
@@ -55,7 +55,15 @@
                     type="button"
                     :disabled="isDisabled(month)"
                     @click="() => { selectMonth(month) }"
+                    v-if="isMobile"
                   >{{ month.shortName }}</button>
+                  <button
+                    class="asd__month-button"
+                    type="button"
+                    :disabled="isDisabled(month)"
+                    @click="() => { selectMonth(month) }"
+                    v-else
+                  >{{ month.name }}</button>
                 </div>
               </div>
             </div>
@@ -78,13 +86,10 @@ import subMonths from 'date-fns/sub_months'
 import subYears from 'date-fns/sub_years'
 import addMonths from 'date-fns/add_months'
 import addYears from 'date-fns/add_years'
-import getDaysInMonth from 'date-fns/get_days_in_month'
 import setMonth from 'date-fns/set_month'
 import isBefore from 'date-fns/is_before'
-import parse from 'date-fns/parse'
 import isAfter from 'date-fns/is_after'
 import isValid from 'date-fns/is_valid'
-// import getYear from 'date-fns/get_year'
 import { debounce, copyObject, findAncestor, randomString } from './../helpers'
 
 export default {
@@ -114,7 +119,7 @@ export default {
   },
   data() {
     return {
-      wrapperId: 'airbnb-style-datepicker-wrapper-' + randomString(5),
+      wrapperId: 'airbnb-style-monthpicker-wrapper-' + randomString(5),
       monthFormat: 'MMMM-YYYY',
       showMonthpicker: false,
       showYears: 2,
@@ -158,14 +163,12 @@ export default {
         apply: 'Apply',
         cancel: 'Cancel'
       },
-      startingDate: '',
       startingMonth: '',
       years: [],
       width: 300,
       selectedDate1: '',
       selectedDate2: '',
       isSelectingDate1: true,
-      hoverDate: '',
       hoverMonth: '',
       alignRight: false,
       triggerPosition: {},
@@ -290,7 +293,7 @@ export default {
     },
     datePropsCompound(newValue) {
       if (this.dateOne !== this.selectedDate1) {
-        this.startingDate = this.dateOne
+        this.startingMonth = this.dateOne
         this.setStartMonths()
         this.generateMonths()
       }
@@ -452,7 +455,7 @@ export default {
       ) {
         return
       }
-      this.startingDate = subYears(formattedDate, 1)
+      this.startingMonth = subYears(formattedDate, 1)
       this.generateYears()
       this.selectMonth(formattedDate)
     },
@@ -487,12 +490,12 @@ export default {
     setStartMonths() {
       let startMonth
       if (this.monthOne !== '') {
-        startMonth = startOfMonth(parse(this.monthOne))
+        startMonth = startOfMonth(this.monthOne)
       } else {
         startMonth = startOfMonth(new Date())
       }
       if (this.hasMinMonth && isBefore(startMonth, this.minMonth)) {
-        startMonth = startOfMonth(parse(this.minMonth))
+        startMonth = startOfMonth(this.minMonth)
       }
       this.startingMonth = this.subtractYears(startMonth)
       if (this.isSingleMode) {
@@ -534,50 +537,11 @@ export default {
         data.shortName = this.monthNames[month].slice(0, 3)
         data.name = this.monthNames[month]
 
-        data.firstDay = parse(setMonth(date, month).setDate(1))
+        data.firstDay = startOfMonth(setMonth(date, month))
         data.lastDay = lastDayOfMonth(setMonth(date, month))
         months.push(data)
       }
       return months
-    },
-    getWeeks(date) {
-      const weekDayNotInMonth = { dayNumber: 0 }
-      const daysInMonth = getDaysInMonth(date)
-      const year = format(date, 'YYYY')
-      const month = format(date, 'MM')
-      let firstDayInWeek = parseInt(format(date, this.sundayFirst ? 'd' : 'E'))
-      if (this.sundayFirst) {
-        firstDayInWeek++
-      }
-      let weeks = []
-      let week = []
-
-      // add empty days to get first day in correct position
-      for (let s = 1; s < firstDayInWeek; s++) {
-        week.push(weekDayNotInMonth)
-      }
-      for (let d = 0; d < daysInMonth; d++) {
-        let isLastDayInMonth = d >= daysInMonth - 1
-        let dayNumber = d + 1
-        let dayNumberFull = dayNumber < 10 ? '0' + dayNumber : dayNumber
-        week.push({
-          dayNumber,
-          dayNumberFull: dayNumberFull,
-          fullDate: year + '-' + month + '-' + dayNumberFull
-        })
-
-        if (week.length === 7) {
-          weeks.push(week)
-          week = []
-        } else if (isLastDayInMonth) {
-          for (let i = 0; i < 7 - week.length; i++) {
-            week.push(weekDayNotInMonth)
-          }
-          weeks.push(week)
-          week = []
-        }
-      }
-      return weeks
     },
     selectMonth(month) {
       if (
@@ -723,42 +687,6 @@ export default {
       this.$emit('apply')
       this.closeMonthpicker()
     },
-    positionDatepicker() {
-      const triggerWrapperElement = findAncestor(
-        this.triggerElement,
-        '.datepicker-trigger'
-      )
-      this.triggerPosition = this.triggerElement.getBoundingClientRect()
-      if (triggerWrapperElement) {
-        this.triggerWrapperPosition = triggerWrapperElement.getBoundingClientRect()
-      } else {
-        this.triggerWrapperPosition = { left: 0, right: 0 }
-      }
-
-      const viewportWidth =
-    document.documentElement.clientWidth || window.innerWidth
-      this.viewportWidth = viewportWidth + 'px'
-      this.isMobile = viewportWidth < 768
-      this.isTablet = viewportWidth >= 768 && viewportWidth <= 1024
-      // this.showMonths = this.isMobile
-      // ? 1
-      // : this.isTablet && this.monthsToShow > 2 ? 2 : this.monthsToShow
-      this.showYears = this.isMobile
-        ? 1
-        : this.isTablet && this.yearsToShow > 2 ? 2 : this.yearsToShow
-
-      this.$nextTick(function() {
-        const datepickerWrapper = document.getElementById(this.wrapperId)
-        if (!this.triggerElement || !datepickerWrapper) {
-          return
-        }
-
-        const rightPosition =
-      this.triggerElement.getBoundingClientRect().left +
-      datepickerWrapper.getBoundingClientRect().width
-        this.alignRight = rightPosition > viewportWidth
-      })
-    },
     positionMonthpicker() {
       const triggerWrapperElement = findAncestor(
         this.triggerElement,
@@ -781,14 +709,14 @@ export default {
         : this.isTablet && this.yearsToShow > 2 ? 2 : this.yearsToShow
 
       this.$nextTick(function() {
-        const datepickerWrapper = document.getElementById(this.wrapperId)
-        if (!this.triggerElement || !datepickerWrapper) {
+        const monthpickerWrapper = document.getElementById(this.wrapperId)
+        if (!this.triggerElement || !monthpickerWrapper) {
           return
         }
 
         const rightPosition =
       this.triggerElement.getBoundingClientRect().left +
-      datepickerWrapper.getBoundingClientRect().width
+      monthpickerWrapper.getBoundingClientRect().width
         this.alignRight = rightPosition > viewportWidth
       })
     }
@@ -811,7 +739,7 @@ $transition-time: 0.3s;
   box-sizing: border-box;
 }
 
-.datepicker-trigger {
+.monthpicker-trigger {
   position: relative;
   overflow: visible;
 }
@@ -839,7 +767,7 @@ $transition-time: 0.3s;
     position: relative;
   }
 
-  &__datepicker-header {
+  &__monthpicker-header {
     position: relative;
   }
 
