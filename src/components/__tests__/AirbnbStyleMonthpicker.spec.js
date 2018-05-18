@@ -117,13 +117,13 @@ describe('AirbnbStyleMonthpicker', () => {
     })
     test('previousYear adds year first', () => {
       const firstYear = wrapper.vm.years[1]
-      wrapper.setData({ showDatepicker: true })
+      wrapper.setData({ showMonthpicker: true })
       wrapper.vm.previousYear()
       expect(wrapper.vm.years[0].name).not.toEqual(firstYear.name)
     })
     test('nextYear adds year last', () => {
       const lastYear = wrapper.vm.years[wrapper.vm.years.length - 1]
-      wrapper.setData({ showDatepicker: true })
+      wrapper.setData({ showMonthpicker: true })
       wrapper.vm.nextYear()
       expect(wrapper.vm.years[0].name).not.toEqual(lastYear.name)
     })
@@ -183,7 +183,7 @@ describe('AirbnbStyleMonthpicker', () => {
       wrapper = createMonthPickerInstance({
         yearsToShow: 2
       })
-      wrapper.setData({ showDatepicker: true })
+      wrapper.setData({ showMonthpicker: true })
 
       let dWrapper = wrapper.find(monthpickerWrapper)
       expect(dWrapper.element.style.width).toBe(wrapper.vm.width * 2 + 'px')
@@ -193,7 +193,7 @@ describe('AirbnbStyleMonthpicker', () => {
         monthOne: 'January 2018',
         monthTwo: 'May 2018'
       })
-      wrapper.setData({ showDatepicker: true })
+      wrapper.setData({ showMonthpicker: true })
       expect(wrapper.contains('.asd__month-item--selected')).toBe(true)
       expect(wrapper.findAll('.asd__month-item--selected').length).toBe(2)
       expect(wrapper.contains('.asd__month-item--in-range')).toBe(true)
@@ -206,7 +206,7 @@ describe('AirbnbStyleMonthpicker', () => {
       })
       wrapper.vm.isMobile = true
       wrapper.vm.viewportWidth = '650px'
-      wrapper.setData({ showDatepicker: true })
+      wrapper.setData({ showMonthpicker: true })
 
       let dWrapper = wrapper.find(monthpickerWrapper)
       expect(dWrapper.classes()).toContain('asd__wrapper--full-screen')
