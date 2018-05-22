@@ -93,8 +93,9 @@ describe('AirbnbStyleMonthpicker', () => {
 
   describe('methods', () => {
     test('getYear() returns correct values', () => {
-      let year = wrapper.vm.getYear('2017-12-01')
-      expect(year.name).toBe('2017')
+      const wrapper = createMonthPickerInstance()
+      let year = wrapper.vm.getYear(new Date('2017-12-01'))
+      expect(year.name).toBe(2017)
       expect(year.months.length).toBeGreaterThan(0)
     })
     test('getMonths() returns correct values', () => {
@@ -155,9 +156,9 @@ describe('AirbnbStyleMonthpicker', () => {
       })
     })
     test('year of minMonth is shown first', () => {
-      wrapper = createMonthPickerInstance({ minMonth: 'mayo 2020' })
+      wrapper = createMonthPickerInstance({ minDate: new Date('2020-05-01') })
       const firstVisibleYear = wrapper.vm.years[1]
-      expect(firstVisibleYear.name).toBe('2020')
+      expect(firstVisibleYear.name).toBe(2020)
     })
     test('emits closed event on monthpicker close', () => {
       wrapper = createMonthPickerInstance()
