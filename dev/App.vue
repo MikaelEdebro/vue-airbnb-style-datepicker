@@ -3,7 +3,7 @@
     <div v-if="showDatepickers">
       <div class="datepicker-container with-input">
         <h3>Range datepicker with input</h3>
-        <div class="datepicker-trigger">
+        <!-- <div class="datepicker-trigger">
           <input
             type="text"
             id="datepicker-input-trigger"
@@ -185,38 +185,40 @@
             @closed="closedMethod"
           />
         </div>
-      </div>
+      </div>-->
 
-      <div class="monthpicker-container with-button">
-        <h3>Range monthpicker with button</h3>
-        <div class="monthpicker-trigger">
-          <button id="monthpicker-button-trigger">{{ formatMonths(buttonDateOne, buttonDateTwo) || 'Select dates' }}</button>
+        <div class="monthpicker-container with-button">
+          <h3>Range monthpicker with button</h3>
+          <div class="monthpicker-trigger">
+            <button id="monthpicker-button-trigger">{{ formatMonths(buttonDateOne, buttonDateTwo) || 'Select dates' }}</button>
 
-          <airbnb-style-monthpicker
-            :month-one="new Date('2020-04-01')"
-            :month-two="new Date('2020-06-01')"
-            :trigger-element-id="'monthpicker-button-trigger'"
-            :mode="'range'"
-            :inline="true"
-            :fullscreen-mobile="true"
-            :months-to-show="2"
-            :trigger="trigger"
-            :offset-y="10"
-            @date-one-selected="val => { buttonDateOne = val }"
-            @date-two-selected="val => { buttonDateTwo = val }"
-            @apply="applyMethod"
-            @closed="closedMethod"
-          />
+            <airbnb-style-monthpicker
+              :month-one="''"
+              :month-two="''"
+              :min-date="new Date()"
+              :max-date="new Date('2018-12-12')"
+              :trigger-element-id="'monthpicker-button-trigger'"
+              :mode="'range'"
+              :inline="true"
+              :fullscreen-mobile="true"
+              :months-to-show="2"
+              :trigger="trigger"
+              :offset-y="10"
+              @date-one-selected="val => { buttonDateOne = val }"
+              @date-two-selected="val => { buttonDateTwo = val }"
+              @apply="applyMethod"
+              @closed="closedMethod"
+            />
+          </div>
         </div>
+
       </div>
 
+      <button @click="toggleDatepickers">Hide monthpickers</button>
+      <button @click="toggleAlign">Toggle alignment</button>
+      <button @click="toggleTrigger">Toggle trigger</button>
     </div>
-
-    <button @click="toggleDatepickers">Hide monthpickers</button>
-    <button @click="toggleAlign">Toggle alignment</button>
-    <button @click="toggleTrigger">Toggle trigger</button>
-  </div>
-</template>
+</div></template>
 
 <script>
 import format from 'date-fns/format'

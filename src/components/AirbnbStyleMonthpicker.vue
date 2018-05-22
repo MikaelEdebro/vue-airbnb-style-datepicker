@@ -112,7 +112,7 @@ export default {
     monthOne: { type: [String, Date], default: '' },
     monthTwo: { type: [String, Date], default: '' },
     minDate: { type: [String, Date] },
-    endMonth: { type: [String, Date] },
+    maxDate: { type: [String, Date] },
     mode: { type: String, default: 'range' },
     offsetY: { type: Number, default: 0 },
     offsetX: { type: Number, default: 0 },
@@ -301,7 +301,7 @@ export default {
       if (this.dateOne !== this.selectedDate1) {
         this.startingYear = this.dateOne
         // this.setStartMonths()
-        // this.generateYears()
+        this.generateYears()
       }
       if (this.isDateTwoBeforeDateOne) {
         this.selectedDate2 = ''
@@ -455,7 +455,7 @@ export default {
       if (
         this.isDateDisabled(formattedDate) ||
         this.isBeforeMinDate(formattedDate) ||
-        this.isAfterEndMonth(formattedDate)
+        this.isAfterMaxDate(formattedDate)
       ) {
         return
       }
@@ -534,13 +534,20 @@ export default {
         if (this.monthOne && this.monthOne !== '') {
           this.selectedDate1 = startOfMonth(this.monthOne)
           this.selectedDate2 = lastDayOfMonth(this.monthOne)
+        } else {
+          this.selectedDate1 = ''
+          this.selectedDate2 = ''
         }
       } else {
         if (this.monthOne && this.monthOne !== '') {
           this.selectedDate1 = startOfMonth(this.monthOne)
+        } else {
+          this.selectedDate1 = ''
         }
         if (this.monthTwo && this.monthTwo !== '') {
           this.selectedDate2 = lastDayOfMonth(this.monthTwo)
+        } else {
+          this.selectedDate2 = ''
         }
       }
     },
@@ -548,7 +555,7 @@ export default {
     selectMonth(month) {
       if (
         this.isBeforeMinDate(month.firstDay) ||
-      this.isAfterEndMonth(month.firstDay) ||
+      this.isAfterMaxDate(month.firstDay) ||
       this.isDateDisabled(month.firstDay)) {
         return
       }
@@ -603,11 +610,11 @@ export default {
       }
       return isBefore(month.lastDay, this.minDate)
     },
-    isAfterEndMonth(month) {
-      if (!this.endMonth) {
+    isAfterMaxDate(month) {
+      if (!this.maxDate) {
         return false
       }
-      return isAfter(month.firstDay, this.endMonth)
+      return isAfter(month.firstDay, this.maxDate)
     },
     isDateDisabled(date) {
       const isDisabled = this.disabledDates.indexOf(date) > -1
@@ -623,7 +630,7 @@ export default {
       return (
         this.isMonthDisabled(month) ||
     this.isBeforeMinDate(month) ||
-    this.isAfterEndMonth(month)
+    this.isAfterMaxDate(month)
       )
     },
     previousYear() {
@@ -662,7 +669,8 @@ export default {
     },
     openMonthpicker() {
       this.positionMonthpicker()
-      // this.setStartMonths()
+      this.setStartMonths()
+      // this.generateYears()
       this.triggerElement.classList.add('monthpicker-open')
       this.showMonthpicker = true
       this.initialDate1 = this.dateOne
@@ -684,7 +692,11 @@ export default {
       this.$emit('closed')
     },
     apply() {
-      this.$emit('apply')
+      const datesSelected = {
+        dateOne: this.selectedDate1,
+        dateTwo: this.selectedDate2
+      }
+      this.$emit('apply', datesSelected)
       this.closeMonthpicker()
     },
     positionMonthpicker() {
