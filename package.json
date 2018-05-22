@@ -1,10 +1,10 @@
 {
-  "name": "vue-airbnb-style-datepicker",
+  "name": "vue-airbnb-style-datepicker-monthpicker",
   "version": "1.8.0",
-  "description": "A VueJs version of the popular AirBnb datepicker",
-  "main": "dist/vue-airbnb-style-datepicker.cjs.js",
-  "module": "dist/vue-airbnb-style-datepicker.es.js",
-  "unpkg": "dist/vue-airbnb-style-datepicker.js",
+  "description": "A VueJs version of the popular AirBnb datepicker-monthpicker",
+  "main": "dist/vue-airbnb-style-datepicker-monthpicker.cjs.js",
+  "module": "dist/vue-airbnb-style-datepicker-monthpicker.es.js",
+  "unpkg": "dist/vue-airbnb-style-datepicker-monthpicker.js",
   "repository": {
     "url": "MikaelEdebro/vue-airbnb-style-datepicker",
     "type": "git"
@@ -15,7 +15,7 @@
   "scripts": {
     "build": "rimraf dist/ && npm run build-main && npm run build-no-dep",
     "build-main": "bili --format cjs,es,umd,umd-min --plugin vue --vue.css dist/styles.css",
-    "build-no-dep": "bili --outDir dist/no-dep --format umd,umd-min --plugin vue --vue.css dist/styles.css --no-inline --global.date-fns/format dateFns.format --global.date-fns/add_months dateFns.addMonths --global.date-fns/sub_months dateFns.subMonths --global.date-fns/get_days_in_month dateFns.getDaysInMonth --global.date-fns/is_before dateFns.isBefore --global.date-fns/is_after dateFns.isAfter --global.date-fns/is_valid dateFns.isValid",
+    "build-no-dep": "bili --outDir dist/no-dep --format umd,umd-min --plugin vue --vue.css dist/styles.css --no-inline --global.date-fns/format dateFns.format --global.date-fns/add_months dateFns.addMonths --global.date-fns/sub_months dateFns.subMonths --global.date-fns/get_days_in_month dateFns.getDaysInMonth --global.date-fns/is_before dateFns.isBefore --global.date-fns/is_after dateFns.isAfter --global.date-fns/is_valid dateFns.isValid --global.date-fns/is_same_month dateFns.IsSameMonth --global.date-fns/last_day_of_month dateFns.lastDayOfMonth --global.date-fns/start_of_month dateFns.startOfMonth --global.date-fns/sub_years dateFns.subYears --global.date-fns/add_years dateFns.addYears --global.date-fns/set_month dateFns.setMonth",
     "dev": "poi --port 5000",
     "t": "jest --watch",
     "test": "jest --watch",

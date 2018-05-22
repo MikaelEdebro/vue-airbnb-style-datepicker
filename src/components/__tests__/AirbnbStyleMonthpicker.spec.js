@@ -2,17 +2,21 @@ import { shallow, createLocalVue } from '@vue/test-utils'
 import AirbnbStyleMonthpicker from '@/components/AirbnbStyleMonthpicker'
 import ClickOutside from '@/directives/ClickOutside'
 import TestHelpers from 'test/test-helpers'
+import parse from 'date-fns/parse'
+import format from 'date-fns/format'
+import lastDayOfMonth from 'date-fns/last_day_of_month'
+import startOfMonth from 'date-fns/start_of_month'
 
 const localVue = createLocalVue()
 localVue.directive('click-outside', ClickOutside)
 let h
 
-const createDatePickerInstance = (propsData, options) => {
+const createMonthPickerInstance = (propsData, options) => {
   if (!propsData) {
     propsData = {
-      dateOne: '2018-12-20',
-      dateTwo: '2018-12-25',
-      monthsToShow: 2
+      monthOne: 'Enero 2018',
+      monthTwo: 'Mayo 2018',
+      yearsToShow: 2
     }
   }
   if (!options) {
@@ -29,7 +33,7 @@ const createDatePickerInstance = (propsData, options) => {
   h = new TestHelpers(wrapper, expect)
   return wrapper
 }
-const datepickerWrapper = '.asd__wrapper'
+const monthpickerWrapper = '.asd__wrapper'
 let wrapper
 
 describe('AirbnbStyleMonthpicker', () => {
@@ -39,113 +43,126 @@ describe('AirbnbStyleMonthpicker', () => {
   })
 
   describe('lifecycle hooks', () => {
-    test('creates correct amount of months', () => {
-      wrapper = createDatePickerInstance()
-      expect(wrapper.vm.months.length).toEqual(wrapper.props().monthsToShow + 2)
+    test('creates correct amount of years', () => {
+      wrapper = createMonthPickerInstance()
+      expect(wrapper.vm.years.length).toEqual(wrapper.props().yearsToShow + 2)
     })
     test('dates are set when initial values are passed', () => {
-      wrapper = createDatePickerInstance({
-        dateOne: '2018-01-10',
-        dateTwo: '2018-01-13'
+      wrapper = createMonthPickerInstance({
+        monthOne: 'Enero 2015',
+        monthTwo: 'Febrero 2016'
       })
-      expect(wrapper.vm.selectedDate1).toEqual(wrapper.props().dateOne)
-      expect(wrapper.vm.selectedDate2).toEqual(wrapper.props().dateTwo)
+      expect(wrapper.vm.selectedDate1).toEqual(startOfMonth(parse(wrapper.props().monthOne)))
+      expect(wrapper.vm.selectedDate2).toEqual(lastDayOfMonth(parse(wrapper.props().monthTwo)))
     })
-
-    test('sunday is first day, if specified', () => {
-      wrapper = createDatePickerInstance(null, { sundayFirst: true })
-      expect(wrapper.vm.days[0]).toBe('Sunday')
+    test('dates are set when is single Mode and only one month is passed', () => {
+      wrapper = createMonthPickerInstance({
+        mode: 'single',
+        monthOne: 'Enero 2015'
+      })
+      expect(wrapper.vm.selectedDate1).toEqual(startOfMonth(parse(wrapper.props().monthOne)))
+      expect(wrapper.vm.selectedDate2).toEqual(lastDayOfMonth(parse(wrapper.props().monthOne)))
     })
   })
 
   describe('computed', () => {
-    test('datesSelected() works', () => {
-      wrapper = createDatePickerInstance({
+    test('monthsSelected() works', () => {
+      wrapper = createMonthPickerInstance({
         mode: 'range',
-        dateOne: '2018-01-10'
+        monthOne: 'Enero 2010',
+        monthTwo: 'Enero 2018'
       })
-      expect(wrapper.vm.datesSelected).toEqual(true)
+      expect(wrapper.vm.monthsSelected).toEqual(true)
     })
-    test('allDatesSelected() works', () => {
-      wrapper = createDatePickerInstance({
+    test('allMonthsSelected() works', () => {
+      wrapper = createMonthPickerInstance({
         mode: 'range',
-        dateOne: '2018-01-10'
+        monthOne: 'Febrero 2016',
+        monthTwo: ''
       })
-      expect(wrapper.vm.allDatesSelected).toEqual(false)
+      expect(wrapper.vm.allMonthsSelected).toEqual(false)
+    })
+    test('allMonthsSelected() works', () => {
+      wrapper = createMonthPickerInstance({
+        mode: 'single',
+        monthOne: 'Febrero 2016'
+      })
+      expect(wrapper.vm.allMonthsSelected).toEqual(true)
     })
   })
 
   describe('methods', () => {
-    test('getMonth() returns correct values', () => {
-      let month = wrapper.vm.getMonth('2017-12-01')
-      expect(month.monthName).toBe('December')
-      expect(month.weeks.length).toBeGreaterThan(0)
+    test('getYear() returns correct values', () => {
+      let year = wrapper.vm.getYear('2017-12-01')
+      expect(year.name).toBe('2017')
+      expect(year.months.length).toBeGreaterThan(0)
     })
-    test('getWeeks() returns correct values', () => {
-      let weeks = wrapper.vm.getWeeks('2017-12-01')
-      expect(weeks.length).toEqual(5)
+    test('getMonths() returns correct values', () => {
+      let months = wrapper.vm.getMonths('2017-12-01')
+      expect(months.length).toEqual(12)
     })
-    test('setHoverDate() sets correct value', () => {
-      const wrapper = createDatePickerInstance()
-      wrapper.vm.setHoverDate('2017-12-12')
-      expect(wrapper.vm.hoverDate).toBe('2017-12-12')
+    test('setHoverMonth() sets correct value', () => {
+      const wrapper = createMonthPickerInstance()
+      wrapper.vm.setHoverMonth(wrapper.vm.getMonths('2017-12-01')[0])
+      expect(format(wrapper.vm.hoverMonth, 'YYYY-MM-DD')).toBe(format(parse('2017-01-01'), 'YYYY-MM-DD'))
     })
     test('isSelected() works', () => {
-      wrapper = createDatePickerInstance({
+      wrapper = createMonthPickerInstance({
         mode: 'single',
-        dateOne: '2018-01-10'
+        monthOne: 'Enero 2018'
       })
+      let enero2018 = wrapper.vm.getMonths('2018-12-01')[0]
       expect(wrapper.vm.isSelected('2017-12-11')).toEqual(false)
-      expect(wrapper.vm.isSelected(wrapper.props().dateOne)).toEqual(true)
+      expect(wrapper.vm.isSelected(enero2018)).toEqual(true)
     })
-    test('previousMonth adds month first', () => {
-      const firstMonth = wrapper.vm.months[1]
-      wrapper.setData({ showDatepicker: true })
-      wrapper.vm.previousMonth()
-      expect(wrapper.vm.months[0].monthName).not.toEqual(firstMonth.monthName)
+    test('previousYear adds year first', () => {
+      const firstYear = wrapper.vm.years[1]
+      wrapper.setData({ showMonthpicker: true })
+      wrapper.vm.previousYear()
+      expect(wrapper.vm.years[0].name).not.toEqual(firstYear.name)
     })
-    test('nextMonth adds month last', () => {
-      const lastMonth = wrapper.vm.months[wrapper.vm.months.length - 1]
-      wrapper.setData({ showDatepicker: true })
-      wrapper.vm.nextMonth()
-      expect(wrapper.vm.months[0].monthName).not.toEqual(lastMonth.monthName)
+    test('nextYear adds year last', () => {
+      const lastYear = wrapper.vm.years[wrapper.vm.years.length - 1]
+      wrapper.setData({ showMonthpicker: true })
+      wrapper.vm.nextYear()
+      expect(wrapper.vm.years[0].name).not.toEqual(lastYear.name)
     })
-    test('closeDatepicker sets correct value', () => {
+    test('closeMonthpicker sets correct value', () => {
       wrapper.setData({
         triggerElement: document.createElement('div'),
-        showDatepicker: true
+        showMonthpicker: true
       })
-      wrapper.vm.closeDatepicker()
-      expect(wrapper.vm.showDatepicker).toBe(false)
+      wrapper.vm.closeMonthpicker()
+      expect(wrapper.vm.showMonthpicker).toBe(false)
     })
-    test('date is in range', () => {
-      wrapper = createDatePickerInstance({
-        dateOne: '2018-02-20',
-        dateTwo: '2018-02-26'
+    test('month is in range', () => {
+      wrapper = createMonthPickerInstance({
+        monthOne: 'Enero 2018',
+        monthTwo: 'Abril 2018'
       })
-      expect(wrapper.vm.isInRange('2018-03-22')).toBe(false)
-      expect(wrapper.vm.isInRange('2018-02-22')).toBe(true)
+      expect(wrapper.vm.isInRange(wrapper.vm.years[2].months[6])).toBe(false)
+      expect(wrapper.vm.isInRange(wrapper.vm.years[2].months[2])).toBe(false)
     })
-    test('event is emitted when selecting date', () => {
-      wrapper = createDatePickerInstance()
-      const dateOne = '2018-01-10'
-      const dateTwo = '2018-02-10'
-      wrapper.vm.selectDate(dateOne)
-      wrapper.vm.selectDate(dateTwo)
+    test('event is emitted when selecting month', () => {
+      wrapper = createMonthPickerInstance()
+      const monthOne = wrapper.vm.years[2].months[7]
+      const monthTwo = wrapper.vm.years[3].months[5]
+      wrapper.vm.selectMonth(monthOne)
+      wrapper.vm.selectMonth(monthTwo)
       wrapper.vm.$nextTick(function() {
-        expect(wrapper.emitted()['date-one-selected'][0]).toEqual([dateOne])
-        expect(wrapper.emitted()['date-two-selected'][0]).toEqual([dateTwo])
+        expect(startOfMonth(wrapper.emitted()['date-one-selected'][0])).toEqual(startOfMonth(monthOne.firstDay))
+        expect(lastDayOfMonth(wrapper.emitted()['date-two-selected'][0])).toEqual((monthTwo.lastDay))
       })
     })
-    test('month of minDate is shown first', () => {
-      wrapper = createDatePickerInstance({ minDate: '2018-05-14' })
-      const firstVisibleMonth = wrapper.vm.months[1]
-      expect(firstVisibleMonth.monthNumber).toBe(5)
+    test('year of minMonth is shown first', () => {
+      wrapper = createMonthPickerInstance({ minMonth: 'mayo 2020' })
+      const firstVisibleYear = wrapper.vm.years[1]
+      expect(firstVisibleYear.name).toBe('2020')
     })
-    test('emits closed event on datepicker close', () => {
-      wrapper = createDatePickerInstance()
+    test('emits closed event on monthpicker close', () => {
+      wrapper = createMonthPickerInstance()
       wrapper.setData({ triggerElement: document.createElement('div') })
-      wrapper.vm.closeDatepicker()
+      wrapper.vm.closeMonthpicker()
       wrapper.vm.$nextTick(function() {
         expect(wrapper.emitted().closed).toBeTruthy()
       })
@@ -153,93 +170,83 @@ describe('AirbnbStyleMonthpicker', () => {
   })
 
   describe('gui', () => {
-    test('months shows month and year', () => {
-      wrapper = createDatePickerInstance({
+    test('Year shows year title', () => {
+      wrapper = createMonthPickerInstance({
         dateOne: '2017-12-10'
       })
-      wrapper.setData({ showDatepicker: true })
+      wrapper.setData({ showMonthpicker: true })
 
-      expect(wrapper.contains('.asd__month-name')).toBe(true)
-      expect(wrapper.find('.asd__month-name').text()).toContain('November 2017')
+      expect(wrapper.contains('.asd__year-name')).toBe(true)
+      expect(wrapper.find('.asd__year-name').text()).toContain('2017')
     })
-    test('datepicker wrapper is correct width', () => {
-      wrapper = createDatePickerInstance({
-        monthsToShow: 2
+    test('monthpicker wrapper is correct width', () => {
+      wrapper = createMonthPickerInstance({
+        yearsToShow: 2
       })
-      wrapper.setData({ showDatepicker: true })
+      wrapper.setData({ showMonthpicker: true })
 
-      let dWrapper = wrapper.find(datepickerWrapper)
+      let dWrapper = wrapper.find(monthpickerWrapper)
       expect(dWrapper.element.style.width).toBe(wrapper.vm.width * 2 + 'px')
     })
-    test('selected date get selected class', () => {
-      wrapper = createDatePickerInstance({
-        dateOne: '2017-12-10',
-        dateTwo: '2017-12-15'
+    test('selected month get selected class', () => {
+      wrapper = createMonthPickerInstance({
+        monthOne: 'January 2018',
+        monthTwo: 'May 2018'
       })
-      wrapper.setData({ showDatepicker: true })
-
-      expect(wrapper.contains('.asd__day--selected')).toBe(true)
-      expect(wrapper.findAll('.asd__day--selected').length).toBe(2)
-      expect(wrapper.contains('.asd__day--in-range')).toBe(true)
-      expect(wrapper.findAll('.asd__day--in-range').length).toBe(4)
+      wrapper.setData({ showMonthpicker: true })
+      expect(wrapper.contains('.asd__month-item--selected')).toBe(true)
+      expect(wrapper.findAll('.asd__month-item--selected').length).toBe(2)
+      expect(wrapper.contains('.asd__month-item--in-range')).toBe(true)
+      expect(wrapper.findAll('.asd__month-item--in-range').length).toBe(3)
     })
     test('is fullscreen on mobile', () => {
-      wrapper = createDatePickerInstance({
+      wrapper = createMonthPickerInstance({
         fullscreenMobile: true,
         monthsToShow: 2
       })
       wrapper.vm.isMobile = true
       wrapper.vm.viewportWidth = '650px'
-      wrapper.setData({ showDatepicker: true })
+      wrapper.setData({ showMonthpicker: true })
 
-      let dWrapper = wrapper.find(datepickerWrapper)
+      let dWrapper = wrapper.find(monthpickerWrapper)
       expect(dWrapper.classes()).toContain('asd__wrapper--full-screen')
     })
-    test('disabled dates are not selectable', () => {
-      wrapper = createDatePickerInstance({
+    test('disabled months are not selectable', () => {
+      wrapper = createMonthPickerInstance({
         mode: 'single',
-        dateOne: '2018-10-10',
-        disabledDates: ['2018-10-20'],
+        monthOne: 'January 2010',
+        disabledMonths: ['March 2010'],
         openOnFocus: true
       })
       wrapper.vm.triggerElement.dispatchEvent(new Event('focus'))
       wrapper.update()
-      const disabledDate = wrapper.find('.asd__day[data-date="2018-10-20"]')
-      expect(disabledDate.classes()).toContain('asd__day--disabled')
+      let date = new Date('March 2010')
+      const disabledMonth = wrapper.find('.asd__month-button[data-date="' + date + '"]')
+      expect(disabledMonth.classes()).toContain('asd__month-button--disabled')
 
-      disabledDate.find('button').trigger('click')
+      disabledMonth.trigger('click')
       expect(wrapper.emitted()['date-one-selected'][0]).not.toEqual([
-        '2018-10-20'
+        date
       ])
     })
     test('date are set if user types a valid date in input', () => {
-      wrapper = createDatePickerInstance({
+      wrapper = createMonthPickerInstance({
         mode: 'single',
-        dateOne: '',
-        disabledDates: ['2018-10-20']
+        dateOne: ''
       })
-      wrapper.setData({ showDatepicker: true })
+      wrapper.setData({ showMonthpicker: true })
       wrapper.vm.handleTriggerInput({ target: { value: '2018-11-23' } })
-      expect(wrapper.vm.selectedDate1).toEqual('2018-11-23')
-
-      wrapper.vm.handleTriggerInput({ target: { value: '2018-10-20' } })
-      expect(wrapper.vm.selectedDate1).not.toEqual('2018-10-20')
-
-      wrapper.vm.handleTriggerInput({ target: { value: '20.10.2018' } })
-      expect(wrapper.vm.selectedDate1).not.toEqual('2018-10-20')
-
-      wrapper.vm.handleTriggerInput({ target: { value: '32.10.2018' } })
-      expect(wrapper.vm.selectedDate1).not.toEqual('2018-10-32')
+      expect(parse(wrapper.vm.selectedDate1)).toEqual(parse('2018-11-01'))
     })
     // test('opens datepicker on focus', () => {
-    //   wrapper = createDatePickerInstance({
+    //   wrapper = createMonthPickerInstance({
     //     mode: 'single',
     //     dateOne: '',
     //     openOnFocus: true
     //   })
     //   wrapper.vm.triggerElement.dispatchEvent(new Event('focus'))
     //   wrapper.update()
-    //   expect(wrapper.classes()).toContain('datepicker-open')
+    //   expect(wrapper.classes()).toContain('monthpicker-open')
     // })
   })
 })
