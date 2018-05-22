@@ -166,6 +166,7 @@ Vue.use(AirBnbStyleDatepicker, {
 | trigger | To programmatically show datepicker. For example if you want to open the datepicker by clicking some other HTML element. You manually need to reset this variable though in the @closed method.<br>Type: Boolean, Default: false |
 | @date-one-selected | Event emitted when second date is selected.<br>Required |
 | @date-two-selected | Event emitted when second date is selected.<br>Required if using `mode="range"` |
+| @opened | Event emitted when datepicker is opened. |
 | @closed | Event emitted when datepicker is closed. |
 | @apply | Event emitted when user clicks "Apply" |
 
@@ -191,6 +192,7 @@ Vue.use(AirBnbStyleDatepicker, {
   :trigger="someBooleanDataProp"
   @date-one-selected="val => { dateOne = val }"
   @date-two-selected="val => { dateTwo = val }"
+  @opened="onOpenedMethod"
   @closed="onClosedMethod"
   @apply="onApplyMethod"
 />

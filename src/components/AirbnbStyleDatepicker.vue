@@ -664,6 +664,7 @@ export default {
       this.showDatepicker = true
       this.initialDate1 = this.dateOne
       this.initialDate2 = this.dateTwo
+      this.$emit('opened')
     },
     closeDatepickerCancel() {
       if (this.showDatepicker) {

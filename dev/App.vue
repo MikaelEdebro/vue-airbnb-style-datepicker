@@ -69,6 +69,7 @@
             @date-two-selected="val => { buttonDateTwo = val }"
             @apply="applyMethod"
             @closed="closedMethod"
+            @opened="openedMethod"
           />
         </div>
       </div>
@@ -151,6 +152,9 @@ export default {
     },
     applyMethod() {
       console.log('apply')
+    },
+    openedMethod() {
+      console.log('opened')
     },
     closedMethod() {
       console.log('closed')
