@@ -2,6 +2,8 @@ import { shallow, createLocalVue } from '@vue/test-utils'
 import AirbnbStyleDatepicker from '@/components/AirbnbStyleDatepicker'
 import ClickOutside from '@/directives/ClickOutside'
 import TestHelpers from 'test/test-helpers'
+import addMonths from 'date-fns/add_months'
+import format from 'date-fns/format'
 
 const localVue = createLocalVue()
 localVue.directive('click-outside', ClickOutside)
@@ -34,8 +36,12 @@ let wrapper
 
 describe('AirbnbStyleDatepicker', () => {
   beforeEach(() => {
+    jest.useFakeTimers()
     jest.resetModules()
     jest.clearAllMocks()
+  })
+  afterEach(() => {
+    jest.useRealTimers()
   })
 
   describe('lifecycle hooks', () => {
@@ -138,9 +144,14 @@ describe('AirbnbStyleDatepicker', () => {
       })
     })
     test('month of minDate is shown first', () => {
-      wrapper = createDatePickerInstance({ minDate: '2018-05-14' })
+      wrapper = createDatePickerInstance({
+        minDate: format(addMonths(new Date(), 2), 'YYYY-MM-DD'),
+        startOpen: true
+      })
       const firstVisibleMonth = wrapper.vm.months[1]
-      expect(firstVisibleMonth.monthNumber).toBe(5)
+      expect(firstVisibleMonth.monthNumber).toBe(
+        parseInt(format(addMonths(new Date(), 2), 'M'))
+      )
     })
     test('emits closed event on datepicker close', () => {
       wrapper = createDatePickerInstance()
@@ -149,6 +160,30 @@ describe('AirbnbStyleDatepicker', () => {
       wrapper.vm.$nextTick(function() {
         expect(wrapper.emitted().closed).toBeTruthy()
       })
+    })
+    test('emits event when clicking next month', () => {
+      wrapper = createDatePickerInstance({
+        dateOne: '2022-12-12',
+        startOpen: true
+      })
+      h.click('.asd__change-month-button--next button')
+      jest.runAllTimers()
+      expect(wrapper.emitted()['next-month'][0][0]).toEqual([
+        '2023-01-01',
+        '2023-02-01'
+      ])
+    })
+    test('emits event when clicking previous month', () => {
+      wrapper = createDatePickerInstance({
+        dateOne: '2021-08-14',
+        startOpen: true
+      })
+      h.click('.asd__change-month-button--previous button')
+      jest.runAllTimers()
+      expect(wrapper.emitted()['previous-month'][0][0]).toEqual([
+        '2021-07-01',
+        '2021-08-01'
+      ])
     })
   })
 

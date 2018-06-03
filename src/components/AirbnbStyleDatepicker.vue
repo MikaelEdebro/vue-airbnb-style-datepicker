@@ -261,6 +261,12 @@ export default {
         return false
       }
       return isBefore(this.dateTwo, this.dateOne)
+    },
+    visibleMonths() {
+      const firstMonthArray = this.months.filter((m, index) => index > 0)
+      return [...Array(this.showMonths)].map(
+        (_, index) => firstMonthArray[index].firstDateOfMonth
+      )
     }
   },
   watch: {
@@ -633,6 +639,7 @@ export default {
 
       this.months.unshift(this.getMonth(this.startingDate))
       this.months.splice(this.months.length - 1, 1)
+      this.$emit('previous-month', this.visibleMonths)
     },
     nextMonth() {
       this.startingDate = this.addMonths(
@@ -642,6 +649,7 @@ export default {
 
       setTimeout(() => {
         this.months.splice(0, 1)
+        this.$emit('next-month', this.visibleMonths)
       }, 100)
     },
     subtractMonths(date) {

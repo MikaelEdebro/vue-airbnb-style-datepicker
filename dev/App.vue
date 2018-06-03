@@ -17,13 +17,15 @@
             :mode="'range'"
             :date-one="inputDateOne"
             :date-two="inputDateTwo"
-            :min-date="'2018-02-28'"
+            :min-date="'2018-08-28'"
             :months-to-show="2"
             :show-action-buttons="true"
             @date-one-selected="val => { inputDateOne = val }"
             @date-two-selected="val => { inputDateTwo = val }"
             @apply="applyMethod"
             @closed="closedMethod"
+            @previous-month="changeMonthMethod"
+            @next-month="changeMonthMethod"
           />
         </div>
       </div>
@@ -46,6 +48,8 @@
             @date-one-selected="val => { inputSingleDateOne = val }"
             @apply="applyMethod"
             @closed="closedMethod"
+            @previous-month="changeMonthMethod"
+            @next-month="changeMonthMethod"
           />
         </div>
       </div>
@@ -70,6 +74,8 @@
             @apply="applyMethod"
             @closed="closedMethod"
             @opened="openedMethod"
+            @previous-month="changeMonthMethod"
+            @next-month="changeMonthMethod"
           />
         </div>
       </div>
@@ -88,11 +94,13 @@
           :inline="true"
           :fullscreen-mobile="false"
           :date-one="inlineDateOne"
-          :months-to-show="2"
+          :months-to-show="3"
           :disabled-dates="['2018-04-30', '2018-05-10', '2018-12-14']"
           @date-one-selected="val => { inlineDateOne = val }"
           @apply="applyMethod"
           @closed="closedMethod"
+          @previous-month="changeMonthMethod"
+          @next-month="changeMonthMethod"
         />
       </div>
     </div>
@@ -159,6 +167,9 @@ export default {
     closedMethod() {
       console.log('closed')
       this.trigger = false
+    },
+    changeMonthMethod(visibleMonths) {
+      console.log('change months', visibleMonths)
     }
   }
 }

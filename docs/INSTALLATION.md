@@ -169,6 +169,8 @@ Vue.use(AirBnbStyleDatepicker, {
 | @opened | Event emitted when datepicker is opened. |
 | @closed | Event emitted when datepicker is closed. |
 | @apply | Event emitted when user clicks "Apply" |
+| @previous-month | Event emitted when user changes to previous month. Returns array with first date in visible months. `['2019-09-01', '2019-10-01']` |
+| @next-month | Event emitted when user changes to next month. Returns array with first date in visible months. `['2019-09-01', '2019-10-01']` |
 
 <br><br>
 *Example with all properties (not recommended, only to show values)*:
@@ -195,5 +197,7 @@ Vue.use(AirBnbStyleDatepicker, {
   @opened="onOpenedMethod"
   @closed="onClosedMethod"
   @apply="onApplyMethod"
+  @previous-month="onChangeMonthMethod"
+  @next-month="onChangeMonthMethod"
 />
 ```
