@@ -171,6 +171,7 @@ export default {
       width: 300,
       selectedDate1: '',
       selectedDate2: '',
+      isSelectingDate1: this.isSelectingDateOne,
       hoverDate: '',
       alignRight: false,
       triggerPosition: {},
@@ -573,16 +574,16 @@ export default {
         return
       }
 
-      if (this.isSelectingDateOne || isBefore(date, this.selectedDate1)) {
+      if (this.isSelectingDate1 || isBefore(date, this.selectedDate1)) {
         this.selectedDate1 = date
-        this.isSelectingDateOne = false
+        this.isSelectingDate1 = false
 
         if (isBefore(this.selectedDate2, date)) {
           this.selectedDate2 = ''
         }
       } else {
         this.selectedDate2 = date
-        this.isSelectingDateOne = true
+        this.isSelectingDate1 = true
 
         if (isAfter(this.selectedDate1, date)) {
           this.selectedDate1 = ''
