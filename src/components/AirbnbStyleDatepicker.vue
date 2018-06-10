@@ -120,7 +120,8 @@ export default {
       type: Boolean,
       default: () => process.env.NODE_ENV === 'test'
     },
-    trigger: { type: Boolean, default: false }
+    trigger: { type: Boolean, default: false },
+    isSelectingDateOne: { type: Boolean, default: true }
   },
   data() {
     return {
@@ -170,7 +171,6 @@ export default {
       width: 300,
       selectedDate1: '',
       selectedDate2: '',
-      isSelectingDate1: true,
       hoverDate: '',
       alignRight: false,
       triggerPosition: {},
@@ -573,16 +573,16 @@ export default {
         return
       }
 
-      if (this.isSelectingDate1 || isBefore(date, this.selectedDate1)) {
+      if (this.isSelectingDateOne || isBefore(date, this.selectedDate1)) {
         this.selectedDate1 = date
-        this.isSelectingDate1 = false
+        this.isSelectingDateOne = false
 
         if (isBefore(this.selectedDate2, date)) {
           this.selectedDate2 = ''
         }
       } else {
         this.selectedDate2 = date
-        this.isSelectingDate1 = true
+        this.isSelectingDateOne = true
 
         if (isAfter(this.selectedDate1, date)) {
           this.selectedDate1 = ''
