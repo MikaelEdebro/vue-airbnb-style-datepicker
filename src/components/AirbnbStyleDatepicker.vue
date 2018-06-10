@@ -574,6 +574,18 @@ export default {
         return
       }
 
+      if (this.allDatesSelected) {
+        if (isBefore(date, this.selectedDate1)) {
+          this.selectedDate1 = date
+          this.selectedDate2 = ''
+          this.isSelectingDate1 = false
+        } else {
+          this.selectedDate2 = date
+          this.closeDatepicker()
+        }
+        return
+      }
+
       if (this.isSelectingDate1 || isBefore(date, this.selectedDate1)) {
         this.selectedDate1 = date
         this.isSelectingDate1 = false
