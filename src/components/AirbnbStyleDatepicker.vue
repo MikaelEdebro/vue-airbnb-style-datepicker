@@ -600,7 +600,7 @@ export default {
       return this.selectedDate1 === date || this.selectedDate2 === date
     },
     isInRange(date) {
-      if (!this.allDatesSelected || this.isSingleMode) {
+      if (this.isSingleMode) {
         return false
       }
 
