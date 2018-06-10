@@ -120,7 +120,8 @@ export default {
       type: Boolean,
       default: () => process.env.NODE_ENV === 'test'
     },
-    trigger: { type: Boolean, default: false }
+    trigger: { type: Boolean, default: false },
+    isSelectingDateOne: { type: Boolean, default: true }
   },
   data() {
     return {
@@ -170,7 +171,7 @@ export default {
       width: 300,
       selectedDate1: '',
       selectedDate2: '',
-      isSelectingDate1: true,
+      isSelectingDate1: this.isSelectingDateOne,
       hoverDate: '',
       alignRight: false,
       triggerPosition: {},
