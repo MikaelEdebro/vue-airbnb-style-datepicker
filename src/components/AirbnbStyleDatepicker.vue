@@ -823,7 +823,6 @@ $transition-time: 0.3s;
     color: rgba(0, 0, 0, 0.7);
     font-size: 0.8em;
     margin-left: -1px;
-    text-transform: lowercase;
   }
 
   &__month-table {
@@ -849,7 +848,6 @@ $transition-time: 0.3s;
     text-align: center;
     margin: 0 0 30px;
     line-height: 1.4em;
-    text-transform: lowercase;
     font-weight: bold;
   }
 
