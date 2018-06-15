@@ -264,7 +264,11 @@ export default {
     },
     visibleMonths() {
       const firstMonthArray = this.months.filter((m, index) => index > 0)
-      return [...Array(this.showMonths)].map(
+      const numberOfMonthsArray = []
+      for (let i = 0; i < this.showMonths; i++) {
+        numberOfMonthsArray.push(i)
+      }
+      return numberOfMonthsArray.map(
         (_, index) => firstMonthArray[index].firstDateOfMonth
       )
     }
