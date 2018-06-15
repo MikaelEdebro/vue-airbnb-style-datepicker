@@ -168,6 +168,7 @@ Vue.use(AirBnbStyleDatepicker, {
 | @date-two-selected | Event emitted when second date is selected.<br>Required if using `mode="range"` |
 | @opened | Event emitted when datepicker is opened. |
 | @closed | Event emitted when datepicker is closed. |
+| @cancelled | Event emitted when user clicks "Cancel". |
 | @apply | Event emitted when user clicks "Apply" |
 | @previous-month | Event emitted when user changes to previous month. Returns array with first date in visible months. `['2019-09-01', '2019-10-01']` |
 | @next-month | Event emitted when user changes to next month. Returns array with first date in visible months. `['2019-09-01', '2019-10-01']` |
@@ -196,6 +197,7 @@ Vue.use(AirBnbStyleDatepicker, {
   @date-two-selected="val => { dateTwo = val }"
   @opened="onOpenedMethod"
   @closed="onClosedMethod"
+  @cancelled="onCancelMethod"
   @apply="onApplyMethod"
   @previous-month="onChangeMonthMethod"
   @next-month="onChangeMonthMethod"

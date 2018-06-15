@@ -72,10 +72,12 @@
           :date-one="inputDateOne"
           :date-two="inputDateTwo"
           :min-date="'2018-02-28'"
-          :end-date="'2018-05-10'"
+          :end-date="'2018-12-10'"
           v-on:date-one-selected="function(val) { inputDateOne = val }"
           v-on:date-two-selected="function(val) { inputDateTwo = val }"
           v-on:closed="onClosed"
+          v-on:previous-month="onMonthChange"
+          v-on:next-month="onMonthChange"
         ></airbnb-style-datepicker>
       </div>
     </div>
@@ -98,6 +100,8 @@
           v-on:date-one-selected="function(val) { buttonDateOne = val }"
           v-on:date-two-selected="function(val) { buttonDateTwo = val }"
           v-on:closed="onClosed"
+          v-on:previous-month="onMonthChange"
+          v-on:next-month="onMonthChange"
         ></airbnb-style-datepicker>
       </div>
     </div>
@@ -119,6 +123,8 @@
         :months-to-show="1"
         :disabled-dates="['2018-03-30', '2018-04-10']"
         v-on:date-one-selected="function(val) { inlineDateOne = val }"
+        v-on:previous-month="onMonthChange"
+        v-on:next-month="onMonthChange"
       ></airbnb-style-datepicker>
     </div>
 
@@ -168,6 +174,9 @@
       },
       triggerDatepicker: function() {
         this.trigger = !this.trigger
+      },
+      onMonthChange: function(dates) {
+        console.log('months changed', dates)
       }
     }
     })

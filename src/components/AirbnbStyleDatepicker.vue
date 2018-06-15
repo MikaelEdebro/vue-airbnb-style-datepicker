@@ -678,6 +678,7 @@ export default {
       if (this.showDatepicker) {
         this.selectedDate1 = this.initialDate1
         this.selectedDate2 = this.initialDate2
+        this.$emit('cancelled')
         this.closeDatepicker()
       }
     },

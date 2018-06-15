@@ -24,6 +24,7 @@
             @date-two-selected="val => { inputDateTwo = val }"
             @apply="applyMethod"
             @closed="closedMethod"
+            @cancelled="cancelledMethod"
             @previous-month="changeMonthMethod"
             @next-month="changeMonthMethod"
           />
@@ -48,6 +49,7 @@
             @date-one-selected="val => { inputSingleDateOne = val }"
             @apply="applyMethod"
             @closed="closedMethod"
+            @cancelled="cancelledMethod"
             @previous-month="changeMonthMethod"
             @next-month="changeMonthMethod"
           />
@@ -73,6 +75,7 @@
             @date-two-selected="val => { buttonDateTwo = val }"
             @apply="applyMethod"
             @closed="closedMethod"
+            @cancelled="cancelledMethod"
             @opened="openedMethod"
             @previous-month="changeMonthMethod"
             @next-month="changeMonthMethod"
@@ -99,6 +102,7 @@
           @date-one-selected="val => { inlineDateOne = val }"
           @apply="applyMethod"
           @closed="closedMethod"
+          @cancelled="cancelledMethod"
           @previous-month="changeMonthMethod"
           @next-month="changeMonthMethod"
         />
@@ -167,6 +171,9 @@ export default {
     closedMethod() {
       console.log('closed')
       this.trigger = false
+    },
+    cancelledMethod() {
+      console.log('cancelled')
     },
     changeMonthMethod(visibleMonths) {
       console.log('change months', visibleMonths)
