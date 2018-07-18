@@ -287,6 +287,10 @@ export default {
     mode(newValue, oldValue) {
       this.setStartDates()
     },
+    minDate() {
+      this.setStartDates()
+      this.generateMonths()
+    },
     datePropsCompound(newValue) {
       if (this.dateOne !== this.selectedDate1) {
         this.startingDate = this.dateOne
