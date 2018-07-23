@@ -60,7 +60,9 @@
                       'asd__day--empty': dayNumber === 0,
                       'asd__day--disabled': isDisabled(fullDate),
                       'asd__day--selected': selectedDate1 === fullDate || selectedDate2 === fullDate,
-                      'asd__day--in-range': isInRange(fullDate)
+                      'asd__day--in-range': isInRange(fullDate),
+                      'asd__selected-date-one': fullDate && fullDate === selectedDate1,
+                      'asd__selected-date-two': fullDate && fullDate === selectedDate2,
                     }"
                     :style="getDayStyles(fullDate)"
                     @mouseover="() => { setHoverDate(fullDate) }"
