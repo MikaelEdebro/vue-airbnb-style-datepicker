@@ -266,6 +266,27 @@ describe('AirbnbStyleDatepicker', () => {
       wrapper.vm.handleTriggerInput({ target: { value: '32.10.2018' } })
       expect(wrapper.vm.selectedDate1).not.toEqual('2018-10-32')
     })
+
+    test.only('sets classes for selected date', () => {
+      wrapper = createDatePickerInstance({
+        dateOne: '2019-01-01',
+        dateTwo: '2019-01-03',
+        openOnFocus: true
+      })
+      wrapper.vm.triggerElement.dispatchEvent(new Event('focus'))
+      wrapper.update()
+      expect(wrapper.findAll('.asd__selected-date-one').length).toBe(1)
+      expect(wrapper.findAll('.asd__selected-date-two').length).toBe(1)
+
+      wrapper = createDatePickerInstance({
+        dateOne: '2019-01-01',
+        openOnFocus: true
+      })
+      wrapper.vm.triggerElement.dispatchEvent(new Event('focus'))
+      wrapper.update()
+      expect(wrapper.findAll('.asd__selected-date-one').length).toBe(1)
+      expect(wrapper.findAll('.asd__selected-date-two').length).toBe(0)
+    })
     // test('opens datepicker on focus', () => {
     //   wrapper = createDatePickerInstance({
     //     mode: 'single',
