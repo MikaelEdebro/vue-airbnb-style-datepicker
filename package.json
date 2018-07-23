@@ -1,6 +1,6 @@
 {
   "name": "vue-airbnb-style-datepicker",
-  "version": "1.11.0",
+  "version": "1.11.1",
   "description": "A VueJs version of the popular AirBnb datepicker",
   "main": "dist/vue-airbnb-style-datepicker.cjs.js",
   "engines": {
