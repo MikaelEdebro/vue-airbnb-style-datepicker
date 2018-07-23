@@ -22,8 +22,7 @@
     "build-no-dep": "bili --outDir dist/no-dep --format umd,umd-min --plugin vue --vue.css dist/styles.css --no-inline --global.date-fns/format dateFns.format --global.date-fns/add_months dateFns.addMonths --global.date-fns/sub_months dateFns.subMonths --global.date-fns/get_days_in_month dateFns.getDaysInMonth --global.date-fns/is_before dateFns.isBefore --global.date-fns/is_after dateFns.isAfter --global.date-fns/is_valid dateFns.isValid",
     "dev": "poi",
     "t": "jest --watch",
-    "test": "jest --watch",
-    "test-once": "jest --runInBand",
+    "test": "jest --runInBand",
     "test-debug": "node --inspect --inspect-brk node_modules/jest/bin/jest.js"
   },
   "author": "MikaelEdebro <mikael.edebro@gmail.com>",
