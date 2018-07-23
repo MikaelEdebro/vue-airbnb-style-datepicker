@@ -298,7 +298,6 @@ describe('AirbnbStyleDatepicker', () => {
       wrapper.vm.triggerElement.dispatchEvent(new Event('focus'))
       wrapper.update()
       expect(wrapper.findAll('.asd__selected-date-one').length).toBe(0)
-      expect(false).toBe(true)
     })
   })
 })
