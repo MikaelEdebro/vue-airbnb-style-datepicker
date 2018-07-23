@@ -12,7 +12,7 @@
         <div class="asd__mobile-close" @click="closeDatepicker">
           <div class="asd__mobile-close-icon">X</div>
         </div>
-        <h3>{{ mobileHeader }}</h3>
+        <h3>{{ mobileHeader || mobileHeaderFallback }}</h3>
       </div>
       <div class="asd__datepicker-header">
         <div class="asd__change-month-button asd__change-month-button--previous">
@@ -115,7 +115,7 @@ export default {
     startOpen: { type: Boolean },
     fullscreenMobile: { type: Boolean },
     inline: { type: Boolean },
-    mobileHeader: { type: String, default: 'Select date' },
+    mobileHeader: { type: String },
     disabledDates: { type: Array, default: () => [] },
     showActionButtons: { type: Boolean, default: true },
     isTest: {
@@ -224,6 +224,9 @@ export default {
       return {
         width: this.showFullscreen ? this.viewportWidth : this.width + 'px'
       }
+    },
+    mobileHeaderFallback() {
+      return this.mode === 'range' ? 'Select dates' : 'Select date'
     },
     showFullscreen() {
       return this.isMobile && this.fullscreenMobile
