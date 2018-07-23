@@ -267,7 +267,7 @@ describe('AirbnbStyleDatepicker', () => {
       expect(wrapper.vm.selectedDate1).not.toEqual('2018-10-32')
     })
 
-    test.only('sets classes for selected date', () => {
+    test('sets classes for selected date', () => {
       wrapper = createDatePickerInstance({
         dateOne: '2019-01-01',
         dateTwo: '2019-01-03',
