@@ -104,7 +104,7 @@ export default {
   name: 'AirbnbStyleDatepicker',
   props: {
     triggerElementId: { type: String },
-    dateOne: { type: [String, Date], default: format(new Date()) },
+    dateOne: { type: [String, Date] },
     dateTwo: { type: [String, Date] },
     minDate: { type: [String, Date] },
     endDate: { type: [String, Date] },

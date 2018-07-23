@@ -287,15 +287,17 @@ describe('AirbnbStyleDatepicker', () => {
       expect(wrapper.findAll('.asd__selected-date-one').length).toBe(1)
       expect(wrapper.findAll('.asd__selected-date-two').length).toBe(0)
     })
-    // test('opens datepicker on focus', () => {
-    //   wrapper = createDatePickerInstance({
-    //     mode: 'single',
-    //     dateOne: '',
-    //     openOnFocus: true
-    //   })
-    //   wrapper.vm.triggerElement.dispatchEvent(new Event('focus'))
-    //   wrapper.update()
-    //   expect(wrapper.classes()).toContain('datepicker-open')
-    // })
+
+    test('setting dateOne to undefined does not set it to todays date', () => {
+      wrapper = createDatePickerInstance({
+        dateOne: undefined,
+        dateTwo: '',
+        mode: 'range',
+        openOnFocus: true
+      })
+      wrapper.vm.triggerElement.dispatchEvent(new Event('focus'))
+      wrapper.update()
+      expect(wrapper.findAll('.asd__selected-date-one').length).toBe(0)
+    })
   })
 })
