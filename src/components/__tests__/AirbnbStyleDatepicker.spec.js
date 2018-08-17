@@ -299,5 +299,17 @@ describe('AirbnbStyleDatepicker', () => {
       wrapper.update()
       expect(wrapper.findAll('.asd__selected-date-one').length).toBe(0)
     })
+
+    test('sets css class for todays date', () => {
+      wrapper = createDatePickerInstance({
+        dateOne: '',
+        dateTwo: '',
+        mode: 'range',
+        openOnFocus: true
+      })
+      wrapper.vm.triggerElement.dispatchEvent(new Event('focus'))
+      wrapper.update()
+      expect(wrapper.findAll('.asd__day--today').length).toBe(1)
+    })
   })
 })
