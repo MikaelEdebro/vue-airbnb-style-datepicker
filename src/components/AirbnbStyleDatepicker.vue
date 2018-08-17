@@ -61,6 +61,7 @@
                       'asd__day--disabled': isDisabled(fullDate),
                       'asd__day--selected': selectedDate1 === fullDate || selectedDate2 === fullDate,
                       'asd__day--in-range': isInRange(fullDate),
+                      'asd__day--today': fullDate && isToday(fullDate),
                       'asd__selected-date-one': fullDate && fullDate === selectedDate1,
                       'asd__selected-date-two': fullDate && fullDate === selectedDate2,
                     }"
@@ -604,6 +605,9 @@ export default {
     },
     setHoverDate(date) {
       this.hoverDate = date
+    },
+    isToday(date) {
+      return format(new Date(), this.dateFormat) === date
     },
     isSelected(date) {
       if (!date) {
