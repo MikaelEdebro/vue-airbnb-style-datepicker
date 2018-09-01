@@ -1,15 +1,15 @@
 module.exports = {
   parserOptions: {
     parser: 'babel-eslint',
-    sourceType: 'module'
+    sourceType: 'module',
   },
   env: {
     browser: true,
-    jest: true
+    jest: true,
   },
-  extends: ['standard', 'plugin:vue/recommended'],
+  extends: ['standard', 'plugin:vue/recommended', 'prettier'],
   globals: {
-    window: true
+    window: true,
   },
   rules: {
     'arrow-parens': 'off',
@@ -29,9 +29,9 @@ module.exports = {
         singleline: 3,
         multiline: {
           max: 1,
-          allowFirstLine: false
-        }
-      }
+          allowFirstLine: false,
+        },
+      },
     ],
     'vue/html-self-closing': [
       'error',
@@ -39,11 +39,11 @@ module.exports = {
         html: {
           void: 'any',
           normal: 'any',
-          component: 'always'
+          component: 'always',
         },
         svg: 'always',
-        math: 'always'
-      }
+        math: 'always',
+      },
     ],
     'vue/require-default-prop': 'off',
     'vue/attributes-order': ['off', {}],
@@ -52,8 +52,8 @@ module.exports = {
       'error',
       {
         singleline: 'never',
-        multiline: 'always'
-      }
-    ]
-  }
+        multiline: 'always',
+      },
+    ],
+  },
 }
