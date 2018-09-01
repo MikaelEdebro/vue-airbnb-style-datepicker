@@ -13,13 +13,13 @@
     "dist"
   ],
   "scripts": {
-    "build": "rimraf dist/ && npm run build-main && npm run build-no-dep",
-    "build-main": "bili --format cjs,es,umd,umd-min --plugin vue --vue.css dist/styles.css",
-    "build-no-dep": "bili --outDir dist/no-dep --format umd,umd-min --plugin vue --vue.css dist/styles.css --no-inline --global.date-fns/format dateFns.format --global.date-fns/add_months dateFns.addMonths --global.date-fns/sub_months dateFns.subMonths --global.date-fns/get_days_in_month dateFns.getDaysInMonth --global.date-fns/is_before dateFns.isBefore --global.date-fns/is_after dateFns.isAfter --global.date-fns/is_valid dateFns.isValid",
+    "build": "rimraf dist/ && npm run build:main && npm run build:no-dep",
+    "build:main": "bili --js buble --format cjs,es,umd,umd-min --plugin vue",
+    "build:no-dep": "bili --js buble --outDir dist/no-dep --format umd,umd-min --plugin vue --no-inline --global.date-fns/format dateFns.format --global.date-fns/add_months dateFns.addMonths --global.date-fns/sub_months dateFns.subMonths --global.date-fns/get_days_in_month dateFns.getDaysInMonth --global.date-fns/is_before dateFns.isBefore --global.date-fns/is_after dateFns.isAfter --global.date-fns/is_valid dateFns.isValid",
     "dev": "poi",
-    "t": "jest --watch",
     "test": "jest --runInBand",
-    "test-debug": "node --inspect --inspect-brk node_modules/jest/bin/jest.js"
+    "test:watch": "jest --watch",
+    "test:debug": "node --inspect --inspect-brk node_modules/jest/bin/jest.js"
   },
   "author": "MikaelEdebro <mikael.edebro@gmail.com>",
   "license": "MIT",
@@ -29,8 +29,10 @@
     "babel-jest": "^22.4.3",
     "babel-preset-env": "^1.6.1",
     "babel-preset-stage-2": "^6.24.1",
+    "bili": "^3.1.2",
     "date-fns": "^1.29.0",
     "eslint": "^4.19.0",
+    "eslint-config-prettier": "^3.0.1",
     "eslint-config-standard": "^11.0.0",
     "eslint-plugin-import": "^2.9.0",
     "eslint-plugin-node": "^6.0.1",
@@ -39,7 +41,7 @@
     "eslint-plugin-vue": "^4.3.0",
     "jest": "^22.4.3",
     "jest-serializer-vue": "^1.0.0",
-    "node-sass": "^4.7.2",
+    "node-sass": "^4.9.3",
     "poi": "^9.6.13",
     "poi-preset-eslint": "^9.1.1",
     "rimraf": "^2.6.2",
