@@ -11,5 +11,5 @@ export default {
   unbind: function(el) {
     document.body.removeEventListener('click', el.event)
     document.body.removeEventListener('touchstart', el.event)
-  }
+  },
 }

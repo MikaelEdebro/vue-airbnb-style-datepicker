@@ -8,9 +8,9 @@ const AirbnbStyleDatepickerPlugin = {
 
     Vue.component(AirbnbStyleDatepicker.name, {
       ...options,
-      ...AirbnbStyleDatepicker
+      ...AirbnbStyleDatepicker,
     })
-  }
+  },
 }
 // User has to install the component by themselves, to allow to pass options
 if (typeof window !== 'undefined' && window.Vue) {

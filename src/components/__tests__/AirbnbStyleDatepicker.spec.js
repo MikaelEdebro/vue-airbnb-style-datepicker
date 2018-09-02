@@ -14,7 +14,7 @@ const createDatePickerInstance = (propsData, options) => {
     propsData = {
       dateOne: '2018-12-20',
       dateTwo: '2018-12-25',
-      monthsToShow: 2
+      monthsToShow: 2,
     }
   }
   if (!options) {
@@ -22,11 +22,11 @@ const createDatePickerInstance = (propsData, options) => {
   }
   const component = {
     ...AirbnbStyleDatepicker,
-    ...options
+    ...options,
   }
   const wrapper = shallow(component, {
     localVue,
-    propsData
+    propsData,
   })
   h = new TestHelpers(wrapper, expect)
   return wrapper
@@ -52,7 +52,7 @@ describe('AirbnbStyleDatepicker', () => {
     test('dates are set when initial values are passed', () => {
       wrapper = createDatePickerInstance({
         dateOne: '2018-01-10',
-        dateTwo: '2018-01-13'
+        dateTwo: '2018-01-13',
       })
       expect(wrapper.vm.selectedDate1).toEqual(wrapper.props().dateOne)
       expect(wrapper.vm.selectedDate2).toEqual(wrapper.props().dateTwo)
@@ -68,14 +68,14 @@ describe('AirbnbStyleDatepicker', () => {
     test('datesSelected() works', () => {
       wrapper = createDatePickerInstance({
         mode: 'range',
-        dateOne: '2018-01-10'
+        dateOne: '2018-01-10',
       })
       expect(wrapper.vm.datesSelected).toEqual(true)
     })
     test('allDatesSelected() works', () => {
       wrapper = createDatePickerInstance({
         mode: 'range',
-        dateOne: '2018-01-10'
+        dateOne: '2018-01-10',
       })
       expect(wrapper.vm.allDatesSelected).toEqual(false)
     })
@@ -99,7 +99,7 @@ describe('AirbnbStyleDatepicker', () => {
     test('isSelected() works', () => {
       wrapper = createDatePickerInstance({
         mode: 'single',
-        dateOne: '2018-01-10'
+        dateOne: '2018-01-10',
       })
       expect(wrapper.vm.isSelected('2017-12-11')).toEqual(false)
       expect(wrapper.vm.isSelected(wrapper.props().dateOne)).toEqual(true)
@@ -119,7 +119,7 @@ describe('AirbnbStyleDatepicker', () => {
     test('closeDatepicker sets correct value', () => {
       wrapper.setData({
         triggerElement: document.createElement('div'),
-        showDatepicker: true
+        showDatepicker: true,
       })
       wrapper.vm.closeDatepicker()
       expect(wrapper.vm.showDatepicker).toBe(false)
@@ -127,7 +127,7 @@ describe('AirbnbStyleDatepicker', () => {
     test('date is in range', () => {
       wrapper = createDatePickerInstance({
         dateOne: '2018-02-20',
-        dateTwo: '2018-02-26'
+        dateTwo: '2018-02-26',
       })
       expect(wrapper.vm.isInRange('2018-03-22')).toBe(false)
       expect(wrapper.vm.isInRange('2018-02-22')).toBe(true)
@@ -146,12 +146,10 @@ describe('AirbnbStyleDatepicker', () => {
     test('month of minDate is shown first', () => {
       wrapper = createDatePickerInstance({
         minDate: format(addMonths(new Date(), 2), 'YYYY-MM-DD'),
-        startOpen: true
+        startOpen: true,
       })
       const firstVisibleMonth = wrapper.vm.months[1]
-      expect(firstVisibleMonth.monthNumber).toBe(
-        parseInt(format(addMonths(new Date(), 2), 'M'))
-      )
+      expect(firstVisibleMonth.monthNumber).toBe(parseInt(format(addMonths(new Date(), 2), 'M')))
     })
     test('emits closed event on datepicker close', () => {
       wrapper = createDatePickerInstance()
@@ -164,33 +162,27 @@ describe('AirbnbStyleDatepicker', () => {
     test('emits event when clicking next month', () => {
       wrapper = createDatePickerInstance({
         dateOne: '2022-12-12',
-        startOpen: true
+        startOpen: true,
       })
       h.click('.asd__change-month-button--next button')
       jest.runAllTimers()
-      expect(wrapper.emitted()['next-month'][0][0]).toEqual([
-        '2023-01-01',
-        '2023-02-01'
-      ])
+      expect(wrapper.emitted()['next-month'][0][0]).toEqual(['2023-01-01', '2023-02-01'])
     })
     test('emits event when clicking previous month', () => {
       wrapper = createDatePickerInstance({
         dateOne: '2021-08-14',
-        startOpen: true
+        startOpen: true,
       })
       h.click('.asd__change-month-button--previous button')
       jest.runAllTimers()
-      expect(wrapper.emitted()['previous-month'][0][0]).toEqual([
-        '2021-07-01',
-        '2021-08-01'
-      ])
+      expect(wrapper.emitted()['previous-month'][0][0]).toEqual(['2021-07-01', '2021-08-01'])
     })
   })
 
   describe('gui', () => {
     test('months shows month and year', () => {
       wrapper = createDatePickerInstance({
-        dateOne: '2017-12-10'
+        dateOne: '2017-12-10',
       })
       wrapper.setData({ showDatepicker: true })
 
@@ -199,7 +191,7 @@ describe('AirbnbStyleDatepicker', () => {
     })
     test('datepicker wrapper is correct width', () => {
       wrapper = createDatePickerInstance({
-        monthsToShow: 2
+        monthsToShow: 2,
       })
       wrapper.setData({ showDatepicker: true })
 
@@ -209,7 +201,7 @@ describe('AirbnbStyleDatepicker', () => {
     test('selected date get selected class', () => {
       wrapper = createDatePickerInstance({
         dateOne: '2017-12-10',
-        dateTwo: '2017-12-15'
+        dateTwo: '2017-12-15',
       })
       wrapper.setData({ showDatepicker: true })
 
@@ -221,7 +213,7 @@ describe('AirbnbStyleDatepicker', () => {
     test('is fullscreen on mobile', () => {
       wrapper = createDatePickerInstance({
         fullscreenMobile: true,
-        monthsToShow: 2
+        monthsToShow: 2,
       })
       wrapper.vm.isMobile = true
       wrapper.vm.viewportWidth = '650px'
@@ -235,7 +227,7 @@ describe('AirbnbStyleDatepicker', () => {
         mode: 'single',
         dateOne: '2018-10-10',
         disabledDates: ['2018-10-20'],
-        openOnFocus: true
+        openOnFocus: true,
       })
       wrapper.vm.triggerElement.dispatchEvent(new Event('focus'))
       wrapper.update()
@@ -243,15 +235,13 @@ describe('AirbnbStyleDatepicker', () => {
       expect(disabledDate.classes()).toContain('asd__day--disabled')
 
       disabledDate.find('button').trigger('click')
-      expect(wrapper.emitted()['date-one-selected'][0]).not.toEqual([
-        '2018-10-20'
-      ])
+      expect(wrapper.emitted()['date-one-selected'][0]).not.toEqual(['2018-10-20'])
     })
     test('date are set if user types a valid date in input', () => {
       wrapper = createDatePickerInstance({
         mode: 'single',
         dateOne: '',
-        disabledDates: ['2018-10-20']
+        disabledDates: ['2018-10-20'],
       })
       wrapper.setData({ showDatepicker: true })
       wrapper.vm.handleTriggerInput({ target: { value: '2018-11-23' } })
@@ -271,7 +261,7 @@ describe('AirbnbStyleDatepicker', () => {
       wrapper = createDatePickerInstance({
         dateOne: '2019-01-01',
         dateTwo: '2019-01-03',
-        openOnFocus: true
+        openOnFocus: true,
       })
       wrapper.vm.triggerElement.dispatchEvent(new Event('focus'))
       wrapper.update()
@@ -280,7 +270,7 @@ describe('AirbnbStyleDatepicker', () => {
 
       wrapper = createDatePickerInstance({
         dateOne: '2019-01-01',
-        openOnFocus: true
+        openOnFocus: true,
       })
       wrapper.vm.triggerElement.dispatchEvent(new Event('focus'))
       wrapper.update()
@@ -293,7 +283,7 @@ describe('AirbnbStyleDatepicker', () => {
         dateOne: undefined,
         dateTwo: '',
         mode: 'range',
-        openOnFocus: true
+        openOnFocus: true,
       })
       wrapper.vm.triggerElement.dispatchEvent(new Event('focus'))
       wrapper.update()
@@ -305,7 +295,7 @@ describe('AirbnbStyleDatepicker', () => {
         dateOne: '',
         dateTwo: '',
         mode: 'range',
-        openOnFocus: true
+        openOnFocus: true,
       })
       wrapper.vm.triggerElement.dispatchEvent(new Event('focus'))
       wrapper.update()
