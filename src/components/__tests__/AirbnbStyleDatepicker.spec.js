@@ -124,6 +124,46 @@ describe('AirbnbStyleDatepicker', () => {
       wrapper.vm.closeDatepicker()
       expect(wrapper.vm.showDatepicker).toBe(false)
     })
+    test('aria-label generated correctly for selected date', () => {
+      wrapper.setData({
+        selectedDate1: '2018-01-30',
+      })
+      expect(wrapper.vm.getAriaLabelForDate('2018-01-30')).toBe('Selected. Tuesday, January 30, 2018')
+    })
+    test('aria-label generated correctly for unavailable date', () => {
+        wrapper.setData({
+          selectedDate1: '2018-01-30',
+          minDate: '2018-02-01',
+        })
+        expect(wrapper.vm.getAriaLabelForDate('2018-01-30')).toBe('Not available. Tuesday, January 30, 2018')
+    })
+    test('aria-label generated correctly for first date selection', () => {
+      wrapper.setData({
+        selectedDate1: undefined,
+        mode: 'range',
+        isSelectingDate1: true,
+        minDate: undefined,
+      })
+      expect(wrapper.vm.getAriaLabelForDate('2018-01-30')).toBe('Choose Tuesday, January 30, 2018 as your start date.')
+    })
+    test('aria-label generated correctly for second date selection', () => {
+      wrapper.setData({
+        selectedDate1: '2018-01-30',
+        mode: 'range',
+        isSelectingDate1: false,
+        minDate: undefined,
+      })
+      expect(wrapper.vm.getAriaLabelForDate('2018-02-01')).toBe('Choose Thursday, February 1, 2018 as your end date.')
+
+    })
+    test('aria-label generated correctly for single selection', () => {
+      wrapper.setData({
+        selectedDate1: undefined,
+        mode: 'single',
+        minDate: undefined,
+      })
+      expect(wrapper.vm.getAriaLabelForDate('2018-01-30')).toBe('Tuesday, January 30, 2018')
+    })
     test('date is in range', () => {
       wrapper = createDatePickerInstance({
         dateOne: '2018-02-20',

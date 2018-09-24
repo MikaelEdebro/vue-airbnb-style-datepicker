@@ -107,6 +107,7 @@ NB: Note that you need to wrap the datepicker in a `<div class="datepicker-trigg
 | monthNames  | Names of months in your language.<br>Type: Array<string>                                                                 |
 | colors      | Override default colors. Use hex values (#efefef)<br>Type: Object                                                        |
 | texts       | Override default texts (currently only "Cancel" and "Apply")<br>Type: Object                                             |
+| ariaLabels | Override default aria-label texts. Current options include chooseDate, chooseStartDate, chooseEndDate, selectedDate, unavailableDate, previousMonth, nextMonth, close, openKeyboardShortcutsMenu, and openKeyboardShortcutsMenu. Labels that end in `Date` are functions which accept a date string for constructing the label text, the rest of the labels are plain strings.<br>Type: Object  |
 
 _Example with all available options_:
 
@@ -140,6 +141,18 @@ Vue.use(AirBnbStyleDatepicker, {
   texts: {
     apply: 'Tillämpa',
     cancel: 'Avbryt',
+  },
+  ariaLabels: {
+    chooseDate: ({ date }) => date,
+    chooseStartDate: ({ date }) => `Choose ${date} as your start date.`,
+    chooseEndDate: ({ date }) => `Choose ${date} as your end date.`,
+    selectedDate: ({ date }) => `Selected. ${date}`,
+    unavailableDate: ({ date }) => `Not available. ${date}`,
+    previousMonth: 'Move backward to switch to the previous month.',
+    nextMonth: 'Move forward to switch to the next month.',
+    closeDatepicker: 'Close calendar',
+    openKeyboardShortcutsMenu: 'Open keyboard shortcut menu.',
+    openKeyboardShortcutsMenu: 'Open keyboard shortcut menu.'
   },
 })
 ```

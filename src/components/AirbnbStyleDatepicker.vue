@@ -9,19 +9,19 @@
       v-click-outside="handleClickOutside"
     >
       <div class="asd__mobile-header asd__mobile-only" v-if="showFullscreen">
-        <div class="asd__mobile-close" @click="closeDatepicker">
-          <div class="asd__mobile-close-icon">X</div>
-        </div>
+        <button class="asd__mobile-close" @click="closeDatepicker" :aria-label="ariaLabels.closeDatepicker">
+          <div class="asd__mobile-close-icon" aria-hidden="true">X</div>
+        </button>
         <h3>{{ mobileHeader || mobileHeaderFallback }}</h3>
       </div>
       <div class="asd__datepicker-header">
         <div class="asd__change-month-button asd__change-month-button--previous">
-          <button @click="previousMonth" type="button">
+          <button @click="previousMonth" type="button" :aria-label="ariaLabels.previousMonth">
             <svg viewBox="0 0 1000 1000"><path d="M336.2 274.5l-210.1 210h805.4c13 0 23 10 23 23s-10 23-23 23H126.1l210.1 210.1c11 11 11 21 0 32-5 5-10 7-16 7s-11-2-16-7l-249.1-249c-11-11-11-21 0-32l249.1-249.1c21-21.1 53 10.9 32 32z" /></svg>
           </button>
         </div>
         <div class="asd__change-month-button asd__change-month-button--next">
-          <button @click="nextMonth" type="button">
+          <button @click="nextMonth" type="button" :aria-label="ariaLabels.nextMonth">
             <svg viewBox="0 0 1000 1000"><path d="M694.4 242.4l249.1 249.1c11 11 11 21 0 32L694.4 772.7c-5 5-10 7-16 7s-11-2-16-7c-11-11-11-21 0-32l210.1-210.1H67.1c-13 0-23-10-23-23s10-23 23-23h805.4L662.4 274.5c-21-21.1 11-53.1 32-32.1z" /></svg>
           </button>
         </div>
@@ -55,6 +55,7 @@
                     v-for="({fullDate, dayNumber}, index) in week"
                     :key="index + '_' + dayNumber"
                     :data-date="fullDate"
+                    :aria-label="getAriaLabelForDate(fullDate)"
                     :class="{
                       'asd__day--enabled': dayNumber !== 0,
                       'asd__day--empty': dayNumber === 0,
@@ -84,8 +85,19 @@
         </transition-group>
       </div>
       <div class="asd__action-buttons" v-if="mode !== 'single' && showActionButtons">
-        <button @click="closeDatepickerCancel" type="button">{{ texts.cancel }}</button>
-        <button @click="apply" :style="{color: colors.selected}" type="button">{{ texts.apply }}</button>
+        <button
+          @click="closeDatepickerCancel"
+          type="button"
+        >
+          {{ texts.cancel }}
+        </button>
+        <button
+          @click="apply"
+          :style="{color: colors.selected}"
+          type="button"
+        >
+          {{ texts.apply }}
+        </button>
       </div>
     </div>
   </transition>
@@ -129,6 +141,7 @@ export default {
     return {
       wrapperId: 'airbnb-style-datepicker-wrapper-' + randomString(5),
       dateFormat: 'YYYY-MM-DD',
+      dateLabelFormat: 'dddd, MMMM D, YYYY',
       showDatepicker: false,
       showMonths: 2,
       colors: {
@@ -140,6 +153,18 @@ export default {
         disabled: '#fff'
       },
       sundayFirst: false,
+      ariaLabels: {
+        chooseDate: (date) => date,
+        chooseStartDate: (date) => `Choose ${date} as your start date.`,
+        chooseEndDate: (date) => `Choose ${date} as your end date.`,
+        selectedDate: (date) => `Selected. ${date}`,
+        unavailableDate: (date) => `Not available. ${date}`,
+        previousMonth: 'Move backward to switch to the previous month.',
+        nextMonth: 'Move forward to switch to the next month.',
+        closeDatepicker: 'Close calendar',
+        openKeyboardShortcutsMenu: 'Open keyboard shortcuts menu.',
+        closeKeyboardShortcutsMenu: 'Close keyboard shortcuts menu'
+      },
       monthNames: [
         'January',
         'February',
@@ -381,6 +406,29 @@ export default {
       }
       return styles
     },
+    getAriaLabelForDate(date) {
+      const dateLabel = format(date, this.dateLabelFormat)
+
+      const isDisabled = this.isDisabled(date)
+      if (isDisabled) {
+        return this.ariaLabels.unavailableDate(dateLabel)
+      }
+
+      const isSelected = this.isSelected(date)
+      if (isSelected) {
+        return this.ariaLabels.selectedDate(dateLabel)
+      }
+
+      if (this.isRangeMode) {
+        if (this.isSelectingDate1) {
+          return this.ariaLabels.chooseStartDate(dateLabel)
+        } else {
+          return this.ariaLabels.chooseEndDate(dateLabel)
+        }
+      } else {
+        return this.ariaLabels.chooseDate(dateLabel)
+      }
+    },
     handleClickOutside(event) {
       if (
         event.target.id === this.triggerElementId ||
@@ -475,6 +523,9 @@ export default {
       }
     },
     setupDatepicker() {
+      if (this.$options.ariaLabels) {
+        this.ariaLabels = Object.assign({}, this.ariaLabels, this.$options.ariaLabels)
+      }
       if (this.$options.sundayFirst) {
         this.sundayFirst = copyObject(this.$options.sundayFirst)
       }
@@ -609,6 +660,9 @@ export default {
     isToday(date) {
       return format(new Date(), this.dateFormat) === date
     },
+    isSameDate(date1, date2) {
+      return isSameDay(date1, date2)
+    },
     isSelected(date) {
       if (!date) {
         return
@@ -639,6 +693,14 @@ export default {
         return false
       }
       return isAfter(date, this.endDate)
+    },
+    isDateVisible(date) {
+      if (!date) {
+        return false
+      }
+      const start = this.visibleMonths[0]
+      const end = lastDayOfMonth(this.visibleMonths[this.monthsToShow - 1])
+      return isAfter(date, start) && isBefore(date, end)
     },
     isDateDisabled(date) {
       const isDisabled = this.disabledDates.indexOf(date) > -1
@@ -875,11 +937,15 @@ $transition-time: 0.3s;
     height: $size;
     padding: 0;
     overflow: hidden;
-
+    
     &--enabled {
       border: $border;
       &:hover {
         background-color: #e4e7e7;
+      }
+      &:focus {
+          outline: auto 5px Highlight;
+          outline: auto 5px -webkit-focus-ring-color;
       }
     }
     &--disabled,
