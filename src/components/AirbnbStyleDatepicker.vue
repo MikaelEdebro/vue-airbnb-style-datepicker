@@ -55,6 +55,8 @@
                     v-for="({fullDate, dayNumber}, index) in week"
                     :key="index + '_' + dayNumber"
                     :data-date="fullDate"
+                    :ref="`date-${fullDate}`"
+                    :tabindex="isDateVisible(fullDate) && isSameDate(focusedDate, fullDate) ? 0 : -1"
                     :aria-label="getAriaLabelForDate(fullDate)"
                     :class="{
                       'asd__day--enabled': dayNumber !== 0,
@@ -73,6 +75,7 @@
                       class="asd__day-button"
                       type="button"
                       v-if="dayNumber"
+                      tabindex="-1"
                       :date="fullDate"
                       :disabled="isDisabled(fullDate)"
                       @click="() => { selectDate(fullDate) }"
@@ -115,6 +118,7 @@
           {{ texts.cancel }}
         </button>
         <button
+          ref="apply-button"
           @click="apply"
           :style="{color: colors.selected}"
           type="button"
@@ -141,6 +145,19 @@ import format from 'date-fns/format'
 import subMonths from 'date-fns/sub_months'
 import addMonths from 'date-fns/add_months'
 import getDaysInMonth from 'date-fns/get_days_in_month'
+import lastDayOfMonth from 'date-fns/last_day_of_month'
+import getMonth from 'date-fns/get_month'
+import setMonth from 'date-fns/set_month'
+import getYear from 'date-fns/get_year'
+import setYear from 'date-fns/set_year'
+import isSameMonth from 'date-fns/is_same_month'
+import isSameDay from 'date-fns/is_same_day'
+import addDays from 'date-fns/add_days'
+import subDays from 'date-fns/sub_days'
+import addWeeks from 'date-fns/add_weeks'
+import subWeeks from 'date-fns/sub_weeks'
+import startOfWeek from 'date-fns/start_of_week'
+import endOfWeek from 'date-fns/end_of_week'
 import isBefore from 'date-fns/is_before'
 import isAfter from 'date-fns/is_after'
 import isValid from 'date-fns/is_valid'
@@ -257,6 +274,7 @@ export default {
       selectedDate2: '',
       isSelectingDate1: true,
       hoverDate: '',
+      focusedDate: '',
       alignRight: false,
       triggerPosition: {},
       triggerWrapperPosition: {},
@@ -436,12 +454,16 @@ export default {
       this.openDatepicker()
     }
 
+    this.$el.addEventListener('keyup', this.handleKeyboardInput)
+    this.$el.addEventListener('keydown', this.trapKeyboardInput)
     this.triggerElement.addEventListener('keyup', this.handleTriggerInput)
   },
   destroyed() {
     window.removeEventListener('resize', this._handleWindowResizeEvent)
     window.removeEventListener('click', this._handleWindowClickEvent)
 
+    this.$el.removeEventListener('keyup', this.handleKeyboardInput)
+    this.$el.removeEventListener('keydown', this.trapKeyboardInput)
     this.triggerElement.removeEventListener('keyup', this.handleTriggerInput)
   },
   methods: {
@@ -503,45 +525,95 @@ export default {
       }
       this.closeDatepicker()
     },
+    shouldHandleInput(event, key) {
+      return event.keyCode === key &&
+      (!event.shiftKey || event.keyCode === 191) &&
+      this.showDatepicker
+    },
     handleTriggerInput(event) {
-      const keys = {
-        arrowDown: 40,
-        arrowUp: 38,
-        arrowRight: 39,
-        arrowLeft: 37
-      }
-      if (
-        event.keyCode === keys.arrowDown &&
-        !event.shiftKey &&
-        !this.showDatepicker
-      ) {
-        this.openDatepicker()
-      } else if (
-        event.keyCode === keys.arrowUp &&
-        !event.shiftKey &&
-        this.showDatepicker
-      ) {
-        this.closeDatepicker()
-      } else if (
-        event.keyCode === keys.arrowRight &&
-        !event.shiftKey &&
-        this.showDatepicker
-      ) {
-        this.nextMonth()
-      } else if (
-        event.keyCode === keys.arrowLeft &&
-        !event.shiftKey &&
-        this.showDatepicker
-      ) {
-        this.previousMonth()
-      } else {
-        if (this.mode === 'single') {
-          this.setDateFromText(event.target.value)
+       if (this.mode === 'single') {
+         this.setDateFromText(event.target.value)
+       }
+    },
+    trapKeyboardInput(event) {
+      // prevent keys that are used as keyboard shortcuts from propagating out of this element
+      // except for the enter key, which is needed to activate buttons
+      const shortcutKeyCodes = Object.values(this.keys)
+      shortcutKeyCodes.splice(shortcutKeyCodes.indexOf(13), 1)
+      const shouldPreventDefault = shortcutKeyCodes.indexOf(event.keyCode) > -1
+      if (shouldPreventDefault) event.preventDefault()
+    },
+    handleKeyboardInput(event) {
+      if (this.shouldHandleInput(event, this.keys.esc)) {
+       if (this.showKeyboardShortcutsMenu) {
+         this.closeKeyboardShortcutsMenu()
+       } else {
+         this.closeDatepicker()
+       }
+     } else if (this.showKeyboardShortcutsMenu) {
+      // if keyboard shortcutsMenu is open, then esc is the only key we want to have fire events
+     } else if (this.shouldHandleInput(event, this.keys.arrowDown)) {
+        const newDate = addWeeks(this.focusedDate, 1)
+        const changeMonths = !isSameMonth(newDate, this.focusedDate)
+        this.setFocusedDate(newDate)
+        if (changeMonths) this.nextMonth()
+
+      } else if (this.shouldHandleInput(event, this.keys.arrowUp)) {
+        const newDate = subWeeks(this.focusedDate, 1)
+        const changeMonths = !isSameMonth(newDate, this.focusedDate)
+        this.setFocusedDate(newDate)
+        if (changeMonths) this.previousMonth()
+
+      } else if (this.shouldHandleInput(event, this.keys.arrowRight)) {
+        const newDate = addDays(this.focusedDate, 1)
+        const changeMonths = !isSameMonth(newDate, this.focusedDate)
+        this.setFocusedDate(newDate)
+        if (changeMonths) this.nextMonth()
+
+      } else if (this.shouldHandleInput(event, this.keys.arrowLeft)) {
+        const newDate = subDays(this.focusedDate, 1)
+        const changeMonths = !isSameMonth(newDate, this.focusedDate)
+        this.setFocusedDate(newDate)
+        if (changeMonths) this.previousMonth()
+
+      } else if (this.shouldHandleInput(event, this.keys.enter)) {
+        // on enter key, only select the date if a date is currently in focus
+        const target = event.target
+        if (!this.showKeyboardShortcutsMenu && target && target.tagName === "TD") {
+          this.selectDate(this.focusedDate)
         }
+
+      } else if (this.shouldHandleInput(event, this.keys.pgUp)) {
+        this.previousMonth()
+        this.setFocusedDate(subMonths(this.focusedDate, 1))
+
+      } else if (this.shouldHandleInput(event, this.keys.pgDn)) {
+        this.nextMonth()
+        this.setFocusedDate(addMonths(this.focusedDate, 1))
+
+      } else if (this.shouldHandleInput(event, this.keys.home)) {
+        const newDate = startOfWeek(this.focusedDate, {
+          weekStartsOn: this.sundayFirst ? 0 : 1
+        })
+        const changeMonths = !isSameMonth(newDate, this.focusedDate)
+        this.setFocusedDate(newDate)
+        if (changeMonths) this.previousMonth()
+
+      } else if (this.shouldHandleInput(event, this.keys.end)) {
+        const newDate = endOfWeek(this.focusedDate, {
+          weekStartsOn: this.sundayFirst ? 0 : 1
+        })
+        const changeMonths = !isSameMonth(newDate, this.focusedDate)
+        this.setFocusedDate(newDate)
+        if (changeMonths) this.nextMonth()
+
+      } else if (this.shouldHandleInput(event, this.keys.questionMark)) {
+        this.openKeyboardShortcutsMenu()
+
       }
     },
     setDateFromText(value) {
-      if (value.length < 10) {
+      if (!value || value.length < 10) {
         return
       }
       // make sure format is either 'YYYY-MM-DD' or 'DD.MM.YYYY'
@@ -627,6 +699,7 @@ export default {
       this.startingDate = this.subtractMonths(startDate)
       this.selectedDate1 = this.dateOne
       this.selectedDate2 = this.dateTwo
+      this.focusedDate = startDate
     },
     setSundayToFirstDayInWeek() {
       const lastDay = this.days.pop()
@@ -715,6 +788,9 @@ export default {
 
         if (isAfter(this.selectedDate1, date)) {
           this.selectedDate1 = ''
+        } else if (this.showActionButtons) {
+          // if user has selected both dates, focus the apply button for accessibility
+          this.$refs['apply-button'].focus()
         }
       }
     },
@@ -724,9 +800,17 @@ export default {
     setFocusedDate(date) {
       const formattedDate = format(date, this.dateFormat)
       this.focusedDate = formattedDate
-      // TODO: error handle...must be a better way to do this?
-      // why is it an array wtf?
-      this.$refs[formattedDate][0].focus({preventScroll:false})
+      const dateElement = this.$refs[`date-${formattedDate}`]
+      if (dateElement) dateElement[0].focus()
+    },
+    resetFocusedDate(setToFirst) {
+      if (this.focusedDate && !this.isDateVisible(this.focusedDate)) {
+        const visibleMonthIdx = setToFirst ? 0 : this.visibleMonths.length -1
+        const targetMonth = this.visibleMonths[visibleMonthIdx]
+        const monthIdx = getMonth(targetMonth)
+        const year = getYear(targetMonth)
+        this.focusedDate = setYear(setMonth(this.focusedDate, monthIdx), year)
+      }
     },
     isToday(date) {
       return format(new Date(), this.dateFormat) === date
@@ -790,6 +874,7 @@ export default {
       this.months.unshift(this.getMonth(this.startingDate))
       this.months.splice(this.months.length - 1, 1)
       this.$emit('previous-month', this.visibleMonths)
+      this.resetFocusedDate(false)
     },
     nextMonth() {
       this.startingDate = this.addMonths(
@@ -800,6 +885,7 @@ export default {
       setTimeout(() => {
         this.months.splice(0, 1)
         this.$emit('next-month', this.visibleMonths)
+        this.resetFocusedDate(true)
       }, 100)
     },
     subtractMonths(date) {
@@ -823,6 +909,9 @@ export default {
       this.initialDate1 = this.dateOne
       this.initialDate2 = this.dateTwo
       this.$emit('opened')
+      this.$nextTick(() => {
+        if (!this.inline) this.setFocusedDate(this.focusedDate)
+      })
     },
     closeDatepickerCancel() {
       if (this.showDatepicker) {
@@ -1088,15 +1177,14 @@ $transition-time: 0.3s;
     height: $size;
     padding: 0;
     overflow: hidden;
-    
     &--enabled {
       border: $border;
       &:hover {
         background-color: #e4e7e7;
       }
       &:focus {
-          outline: auto 5px Highlight;
-          outline: auto 5px -webkit-focus-ring-color;
+        outline: auto 5px Highlight;
+        outline: auto 5px -webkit-focus-ring-color;
       }
     }
     &--disabled,

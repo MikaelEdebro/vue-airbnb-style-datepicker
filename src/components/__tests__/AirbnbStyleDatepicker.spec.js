@@ -219,6 +219,96 @@ describe('AirbnbStyleDatepicker', () => {
     })
   })
 
+  describe('accessibility', () => {
+    test('arrow keys can be used to focus on dates', () => {
+      wrapper = createDatePickerInstance({
+        mode: 'single',
+        dateOne: '2018-12-20',
+        disabledDates: ['2018-10-20'],
+      })
+      wrapper.setData({ showDatepicker: true })
+
+      wrapper.vm.handleKeyboardInput({ keyCode: 38 }) // up
+      expect(wrapper.vm.focusedDate).toEqual('2018-12-13')
+
+      wrapper.vm.handleKeyboardInput({ keyCode: 39 }) // right
+      expect(wrapper.vm.focusedDate).toEqual('2018-12-14')
+
+      wrapper.vm.handleKeyboardInput({ keyCode: 40 }) // down
+      expect(wrapper.vm.focusedDate).toEqual('2018-12-21')
+
+      wrapper.vm.handleKeyboardInput({ keyCode: 37 }) // left
+      expect(wrapper.vm.focusedDate).toEqual('2018-12-20')
+
+    })
+
+    test('Home/End can be used to jump to start/end of week', () => {
+      wrapper = createDatePickerInstance({
+        mode: 'single',
+        dateOne: '2018-12-20',
+        disabledDates: ['2018-10-20'],
+      })
+      wrapper.setData({ showDatepicker: true })
+
+      wrapper.vm.handleKeyboardInput({ keyCode: 36 }) // home
+      expect(wrapper.vm.focusedDate).toEqual('2018-12-17')
+      wrapper.vm.handleKeyboardInput({ keyCode: 35 }) // end
+      expect(wrapper.vm.focusedDate).toEqual('2018-12-23')
+    })
+
+    test('PgUp/PgDown can be used to change months', () => {
+      wrapper = createDatePickerInstance({
+        mode: 'single',
+        dateOne: '2018-12-20',
+        disabledDates: ['2018-10-20'],
+      })
+      wrapper.setData({ showDatepicker: true })
+
+      wrapper.vm.handleKeyboardInput({ keyCode: 33 }) // PgUp
+      expect(wrapper.vm.focusedDate).toEqual('2018-11-20')
+      wrapper.vm.handleKeyboardInput({ keyCode: 34 }) // PgDn
+      expect(wrapper.vm.focusedDate).toEqual('2018-12-20')
+    })
+
+    test('enter key can be used to select the currently focused date', () => {
+      wrapper = createDatePickerInstance({
+        mode: 'single',
+        dateOne: '2018-12-20',
+        disabledDates: ['2018-10-20'],
+      })
+      wrapper.setData({ showDatepicker: true, focusedDate: '2018-12-25' })
+      wrapper.vm.handleKeyboardInput({ keyCode: 13, target: { tagName: 'TD' } }) // enter
+      expect(wrapper.vm.selectedDate1).toEqual('2018-12-25')
+    })
+
+    test('keyboard shortcut menu is shown when user presses ?', () => {
+      wrapper = createDatePickerInstance({
+        mode: 'single',
+        dateOne: '',
+        disabledDates: ['2018-10-20'],
+      })
+      wrapper.setData({ showDatepicker: true })
+      wrapper.vm.handleKeyboardInput({ keyCode: 191 }) // ?
+      expect(wrapper.vm.showKeyboardShortcutsMenu).toEqual(true)
+    })
+
+    test('esc key closes the currently opened modal', () => {
+      wrapper = createDatePickerInstance({
+        mode: 'single',
+        dateOne: '',
+        disabledDates: ['2018-10-20'],
+      })
+      wrapper.setData({ showDatepicker: true, showKeyboardShortcutsMenu: true })
+      wrapper.vm.handleKeyboardInput({ keyCode: 27 }) // esc
+      expect(wrapper.vm.showKeyboardShortcutsMenu).toEqual(false)
+      expect(wrapper.vm.showDatepicker).toEqual(true)
+
+      wrapper.vm.handleKeyboardInput({ keyCode: 27 }) // esc
+      expect(wrapper.vm.showKeyboardShortcutsMenu).toEqual(false)
+      expect(wrapper.vm.showDatepicker).toEqual(false)
+    })
+  })
+
   describe('gui', () => {
     test('months shows month and year', () => {
       wrapper = createDatePickerInstance({
