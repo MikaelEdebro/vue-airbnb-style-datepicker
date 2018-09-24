@@ -297,9 +297,9 @@ export default {
       alignRight: false,
       triggerPosition: {},
       triggerWrapperPosition: {},
-      viewportWidth: window.innerWidth + 'px',
-      isMobile: window.innerWidth < 768,
-      isTablet: window.innerWidth >= 768 && window.innerWidth <= 1024,
+      viewportWidth: undefined,
+      isMobile: undefined,
+      isTablet: undefined,
       triggerElement: undefined
     }
   },
@@ -446,7 +446,11 @@ export default {
     if (this.sundayFirst) {
       this.setSundayToFirstDayInWeek()
     }
-
+  },
+  mounted() {
+    this.viewportWidth = window.innerWidth + 'px'
+    this.isMobile = window.innerWidth < 768
+    this.isTablet = window.innerWidth >= 768 && window.innerWidth <= 1024
     this._handleWindowResizeEvent = debounce(() => {
       this.positionDatepicker()
       this.setStartDates()
@@ -460,8 +464,7 @@ export default {
     }
     window.addEventListener('resize', this._handleWindowResizeEvent)
     window.addEventListener('click', this._handleWindowClickEvent)
-  },
-  mounted() {
+
     this.triggerElement = this.isTest
       ? document.createElement('input')
       : document.getElementById(this.triggerElementId)
