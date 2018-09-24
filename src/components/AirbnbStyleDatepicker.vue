@@ -83,6 +83,29 @@
             </table>
           </div>
         </transition-group>
+        <div
+          :class="{ 'asd__keyboard-shortcuts-menu': true, 'asd__keyboard-shortcuts-show': showKeyboardShortcutsMenu}"
+          :style="keyboardShortcutsMenuStyles"
+        >
+          <div class="asd__keyboard-shortcuts-title">{{ texts.keyboardShortcuts }}</div>
+          <button
+            class="asd__keyboard-shortcuts-close"
+            ref="keyboard-shortcus-menu-close"
+            tabindex="0"
+            @click="closeKeyboardShortcutsMenu"
+            :aria-label="ariaLabels.closeKeyboardShortcutsMenu"
+          >
+            <div class="asd__mobile-close-icon" aria-hidden="true">X</div>
+          </button>
+          <ul class="asd__keyboard-shortcuts-list">
+            <li v-for="(shortcut, i) in keyboardShortcuts" :key="i">
+              <span class="asd__keyboard-shortcuts-symbol" :aria-label="shortcut.symbolDescription">
+                {{ shortcut.symbol }}
+              </span>
+              {{ shortcut.label }}
+            </li>
+          </ul>
+        </div>
       </div>
       <div class="asd__action-buttons" v-if="mode !== 'single' && showActionButtons">
         <button
@@ -97,6 +120,16 @@
           type="button"
         >
           {{ texts.apply }}
+        </button>
+      </div>
+      <div class="asd__keyboard-shortcuts-trigger-wrapper">
+        <button
+          class="asd__keyboard-shortcuts-trigger"
+          :aria-label="ariaLabels.openKeyboardShortcutsMenu"
+          tabindex="0"
+          @click="openKeyboardShortcutsMenu"
+        >
+          <span>?</span>
         </button>
       </div>
     </div>
@@ -143,6 +176,7 @@ export default {
       dateFormat: 'YYYY-MM-DD',
       dateLabelFormat: 'dddd, MMMM D, YYYY',
       showDatepicker: false,
+      showKeyboardShortcutsMenu: false,
       showMonths: 2,
       colors: {
         selected: '#00a699',
@@ -191,7 +225,30 @@ export default {
       daysShort: ['Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun'],
       texts: {
         apply: 'Apply',
-        cancel: 'Cancel'
+        cancel: 'Cancel',
+        keyboardShortcuts: 'Keyboard Shortcuts'
+      },
+      keyboardShortcuts: [
+        {symbol: '↵', label: 'Select the date in focus', symbolDescription: 'Enter key'},
+        {symbol: '←/→', label: 'Move backward (left) and forward (down) by one day.', symbolDescription: 'Left or right arrow keys'},
+        {symbol: '↑/↓', label: 'Move backward (up) and forward (down) by one week.', symbolDescription: 'Up or down arrow keys'},
+        {symbol: 'PgUp/PgDn', label: 'Switch months.', symbolDescription: 'PageUp and PageDown keys'},
+        {symbol: 'Home/End', label: 'Go to the first or last day of a week.', symbolDescription: 'Home or End keys'},
+        {symbol: 'Esc', label: 'Close this panel', symbolDescription: 'Escape key'},
+        {symbol: '?', label: 'Open this panel', symbolDescription: 'Question mark'}
+      ],
+      keys: {
+        arrowDown: 40,
+        arrowUp: 38,
+        arrowRight: 39,
+        arrowLeft: 37,
+        enter: 13,
+        pgUp:	33,
+        pgDn:	34,
+        end:	35,
+        home:	36,
+        questionMark: 191,
+        esc: 27,
       },
       startingDate: '',
       months: [],
@@ -244,6 +301,13 @@ export default {
         'margin-left': this.showFullscreen
           ? '-' + this.viewportWidth
           : `-${this.width}px`
+      }
+    },
+    keyboardShortcutsMenuStyles() {
+      return {
+        'left': this.showFullscreen
+          ? this.viewportWidth
+          : `${this.width}px`
       }
     },
     monthWidthStyles() {
@@ -657,6 +721,13 @@ export default {
     setHoverDate(date) {
       this.hoverDate = date
     },
+    setFocusedDate(date) {
+      const formattedDate = format(date, this.dateFormat)
+      this.focusedDate = formattedDate
+      // TODO: error handle...must be a better way to do this?
+      // why is it an array wtf?
+      this.$refs[formattedDate][0].focus({preventScroll:false})
+    },
     isToday(date) {
       return format(new Date(), this.dateFormat) === date
     },
@@ -769,6 +840,16 @@ export default {
       this.triggerElement.classList.remove('datepicker-open')
       this.$emit('closed')
     },
+    openKeyboardShortcutsMenu() {
+      this.showKeyboardShortcutsMenu = true
+      const shortcutMenuCloseBtn = this.$refs["keyboard-shortcus-menu-close"]
+      this.$nextTick(() => shortcutMenuCloseBtn.focus())
+    },
+    closeKeyboardShortcutsMenu() {
+      this.showKeyboardShortcutsMenu = false
+      this.$nextTick(() => this.setFocusedDate(this.focusedDate))
+
+    },
     apply() {
       this.$emit('apply')
       this.closeDatepicker()
@@ -854,6 +935,76 @@ $transition-time: 0.3s;
   }
   &__datepicker-header {
     position: relative;
+  }
+  &__keyboard-shortcuts-trigger-wrapper {
+    position: relative;
+  }
+  &__keyboard-shortcuts-trigger {
+    background-color: transparent;
+    cursor: pointer;
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    font: inherit;
+    border-width: 26px 33px 0px 0px;
+    border-top: 26px solid transparent;
+    border-right: 33px solid rgb(0, 166, 153);
+
+    span {
+      color: rgb(255, 255, 255);
+      position: absolute;
+      bottom: 0px;
+      right: -28px;
+    }
+  }
+  &__keyboard-shortcuts-show {
+    display: block !important;
+  }
+  &__keyboard-shortcuts-close {
+    background-color: transparent;
+    border: none;
+    position: absolute;
+    top: 7px;
+    right: 5px;
+    padding: 5px;
+    z-index: 100;
+    cursor: pointer;
+  }
+  &__keyboard-shortcuts-menu {
+    display: none;
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    z-index: 10;
+    overflow: auto;
+    background: rgb(255, 255, 255);
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(219, 219, 219);
+    border-image: initial;
+    border-radius: 2px;
+    padding: 22px;
+    margin: 33px;
+    text-align: left;
+  }
+  &__keyboard-shortcuts-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0px;
+  }
+  &__keyboard-shortcuts-list {
+    list-style: none;
+    margin: 6px 0px;
+    padding: 0px;
+    white-space: initial;
+  }
+  &__keyboard-shortcuts-symbol {
+    font-family: monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    background: rgb(242, 242, 242);
+    padding: 2px 6px;
   }
   &__change-month-button {
     position: absolute;
@@ -1023,6 +1174,7 @@ $transition-time: 0.3s;
     }
   }
   &__mobile-close {
+    border: none;
     position: absolute;
     top: 7px;
     right: 5px;
