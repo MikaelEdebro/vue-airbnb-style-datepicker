@@ -82,6 +82,48 @@ describe('AirbnbStyleDatepicker', () => {
   })
 
   describe('methods', () => {
+    test('isDateVisible returns correct values', () => {
+      wrapper = createDatePickerInstance({
+        mode: 'single',
+        dateOne: '2018-01-10',
+      })
+      expect(wrapper.vm.isDateVisible('2018-01-20')).toEqual(true)
+      expect(wrapper.vm.isDateVisible('2017-12-20')).toEqual(false)
+    })
+    test('isSameDate returns correct values', () => {
+      wrapper = createDatePickerInstance({
+        mode: 'single',
+        dateOne: '2018-11-01',
+      })
+      expect(wrapper.vm.isSameDate('2018-11-01', '2018-11-01T07:00:00.000Z')).toEqual(true)
+      expect(wrapper.vm.isSameDate('2018-01-01', '2019-01-01')).toEqual(false)
+    })
+    test('setFocusedDate formats and sets date', () => {
+      wrapper = createDatePickerInstance({
+        mode: 'single',
+        dateOne: '2018-11-10',
+      })
+
+      wrapper.vm.setFocusedDate( '2018-11-01T07:00:00.000Z')
+      expect(wrapper.vm.focusedDate).toEqual('2018-11-01')
+    })
+    test('resetFocusedDate moves the focused date forward/backward to be visible', () => {
+      wrapper = createDatePickerInstance({
+        mode: 'single',
+        dateOne: '2018-12-10',
+        focusedDate: '2018-11-10'
+      })
+      wrapper.vm.resetFocusedDate(true)
+      expect(wrapper.vm.focusedDate).toEqual('2018-12-10')
+
+      wrapper = createDatePickerInstance({
+        mode: 'single',
+        dateOne: '2018-09-10',
+        focusedDate: '2018-10-10'
+      })
+      wrapper.vm.resetFocusedDate(false)
+      expect(wrapper.vm.focusedDate).toEqual('2018-09-10')
+    })
     test('getMonth() returns correct values', () => {
       let month = wrapper.vm.getMonth('2017-12-01')
       expect(month.monthName).toBe('December')
@@ -239,14 +281,12 @@ describe('AirbnbStyleDatepicker', () => {
 
       wrapper.vm.handleKeyboardInput({ keyCode: 37 }) // left
       expect(wrapper.vm.focusedDate).toEqual('2018-12-20')
-
     })
 
     test('Home/End can be used to jump to start/end of week', () => {
       wrapper = createDatePickerInstance({
         mode: 'single',
         dateOne: '2018-12-20',
-        disabledDates: ['2018-10-20'],
       })
       wrapper.setData({ showDatepicker: true })
 
@@ -256,11 +296,35 @@ describe('AirbnbStyleDatepicker', () => {
       expect(wrapper.vm.focusedDate).toEqual('2018-12-23')
     })
 
+    test('keyboard navigation updates current month as needed', () => {
+      wrapper = createDatePickerInstance({
+        mode: 'single',
+        dateOne: '2018-11-01',
+      })
+      wrapper.setData({ showDatepicker: true })
+      expect(wrapper.vm.visibleMonths[0]).toEqual('2018-11-01')
+
+      wrapper.vm.handleKeyboardInput({ keyCode: 37 }) // left
+      expect(wrapper.vm.focusedDate).toEqual('2018-10-31')
+      expect(wrapper.vm.visibleMonths[0]).toEqual('2018-10-01')
+
+      wrapper.vm.handleKeyboardInput({ keyCode: 39 }) // right
+      expect(wrapper.vm.focusedDate).toEqual('2018-11-01')
+      expect(wrapper.vm.visibleMonths[0]).toEqual('2018-11-01')
+
+      wrapper.vm.handleKeyboardInput({ keyCode: 35 }) // end
+      expect(wrapper.vm.focusedDate).toEqual('2018-11-04')
+      expect(wrapper.vm.visibleMonths[0]).toEqual('2018-11-01')
+
+      wrapper.vm.handleKeyboardInput({ keyCode: 36 }) // home
+      expect(wrapper.vm.focusedDate).toEqual('2018-10-29')
+      expect(wrapper.vm.visibleMonths[0]).toEqual('2018-10-01')
+    })
+
     test('PgUp/PgDown can be used to change months', () => {
       wrapper = createDatePickerInstance({
         mode: 'single',
         dateOne: '2018-12-20',
-        disabledDates: ['2018-10-20'],
       })
       wrapper.setData({ showDatepicker: true })
 
@@ -274,7 +338,6 @@ describe('AirbnbStyleDatepicker', () => {
       wrapper = createDatePickerInstance({
         mode: 'single',
         dateOne: '2018-12-20',
-        disabledDates: ['2018-10-20'],
       })
       wrapper.setData({ showDatepicker: true, focusedDate: '2018-12-25' })
       wrapper.vm.handleKeyboardInput({ keyCode: 13, target: { tagName: 'TD' } }) // enter
@@ -285,7 +348,6 @@ describe('AirbnbStyleDatepicker', () => {
       wrapper = createDatePickerInstance({
         mode: 'single',
         dateOne: '',
-        disabledDates: ['2018-10-20'],
       })
       wrapper.setData({ showDatepicker: true })
       wrapper.vm.handleKeyboardInput({ keyCode: 191 }) // ?
@@ -296,7 +358,6 @@ describe('AirbnbStyleDatepicker', () => {
       wrapper = createDatePickerInstance({
         mode: 'single',
         dateOne: '',
-        disabledDates: ['2018-10-20'],
       })
       wrapper.setData({ showDatepicker: true, showKeyboardShortcutsMenu: true })
       wrapper.vm.handleKeyboardInput({ keyCode: 27 }) // esc
@@ -306,6 +367,23 @@ describe('AirbnbStyleDatepicker', () => {
       wrapper.vm.handleKeyboardInput({ keyCode: 27 }) // esc
       expect(wrapper.vm.showKeyboardShortcutsMenu).toEqual(false)
       expect(wrapper.vm.showDatepicker).toEqual(false)
+    })
+
+    test('resetFocusedDate is called if next/previous month buttons pushes focusedDate offscreen', () => {
+      wrapper = createDatePickerInstance({
+        mode: 'single',
+        dateOne: '2018-10-20',
+      })
+      let arg
+      const resetFocusedDateSpy = (bool) => {
+        arg = bool
+      }
+      wrapper.setMethods({ resetFocusedDate: resetFocusedDateSpy })
+      wrapper.vm.previousMonth()
+      expect(arg).toEqual(false)
+      arg = undefined
+      wrapper.vm.nextMonth()
+      expect(arg).toEqual(true)
     })
   })
 

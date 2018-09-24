@@ -584,12 +584,12 @@ export default {
         }
 
       } else if (this.shouldHandleInput(event, this.keys.pgUp)) {
-        this.previousMonth()
         this.setFocusedDate(subMonths(this.focusedDate, 1))
+        this.previousMonth()
 
       } else if (this.shouldHandleInput(event, this.keys.pgDn)) {
-        this.nextMonth()
         this.setFocusedDate(addMonths(this.focusedDate, 1))
+        this.nextMonth()
 
       } else if (this.shouldHandleInput(event, this.keys.home)) {
         const newDate = startOfWeek(this.focusedDate, {
@@ -809,7 +809,8 @@ export default {
         const targetMonth = this.visibleMonths[visibleMonthIdx]
         const monthIdx = getMonth(targetMonth)
         const year = getYear(targetMonth)
-        this.focusedDate = setYear(setMonth(this.focusedDate, monthIdx), year)
+        const newFocusedDate = setYear(setMonth(this.focusedDate, monthIdx), year)
+        this.focusedDate = format(newFocusedDate, this.dateFormat)
       }
     },
     isToday(date) {
@@ -881,12 +882,9 @@ export default {
         this.months[this.months.length - 1].firstDateOfMonth
       )
       this.months.push(this.getMonth(this.startingDate))
-
-      setTimeout(() => {
-        this.months.splice(0, 1)
-        this.$emit('next-month', this.visibleMonths)
-        this.resetFocusedDate(true)
-      }, 100)
+      this.months.splice(0, 1)
+      this.$emit('next-month', this.visibleMonths)
+      this.resetFocusedDate(true)
     },
     subtractMonths(date) {
       return format(subMonths(date, 1), this.dateFormat)
