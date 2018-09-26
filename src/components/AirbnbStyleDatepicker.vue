@@ -102,9 +102,7 @@
           </button>
           <ul class="asd__keyboard-shortcuts-list">
             <li v-for="(shortcut, i) in keyboardShortcuts" :key="i">
-              <span class="asd__keyboard-shortcuts-symbol" :aria-label="shortcut.symbolDescription">
-                {{ shortcut.symbol }}
-              </span>
+              <span class="asd__keyboard-shortcuts-symbol" :aria-label="shortcut.symbolDescription">{{ shortcut.symbol }}</span>
               {{ shortcut.label }}
             </li>
           </ul>
@@ -1092,6 +1090,7 @@ $transition-time: 0.3s;
     text-transform: uppercase;
     background: rgb(242, 242, 242);
     padding: 2px 6px;
+    margin-right: 4px;
   }
   &__change-month-button {
     position: absolute;
