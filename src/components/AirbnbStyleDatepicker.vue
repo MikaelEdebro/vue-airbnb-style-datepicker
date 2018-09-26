@@ -1219,6 +1219,7 @@ $transition-time: 0.3s;
   &__action-buttons {
     min-height: 50px;
     padding-top: 10px;
+    margin-bottom: 12px;
     button {
       display: block;
       position: relative;
