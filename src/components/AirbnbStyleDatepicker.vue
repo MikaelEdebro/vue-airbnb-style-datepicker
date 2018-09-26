@@ -62,7 +62,7 @@
                       'asd__day--enabled': dayNumber !== 0,
                       'asd__day--empty': dayNumber === 0,
                       'asd__day--disabled': isDisabled(fullDate),
-                      'asd__day--selected': selectedDate1 === fullDate || selectedDate2 === fullDate,
+                      'asd__day--selected': fullDate && (selectedDate1 === fullDate || selectedDate2 === fullDate),
                       'asd__day--in-range': isInRange(fullDate),
                       'asd__day--today': fullDate && isToday(fullDate),
                       'asd__selected-date-one': fullDate && fullDate === selectedDate1,
