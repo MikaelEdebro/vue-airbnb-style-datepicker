@@ -922,6 +922,7 @@ export default {
         return
       }
       this.showDatepicker = false
+      this.showKeyboardShortcutsMenu = false
       this.triggerElement.classList.remove('datepicker-open')
       this.$emit('closed')
     },
