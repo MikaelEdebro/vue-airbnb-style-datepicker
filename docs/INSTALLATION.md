@@ -105,15 +105,18 @@ NB: Note that you need to wrap the datepicker in a `<div class="datepicker-trigg
 | days        | Name of days in your language. **Must start with monday**<br>Type: Array<string>                                         |
 | daysShort   | Short name of days in your language (what's shown in the days legend). **Must start with monday**<br>Type: Array<string> |
 | monthNames  | Names of months in your language.<br>Type: Array<string>                                                                 |
+| dateLabelFormat | Used to override the formatting string used for rendering aria labels. Defaults to 'dddd, MMMM D, YYYY'. <br>Type: String |
 | colors      | Override default colors. Use hex values (#efefef)<br>Type: Object                                                        |
-| texts       | Override default texts (currently only "Cancel" and "Apply")<br>Type: Object                                             |
+| texts       | Override default texts (currently only "Cancel", "Apply", and "Keyboard shortcuts")<br>Type: Object                                             |
 | ariaLabels | Override default aria-label texts. Current options include chooseDate, chooseStartDate, chooseEndDate, selectedDate, unavailableDate, previousMonth, nextMonth, close, openKeyboardShortcutsMenu, and openKeyboardShortcutsMenu. Labels that end in `Date` are functions which accept a date string for constructing the label text, the rest of the labels are plain strings.<br>Type: Object  |
+| keyboardShortcuts | Override the text/labels used inside the keyboard shortcuts menu | <br> Type: Array<object> |
 
 _Example with all available options_:
 
 ```javascript
 Vue.use(AirBnbStyleDatepicker, {
   sundayFirst: false,
+  dateLabelFormat: 'dddd, MMMM D, YYYY',
   days: ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'],
   daysShort: ['Mån', 'Tis', 'Ons', 'Tors', 'Fre', 'Lör', 'Sön'],
   monthNames: [
@@ -141,19 +144,29 @@ Vue.use(AirBnbStyleDatepicker, {
   texts: {
     apply: 'Tillämpa',
     cancel: 'Avbryt',
+    keyboardShortcuts: 'Tangentbordsgenvägar',
   },
   ariaLabels: {
     chooseDate: ({ date }) => date,
-    chooseStartDate: ({ date }) => `Choose ${date} as your start date.`,
-    chooseEndDate: ({ date }) => `Choose ${date} as your end date.`,
-    selectedDate: ({ date }) => `Selected. ${date}`,
-    unavailableDate: ({ date }) => `Not available. ${date}`,
-    previousMonth: 'Move backward to switch to the previous month.',
-    nextMonth: 'Move forward to switch to the next month.',
-    closeDatepicker: 'Close calendar',
-    openKeyboardShortcutsMenu: 'Open keyboard shortcut menu.',
-    openKeyboardShortcutsMenu: 'Open keyboard shortcut menu.'
+    chooseStartDate: ({ date }) => `Välja ${date} som startdatum.`,
+    chooseEndDate: ({ date }) => `Choose ${date} som ditt slutdatum.`,
+    selectedDate: ({ date }) => `Vald. ${date}`,
+    unavailableDate: ({ date }) => `Inte tillgänglig. ${date}`,
+    previousMonth: 'Flytta bakåt för att växla till föregående månad.',
+    nextMonth: 'Flytta framåt för att växla till nästa månad.',
+    closeDatepicker: 'Stäng kalender',
+    openKeyboardShortcutsMenu: 'Öppna snabbtangentmenyn.',
+    closeKeyboardShortcutsMenu: 'Stäng snabbtangentmenyn.'
   },
+  keyboardShortcuts: [
+    {symbol: '↵', label: 'Välj datum i fokus', symbolDescription: 'Enter-tangent'},
+    {symbol: '←/→', label: 'Flytta bakåt (vänster) och framåt (nedåt) med en dag.', symbolDescription: 'Vänster eller höger piltangenter'},
+    {symbol: '↑/↓', label: 'Flytta bakåt (upp) och framåt (ner) med en vecka.', symbolDescription: 'Uppåt eller nedåtpil'},
+    {symbol: 'PgUp/PgDn', label: 'Byt månader.', symbolDescription: 'PageUp och PageDown-tangenterna'},
+    {symbol: 'Home/End', label: 'Gå till den första eller sista dagen i en vecka.', symbolDescription: 'Hem- eller Avsluta-tangenter'},
+    {symbol: 'Esc', label: 'Stäng den här panelen', symbolDescription: 'Escape-nyckel'},
+    {symbol: '?', label: 'Öppna den här panelen', symbolDescription: 'Frågetecken'}
+  ],
 })
 ```
 
