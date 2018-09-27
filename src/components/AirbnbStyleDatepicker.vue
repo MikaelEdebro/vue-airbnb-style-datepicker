@@ -57,7 +57,7 @@
                     :data-date="fullDate"
                     :ref="`date-${fullDate}`"
                     :tabindex="isDateVisible(fullDate) && isSameDate(focusedDate, fullDate) ? 0 : -1"
-                    :aria-label="getAriaLabelForDate(fullDate)"
+                    :aria-label="isDateVisible(fullDate) ? getAriaLabelForDate(fullDate) : false"
                     :class="{
                       'asd__day--enabled': dayNumber !== 0,
                       'asd__day--empty': dayNumber === 0,
