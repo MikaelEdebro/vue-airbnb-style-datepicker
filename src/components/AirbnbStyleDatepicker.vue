@@ -87,6 +87,7 @@
           </div>
         </transition-group>
         <div
+          v-if="showShortcutsMenuTrigger"
           :class="{ 'asd__keyboard-shortcuts-menu': true, 'asd__keyboard-shortcuts-show': showKeyboardShortcutsMenu}"
           :style="keyboardShortcutsMenuStyles"
         >
@@ -124,7 +125,10 @@
           {{ texts.apply }}
         </button>
       </div>
-      <div class="asd__keyboard-shortcuts-trigger-wrapper">
+      <div
+        v-if="showShortcutsMenuTrigger"
+        class="asd__keyboard-shortcuts-trigger-wrapper"
+      >
         <button
           class="asd__keyboard-shortcuts-trigger"
           :aria-label="ariaLabels.openKeyboardShortcutsMenu"
@@ -179,6 +183,7 @@ export default {
     mobileHeader: { type: String },
     disabledDates: { type: Array, default: () => [] },
     showActionButtons: { type: Boolean, default: true },
+    showShortcutsMenuTrigger: { type: Boolean, default: true },
     isTest: {
       type: Boolean,
       default: () => process.env.NODE_ENV === 'test'
