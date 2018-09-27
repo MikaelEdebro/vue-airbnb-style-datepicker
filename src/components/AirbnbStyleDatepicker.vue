@@ -663,7 +663,7 @@ export default {
     },
     setupDatepicker() {
       if (this.$options.ariaLabels) {
-        this.ariaLabels = copyObkect(this.$options.ariaLabels)
+        this.ariaLabels = copyObject(this.$options.ariaLabels)
       }
       if (this.$options.keyboardShortcuts) {
         this.keyboardShortcuts = copyObject(this.$options.keyboardShortcuts)
