@@ -88,6 +88,8 @@ describe('AirbnbStyleDatepicker', () => {
         dateOne: '2018-01-10',
       })
       expect(wrapper.vm.isDateVisible('2018-01-20')).toEqual(true)
+      expect(wrapper.vm.isDateVisible('2018-02-28')).toEqual(true)
+      expect(wrapper.vm.isDateVisible('2018-01-01')).toEqual(true)
       expect(wrapper.vm.isDateVisible('2017-12-20')).toEqual(false)
     })
     test('isSameDate returns correct values', () => {

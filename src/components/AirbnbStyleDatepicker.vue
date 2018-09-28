@@ -863,8 +863,8 @@ export default {
       if (!date) {
         return false
       }
-      const start = this.visibleMonths[0]
-      const end = lastDayOfMonth(this.visibleMonths[this.monthsToShow - 1])
+      const start = subDays(this.visibleMonths[0], 1)
+      const end = addDays(lastDayOfMonth(this.visibleMonths[this.monthsToShow - 1]), 1)
       return isAfter(date, start) && isBefore(date, end)
     },
     isDateDisabled(date) {
