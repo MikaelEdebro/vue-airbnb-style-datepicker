@@ -9,7 +9,7 @@ const localVue = createLocalVue()
 localVue.directive('click-outside', ClickOutside)
 let h
 
-const createDatePickerInstance = (propsData, options) => {
+const createDatePickerInstance = (propsData, options, slots) => {
   if (!propsData) {
     propsData = {
       dateOne: '2018-12-20',
@@ -27,6 +27,7 @@ const createDatePickerInstance = (propsData, options) => {
   const wrapper = shallow(component, {
     localVue,
     propsData,
+    slots,
   })
   h = new TestHelpers(wrapper, expect)
   return wrapper
@@ -510,6 +511,16 @@ describe('AirbnbStyleDatepicker', () => {
       wrapper.vm.triggerElement.dispatchEvent(new Event('focus'))
       wrapper.update()
       expect(wrapper.findAll('.asd__day--today').length).toBe(1)
+    })
+    test('svg icons can be overridden by passing a slot', () => {
+      wrapper = createDatePickerInstance({}, {}, {
+        'close-icon': '<span id="close-override">x</span>',
+        'previous-month-icon': '<span id="previous-override">&larr;</span>',
+        'next-month-icon': '<span id="next-override">&rarr;</span>',
+      })
+      expect(wrapper.find('#close-override').exists()).toBe(true)
+      expect(wrapper.find('#previous-override').exists()).toBe(true)
+      expect(wrapper.find('#next-override').exists()).toBe(true)
     })
   })
 })

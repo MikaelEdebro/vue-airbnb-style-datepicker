@@ -10,19 +10,31 @@
     >
       <div class="asd__mobile-header asd__mobile-only" v-if="showFullscreen">
         <button class="asd__mobile-close" @click="closeDatepicker" :aria-label="ariaLabels.closeDatepicker">
-          <div class="asd__mobile-close-icon" aria-hidden="true">X</div>
+          <slot
+            v-if="$slots['close-icon']"
+            name="close-icon"
+          ></slot>
+          <div v-else class="asd__mobile-close-icon" aria-hidden="true">X</div>
         </button>
         <h3>{{ mobileHeader || mobileHeaderFallback }}</h3>
       </div>
       <div class="asd__datepicker-header">
         <div class="asd__change-month-button asd__change-month-button--previous">
           <button @click="previousMonth" type="button" :aria-label="ariaLabels.previousMonth">
-            <svg viewBox="0 0 1000 1000"><path d="M336.2 274.5l-210.1 210h805.4c13 0 23 10 23 23s-10 23-23 23H126.1l210.1 210.1c11 11 11 21 0 32-5 5-10 7-16 7s-11-2-16-7l-249.1-249c-11-11-11-21 0-32l249.1-249.1c21-21.1 53 10.9 32 32z" /></svg>
+            <slot
+              v-if="$slots['previous-month-icon']"
+              name="previous-month-icon"
+            ></slot>
+            <svg v-else viewBox="0 0 1000 1000"><path d="M336.2 274.5l-210.1 210h805.4c13 0 23 10 23 23s-10 23-23 23H126.1l210.1 210.1c11 11 11 21 0 32-5 5-10 7-16 7s-11-2-16-7l-249.1-249c-11-11-11-21 0-32l249.1-249.1c21-21.1 53 10.9 32 32z" /></svg>
           </button>
         </div>
         <div class="asd__change-month-button asd__change-month-button--next">
           <button @click="nextMonth" type="button" :aria-label="ariaLabels.nextMonth">
-            <svg viewBox="0 0 1000 1000"><path d="M694.4 242.4l249.1 249.1c11 11 11 21 0 32L694.4 772.7c-5 5-10 7-16 7s-11-2-16-7c-11-11-11-21 0-32l210.1-210.1H67.1c-13 0-23-10-23-23s10-23 23-23h805.4L662.4 274.5c-21-21.1 11-53.1 32-32.1z" /></svg>
+            <slot
+              v-if="$slots['next-month-icon']"
+              name="next-month-icon"
+            ></slot>
+            <svg v-else viewBox="0 0 1000 1000"><path d="M694.4 242.4l249.1 249.1c11 11 11 21 0 32L694.4 772.7c-5 5-10 7-16 7s-11-2-16-7c-11-11-11-21 0-32l210.1-210.1H67.1c-13 0-23-10-23-23s10-23 23-23h805.4L662.4 274.5c-21-21.1 11-53.1 32-32.1z" /></svg>
           </button>
         </div>
 
@@ -99,7 +111,11 @@
             @click="closeKeyboardShortcutsMenu"
             :aria-label="ariaLabels.closeKeyboardShortcutsMenu"
           >
-            <div class="asd__mobile-close-icon" aria-hidden="true">X</div>
+            <slot
+              v-if="$slots['close-icon']"
+              name="close-icon"
+            ></slot>
+            <div v-else class="asd__mobile-close-icon" aria-hidden="true">X</div>
           </button>
           <ul class="asd__keyboard-shortcuts-list">
             <li v-for="(shortcut, i) in keyboardShortcuts" :key="i">
