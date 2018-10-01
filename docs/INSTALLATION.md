@@ -105,14 +105,18 @@ NB: Note that you need to wrap the datepicker in a `<div class="datepicker-trigg
 | days        | Name of days in your language. **Must start with monday**<br>Type: Array<string>                                         |
 | daysShort   | Short name of days in your language (what's shown in the days legend). **Must start with monday**<br>Type: Array<string> |
 | monthNames  | Names of months in your language.<br>Type: Array<string>                                                                 |
+| dateLabelFormat | Used to override the formatting string used for rendering aria labels. Defaults to 'dddd, MMMM D, YYYY'. <br>Type: String |
 | colors      | Override default colors. Use hex values (#efefef)<br>Type: Object                                                        |
-| texts       | Override default texts (currently only "Cancel" and "Apply")<br>Type: Object                                             |
+| texts       | Override default texts (currently only "Cancel", "Apply", and "Keyboard shortcuts")<br>Type: Object                                             |
+| ariaLabels | Override default aria-label texts. Current options include chooseDate, chooseStartDate, chooseEndDate, selectedDate, unavailableDate, previousMonth, nextMonth, close, openKeyboardShortcutsMenu, and openKeyboardShortcutsMenu. Labels that end in `Date` are functions which accept a date string for constructing the label text, the rest of the labels are plain strings.<br>Type: Object  |
+| keyboardShortcuts | Override the text/labels used inside the keyboard shortcuts menu | <br> Type: Array<object> |
 
 _Example with all available options_:
 
 ```javascript
 Vue.use(AirBnbStyleDatepicker, {
   sundayFirst: false,
+  dateLabelFormat: 'dddd, MMMM D, YYYY',
   days: ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'],
   daysShort: ['Mån', 'Tis', 'Ons', 'Tors', 'Fre', 'Lör', 'Sön'],
   monthNames: [
@@ -140,11 +144,33 @@ Vue.use(AirBnbStyleDatepicker, {
   texts: {
     apply: 'Tillämpa',
     cancel: 'Avbryt',
+    keyboardShortcuts: 'Tangentbordsgenvägar',
   },
+  ariaLabels: {
+    chooseDate: ({ date }) => date,
+    chooseStartDate: ({ date }) => `Välja ${date} som startdatum.`,
+    chooseEndDate: ({ date }) => `Choose ${date} som ditt slutdatum.`,
+    selectedDate: ({ date }) => `Vald. ${date}`,
+    unavailableDate: ({ date }) => `Inte tillgänglig. ${date}`,
+    previousMonth: 'Flytta bakåt för att växla till föregående månad.',
+    nextMonth: 'Flytta framåt för att växla till nästa månad.',
+    closeDatepicker: 'Stäng kalender',
+    openKeyboardShortcutsMenu: 'Öppna snabbtangentmenyn.',
+    closeKeyboardShortcutsMenu: 'Stäng snabbtangentmenyn.'
+  },
+  keyboardShortcuts: [
+    {symbol: '↵', label: 'Välj datum i fokus', symbolDescription: 'Enter-tangent'},
+    {symbol: '←/→', label: 'Flytta bakåt (vänster) och framåt (nedåt) med en dag.', symbolDescription: 'Vänster eller höger piltangenter'},
+    {symbol: '↑/↓', label: 'Flytta bakåt (upp) och framåt (ner) med en vecka.', symbolDescription: 'Uppåt eller nedåtpil'},
+    {symbol: 'PgUp/PgDn', label: 'Byt månader.', symbolDescription: 'PageUp och PageDown-tangenterna'},
+    {symbol: 'Home/End', label: 'Gå till den första eller sista dagen i en vecka.', symbolDescription: 'Hem- eller Avsluta-tangenter'},
+    {symbol: 'Esc', label: 'Stäng den här panelen', symbolDescription: 'Escape-nyckel'},
+    {symbol: '?', label: 'Öppna den här panelen', symbolDescription: 'Frågetecken'}
+  ],
 })
 ```
 
-## [Properties & events for `<AirbnbStyleDatepicker />`](#props-and-events)
+## [Properties, events & slots for `<AirbnbStyleDatepicker />`](#props-and-events)
 
 | Prop name          | Value                                                                                                                                                                                                                            |
 | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -163,6 +189,7 @@ Vue.use(AirBnbStyleDatepicker, {
 | inline             | Use inline mode (datepicker always showing)<br>Type: Boolean, Default: false                                                                                                                                                     |
 | disabledDates      | Disable specific dates.<br>Type: Array<string>                                                                                                                                                                                   |
 | showActionButtons  | Show/hide action buttons ("Apply", "Cancel")<br>Type: Boolean, Default: false                                                                                                                                                    |
+| showShortcutsMenuTrigger | Show/hide the keyboard shortcuts helper menu trigger ("?")<br>Type: Boolean, Default: true |
 | trigger            | To programmatically show datepicker. For example if you want to open the datepicker by clicking some other HTML element. You manually need to reset this variable though in the @closed method.<br>Type: Boolean, Default: false |
 | @date-one-selected | Event emitted when second date is selected.<br>Required                                                                                                                                                                          |
 | @date-two-selected | Event emitted when second date is selected.<br>Required if using `mode="range"`                                                                                                                                                  |
@@ -172,6 +199,9 @@ Vue.use(AirBnbStyleDatepicker, {
 | @apply             | Event emitted when user clicks "Apply"                                                                                                                                                                                           |
 | @previous-month    | Event emitted when user changes to previous month. Returns array with first date in visible months. `['2019-09-01', '2019-10-01']`                                                                                               |
 | @next-month        | Event emitted when user changes to next month. Returns array with first date in visible months. `['2019-09-01', '2019-10-01']`                                                                                                   |
+| previous-month-icon | Optional, slot used to override the previous month left arrow icon. Uses default icon if nothing is passed. |
+| next-month-icon | Optional, slot used to override the next month right arrow icon. Uses default icon if nothing is passed. |
+| close-icon | Optional, slot used to override the modal close X icon. Uses default icon if nothing is passed. |
 
 <br><br> _Example with all properties (not recommended, only to show values)_:
 

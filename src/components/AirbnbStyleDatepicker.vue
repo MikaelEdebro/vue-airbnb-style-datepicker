@@ -9,20 +9,32 @@
       v-click-outside="handleClickOutside"
     >
       <div class="asd__mobile-header asd__mobile-only" v-if="showFullscreen">
-        <div class="asd__mobile-close" @click="closeDatepicker">
-          <div class="asd__mobile-close-icon">X</div>
-        </div>
+        <button class="asd__mobile-close" @click="closeDatepicker" :aria-label="ariaLabels.closeDatepicker">
+          <slot
+            v-if="$slots['close-icon']"
+            name="close-icon"
+          ></slot>
+          <div v-else class="asd__mobile-close-icon" aria-hidden="true">X</div>
+        </button>
         <h3>{{ mobileHeader || mobileHeaderFallback }}</h3>
       </div>
       <div class="asd__datepicker-header">
         <div class="asd__change-month-button asd__change-month-button--previous">
-          <button @click="previousMonth" type="button">
-            <svg viewBox="0 0 1000 1000"><path d="M336.2 274.5l-210.1 210h805.4c13 0 23 10 23 23s-10 23-23 23H126.1l210.1 210.1c11 11 11 21 0 32-5 5-10 7-16 7s-11-2-16-7l-249.1-249c-11-11-11-21 0-32l249.1-249.1c21-21.1 53 10.9 32 32z" /></svg>
+          <button @click="previousMonth" type="button" :aria-label="ariaLabels.previousMonth">
+            <slot
+              v-if="$slots['previous-month-icon']"
+              name="previous-month-icon"
+            ></slot>
+            <svg v-else viewBox="0 0 1000 1000"><path d="M336.2 274.5l-210.1 210h805.4c13 0 23 10 23 23s-10 23-23 23H126.1l210.1 210.1c11 11 11 21 0 32-5 5-10 7-16 7s-11-2-16-7l-249.1-249c-11-11-11-21 0-32l249.1-249.1c21-21.1 53 10.9 32 32z" /></svg>
           </button>
         </div>
         <div class="asd__change-month-button asd__change-month-button--next">
-          <button @click="nextMonth" type="button">
-            <svg viewBox="0 0 1000 1000"><path d="M694.4 242.4l249.1 249.1c11 11 11 21 0 32L694.4 772.7c-5 5-10 7-16 7s-11-2-16-7c-11-11-11-21 0-32l210.1-210.1H67.1c-13 0-23-10-23-23s10-23 23-23h805.4L662.4 274.5c-21-21.1 11-53.1 32-32.1z" /></svg>
+          <button @click="nextMonth" type="button" :aria-label="ariaLabels.nextMonth">
+            <slot
+              v-if="$slots['next-month-icon']"
+              name="next-month-icon"
+            ></slot>
+            <svg v-else viewBox="0 0 1000 1000"><path d="M694.4 242.4l249.1 249.1c11 11 11 21 0 32L694.4 772.7c-5 5-10 7-16 7s-11-2-16-7c-11-11-11-21 0-32l210.1-210.1H67.1c-13 0-23-10-23-23s10-23 23-23h805.4L662.4 274.5c-21-21.1 11-53.1 32-32.1z" /></svg>
           </button>
         </div>
 
@@ -55,11 +67,14 @@
                     v-for="({fullDate, dayNumber}, index) in week"
                     :key="index + '_' + dayNumber"
                     :data-date="fullDate"
+                    :ref="`date-${fullDate}`"
+                    :tabindex="isDateVisible(fullDate) && isSameDate(focusedDate, fullDate) ? 0 : -1"
+                    :aria-label="isDateVisible(fullDate) ? getAriaLabelForDate(fullDate) : false"
                     :class="{
                       'asd__day--enabled': dayNumber !== 0,
                       'asd__day--empty': dayNumber === 0,
                       'asd__day--disabled': isDisabled(fullDate),
-                      'asd__day--selected': selectedDate1 === fullDate || selectedDate2 === fullDate,
+                      'asd__day--selected': fullDate && (selectedDate1 === fullDate || selectedDate2 === fullDate),
                       'asd__day--in-range': isInRange(fullDate),
                       'asd__day--today': fullDate && isToday(fullDate),
                       'asd__selected-date-one': fullDate && fullDate === selectedDate1,
@@ -72,6 +87,7 @@
                       class="asd__day-button"
                       type="button"
                       v-if="dayNumber"
+                      tabindex="-1"
                       :date="fullDate"
                       :disabled="isDisabled(fullDate)"
                       @click="() => { selectDate(fullDate) }"
@@ -82,10 +98,61 @@
             </table>
           </div>
         </transition-group>
+        <div
+          v-if="showShortcutsMenuTrigger"
+          :class="{ 'asd__keyboard-shortcuts-menu': true, 'asd__keyboard-shortcuts-show': showKeyboardShortcutsMenu}"
+          :style="keyboardShortcutsMenuStyles"
+        >
+          <div class="asd__keyboard-shortcuts-title">{{ texts.keyboardShortcuts }}</div>
+          <button
+            class="asd__keyboard-shortcuts-close"
+            ref="keyboard-shortcus-menu-close"
+            tabindex="0"
+            @click="closeKeyboardShortcutsMenu"
+            :aria-label="ariaLabels.closeKeyboardShortcutsMenu"
+          >
+            <slot
+              v-if="$slots['close-icon']"
+              name="close-icon"
+            ></slot>
+            <div v-else class="asd__mobile-close-icon" aria-hidden="true">X</div>
+          </button>
+          <ul class="asd__keyboard-shortcuts-list">
+            <li v-for="(shortcut, i) in keyboardShortcuts" :key="i">
+              <span class="asd__keyboard-shortcuts-symbol" :aria-label="shortcut.symbolDescription">{{ shortcut.symbol }}</span>
+              {{ shortcut.label }}
+            </li>
+          </ul>
+        </div>
       </div>
       <div class="asd__action-buttons" v-if="mode !== 'single' && showActionButtons">
-        <button @click="closeDatepickerCancel" type="button">{{ texts.cancel }}</button>
-        <button @click="apply" :style="{color: colors.selected}" type="button">{{ texts.apply }}</button>
+        <button
+          @click="closeDatepickerCancel"
+          type="button"
+        >
+          {{ texts.cancel }}
+        </button>
+        <button
+          ref="apply-button"
+          @click="apply"
+          :style="{color: colors.selected}"
+          type="button"
+        >
+          {{ texts.apply }}
+        </button>
+      </div>
+      <div
+        v-if="showShortcutsMenuTrigger"
+        class="asd__keyboard-shortcuts-trigger-wrapper"
+      >
+        <button
+          class="asd__keyboard-shortcuts-trigger"
+          :aria-label="ariaLabels.openKeyboardShortcutsMenu"
+          tabindex="0"
+          @click="openKeyboardShortcutsMenu"
+        >
+          <span>?</span>
+        </button>
       </div>
     </div>
   </transition>
@@ -96,6 +163,19 @@ import format from 'date-fns/format'
 import subMonths from 'date-fns/sub_months'
 import addMonths from 'date-fns/add_months'
 import getDaysInMonth from 'date-fns/get_days_in_month'
+import lastDayOfMonth from 'date-fns/last_day_of_month'
+import getMonth from 'date-fns/get_month'
+import setMonth from 'date-fns/set_month'
+import getYear from 'date-fns/get_year'
+import setYear from 'date-fns/set_year'
+import isSameMonth from 'date-fns/is_same_month'
+import isSameDay from 'date-fns/is_same_day'
+import addDays from 'date-fns/add_days'
+import subDays from 'date-fns/sub_days'
+import addWeeks from 'date-fns/add_weeks'
+import subWeeks from 'date-fns/sub_weeks'
+import startOfWeek from 'date-fns/start_of_week'
+import endOfWeek from 'date-fns/end_of_week'
 import isBefore from 'date-fns/is_before'
 import isAfter from 'date-fns/is_after'
 import isValid from 'date-fns/is_valid'
@@ -119,6 +199,7 @@ export default {
     mobileHeader: { type: String },
     disabledDates: { type: Array, default: () => [] },
     showActionButtons: { type: Boolean, default: true },
+    showShortcutsMenuTrigger: { type: Boolean, default: true },
     isTest: {
       type: Boolean,
       default: () => process.env.NODE_ENV === 'test'
@@ -129,7 +210,9 @@ export default {
     return {
       wrapperId: 'airbnb-style-datepicker-wrapper-' + randomString(5),
       dateFormat: 'YYYY-MM-DD',
+      dateLabelFormat: 'dddd, MMMM D, YYYY',
       showDatepicker: false,
+      showKeyboardShortcutsMenu: false,
       showMonths: 2,
       colors: {
         selected: '#00a699',
@@ -140,6 +223,18 @@ export default {
         disabled: '#fff'
       },
       sundayFirst: false,
+      ariaLabels: {
+        chooseDate: (date) => date,
+        chooseStartDate: (date) => `Choose ${date} as your start date.`,
+        chooseEndDate: (date) => `Choose ${date} as your end date.`,
+        selectedDate: (date) => `Selected. ${date}`,
+        unavailableDate: (date) => `Not available. ${date}`,
+        previousMonth: 'Move backward to switch to the previous month.',
+        nextMonth: 'Move forward to switch to the next month.',
+        closeDatepicker: 'Close calendar',
+        openKeyboardShortcutsMenu: 'Open keyboard shortcuts menu.',
+        closeKeyboardShortcutsMenu: 'Close keyboard shortcuts menu'
+      },
       monthNames: [
         'January',
         'February',
@@ -166,7 +261,30 @@ export default {
       daysShort: ['Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun'],
       texts: {
         apply: 'Apply',
-        cancel: 'Cancel'
+        cancel: 'Cancel',
+        keyboardShortcuts: 'Keyboard Shortcuts'
+      },
+      keyboardShortcuts: [
+        {symbol: '↵', label: 'Select the date in focus', symbolDescription: 'Enter key'},
+        {symbol: '←/→', label: 'Move backward (left) and forward (down) by one day.', symbolDescription: 'Left or right arrow keys'},
+        {symbol: '↑/↓', label: 'Move backward (up) and forward (down) by one week.', symbolDescription: 'Up or down arrow keys'},
+        {symbol: 'PgUp/PgDn', label: 'Switch months.', symbolDescription: 'PageUp and PageDown keys'},
+        {symbol: 'Home/End', label: 'Go to the first or last day of a week.', symbolDescription: 'Home or End keys'},
+        {symbol: 'Esc', label: 'Close this panel', symbolDescription: 'Escape key'},
+        {symbol: '?', label: 'Open this panel', symbolDescription: 'Question mark'}
+      ],
+      keys: {
+        arrowDown: 40,
+        arrowUp: 38,
+        arrowRight: 39,
+        arrowLeft: 37,
+        enter: 13,
+        pgUp:	33,
+        pgDn:	34,
+        end:	35,
+        home:	36,
+        questionMark: 191,
+        esc: 27,
       },
       startingDate: '',
       months: [],
@@ -175,6 +293,7 @@ export default {
       selectedDate2: '',
       isSelectingDate1: true,
       hoverDate: '',
+      focusedDate: '',
       alignRight: false,
       triggerPosition: {},
       triggerWrapperPosition: {},
@@ -219,6 +338,13 @@ export default {
         'margin-left': this.showFullscreen
           ? '-' + this.viewportWidth
           : `-${this.width}px`
+      }
+    },
+    keyboardShortcutsMenuStyles() {
+      return {
+        'left': this.showFullscreen
+          ? this.viewportWidth
+          : `${this.width}px`
       }
     },
     monthWidthStyles() {
@@ -347,12 +473,16 @@ export default {
       this.openDatepicker()
     }
 
+    this.$el.addEventListener('keyup', this.handleKeyboardInput)
+    this.$el.addEventListener('keydown', this.trapKeyboardInput)
     this.triggerElement.addEventListener('keyup', this.handleTriggerInput)
   },
   destroyed() {
     window.removeEventListener('resize', this._handleWindowResizeEvent)
     window.removeEventListener('click', this._handleWindowClickEvent)
 
+    this.$el.removeEventListener('keyup', this.handleKeyboardInput)
+    this.$el.removeEventListener('keydown', this.trapKeyboardInput)
     this.triggerElement.removeEventListener('keyup', this.handleTriggerInput)
   },
   methods: {
@@ -381,6 +511,29 @@ export default {
       }
       return styles
     },
+    getAriaLabelForDate(date) {
+      const dateLabel = format(date, this.dateLabelFormat)
+
+      const isDisabled = this.isDisabled(date)
+      if (isDisabled) {
+        return this.ariaLabels.unavailableDate(dateLabel)
+      }
+
+      const isSelected = this.isSelected(date)
+      if (isSelected) {
+        return this.ariaLabels.selectedDate(dateLabel)
+      }
+
+      if (this.isRangeMode) {
+        if (this.isSelectingDate1) {
+          return this.ariaLabels.chooseStartDate(dateLabel)
+        } else {
+          return this.ariaLabels.chooseEndDate(dateLabel)
+        }
+      } else {
+        return this.ariaLabels.chooseDate(dateLabel)
+      }
+    },
     handleClickOutside(event) {
       if (
         event.target.id === this.triggerElementId ||
@@ -391,45 +544,95 @@ export default {
       }
       this.closeDatepicker()
     },
+    shouldHandleInput(event, key) {
+      return event.keyCode === key &&
+      (!event.shiftKey || event.keyCode === 191) &&
+      this.showDatepicker
+    },
     handleTriggerInput(event) {
-      const keys = {
-        arrowDown: 40,
-        arrowUp: 38,
-        arrowRight: 39,
-        arrowLeft: 37
-      }
-      if (
-        event.keyCode === keys.arrowDown &&
-        !event.shiftKey &&
-        !this.showDatepicker
-      ) {
-        this.openDatepicker()
-      } else if (
-        event.keyCode === keys.arrowUp &&
-        !event.shiftKey &&
-        this.showDatepicker
-      ) {
-        this.closeDatepicker()
-      } else if (
-        event.keyCode === keys.arrowRight &&
-        !event.shiftKey &&
-        this.showDatepicker
-      ) {
-        this.nextMonth()
-      } else if (
-        event.keyCode === keys.arrowLeft &&
-        !event.shiftKey &&
-        this.showDatepicker
-      ) {
-        this.previousMonth()
-      } else {
-        if (this.mode === 'single') {
-          this.setDateFromText(event.target.value)
+       if (this.mode === 'single') {
+         this.setDateFromText(event.target.value)
+       }
+    },
+    trapKeyboardInput(event) {
+      // prevent keys that are used as keyboard shortcuts from propagating out of this element
+      // except for the enter key, which is needed to activate buttons
+      const shortcutKeyCodes = Object.values(this.keys)
+      shortcutKeyCodes.splice(shortcutKeyCodes.indexOf(13), 1)
+      const shouldPreventDefault = shortcutKeyCodes.indexOf(event.keyCode) > -1
+      if (shouldPreventDefault) event.preventDefault()
+    },
+    handleKeyboardInput(event) {
+      if (this.shouldHandleInput(event, this.keys.esc)) {
+       if (this.showKeyboardShortcutsMenu) {
+         this.closeKeyboardShortcutsMenu()
+       } else {
+         this.closeDatepicker()
+       }
+     } else if (this.showKeyboardShortcutsMenu) {
+      // if keyboard shortcutsMenu is open, then esc is the only key we want to have fire events
+     } else if (this.shouldHandleInput(event, this.keys.arrowDown)) {
+        const newDate = addWeeks(this.focusedDate, 1)
+        const changeMonths = !isSameMonth(newDate, this.focusedDate)
+        this.setFocusedDate(newDate)
+        if (changeMonths) this.nextMonth()
+
+      } else if (this.shouldHandleInput(event, this.keys.arrowUp)) {
+        const newDate = subWeeks(this.focusedDate, 1)
+        const changeMonths = !isSameMonth(newDate, this.focusedDate)
+        this.setFocusedDate(newDate)
+        if (changeMonths) this.previousMonth()
+
+      } else if (this.shouldHandleInput(event, this.keys.arrowRight)) {
+        const newDate = addDays(this.focusedDate, 1)
+        const changeMonths = !isSameMonth(newDate, this.focusedDate)
+        this.setFocusedDate(newDate)
+        if (changeMonths) this.nextMonth()
+
+      } else if (this.shouldHandleInput(event, this.keys.arrowLeft)) {
+        const newDate = subDays(this.focusedDate, 1)
+        const changeMonths = !isSameMonth(newDate, this.focusedDate)
+        this.setFocusedDate(newDate)
+        if (changeMonths) this.previousMonth()
+
+      } else if (this.shouldHandleInput(event, this.keys.enter)) {
+        // on enter key, only select the date if a date is currently in focus
+        const target = event.target
+        if (!this.showKeyboardShortcutsMenu && target && target.tagName === "TD") {
+          this.selectDate(this.focusedDate)
         }
+
+      } else if (this.shouldHandleInput(event, this.keys.pgUp)) {
+        this.setFocusedDate(subMonths(this.focusedDate, 1))
+        this.previousMonth()
+
+      } else if (this.shouldHandleInput(event, this.keys.pgDn)) {
+        this.setFocusedDate(addMonths(this.focusedDate, 1))
+        this.nextMonth()
+
+      } else if (this.shouldHandleInput(event, this.keys.home)) {
+        const newDate = startOfWeek(this.focusedDate, {
+          weekStartsOn: this.sundayFirst ? 0 : 1
+        })
+        const changeMonths = !isSameMonth(newDate, this.focusedDate)
+        this.setFocusedDate(newDate)
+        if (changeMonths) this.previousMonth()
+
+      } else if (this.shouldHandleInput(event, this.keys.end)) {
+        const newDate = endOfWeek(this.focusedDate, {
+          weekStartsOn: this.sundayFirst ? 0 : 1
+        })
+        const changeMonths = !isSameMonth(newDate, this.focusedDate)
+        this.setFocusedDate(newDate)
+        if (changeMonths) this.nextMonth()
+
+      } else if (this.shouldHandleInput(event, this.keys.questionMark)) {
+        this.openKeyboardShortcutsMenu()
+
       }
     },
     setDateFromText(value) {
-      if (value.length < 10) {
+      if (!value || value.length < 10) {
         return
       }
       // make sure format is either 'YYYY-MM-DD' or 'DD.MM.YYYY'
@@ -475,6 +678,15 @@ export default {
       }
     },
     setupDatepicker() {
+      if (this.$options.ariaLabels) {
+        this.ariaLabels = copyObject(this.$options.ariaLabels)
+      }
+      if (this.$options.keyboardShortcuts) {
+        this.keyboardShortcuts = copyObject(this.$options.keyboardShortcuts)
+      }
+      if (this.$options.dateLabelFormat) {
+        this.dateLabelFormat = copyObject(this.$options.dateLabelFormat)
+      }
       if (this.$options.sundayFirst) {
         this.sundayFirst = copyObject(this.$options.sundayFirst)
       }
@@ -512,6 +724,7 @@ export default {
       this.startingDate = this.subtractMonths(startDate)
       this.selectedDate1 = this.dateOne
       this.selectedDate2 = this.dateTwo
+      this.focusedDate = startDate
     },
     setSundayToFirstDayInWeek() {
       const lastDay = this.days.pop()
@@ -600,14 +813,36 @@ export default {
 
         if (isAfter(this.selectedDate1, date)) {
           this.selectedDate1 = ''
+        } else if (this.showActionButtons) {
+          // if user has selected both dates, focus the apply button for accessibility
+          this.$refs['apply-button'].focus()
         }
       }
     },
     setHoverDate(date) {
       this.hoverDate = date
     },
+    setFocusedDate(date) {
+      const formattedDate = format(date, this.dateFormat)
+      this.focusedDate = formattedDate
+      const dateElement = this.$refs[`date-${formattedDate}`]
+      if (dateElement) dateElement[0].focus()
+    },
+    resetFocusedDate(setToFirst) {
+      if (this.focusedDate && !this.isDateVisible(this.focusedDate)) {
+        const visibleMonthIdx = setToFirst ? 0 : this.visibleMonths.length -1
+        const targetMonth = this.visibleMonths[visibleMonthIdx]
+        const monthIdx = getMonth(targetMonth)
+        const year = getYear(targetMonth)
+        const newFocusedDate = setYear(setMonth(this.focusedDate, monthIdx), year)
+        this.focusedDate = format(newFocusedDate, this.dateFormat)
+      }
+    },
     isToday(date) {
       return format(new Date(), this.dateFormat) === date
+    },
+    isSameDate(date1, date2) {
+      return isSameDay(date1, date2)
     },
     isSelected(date) {
       if (!date) {
@@ -640,6 +875,14 @@ export default {
       }
       return isAfter(date, this.endDate)
     },
+    isDateVisible(date) {
+      if (!date) {
+        return false
+      }
+      const start = subDays(this.visibleMonths[0], 1)
+      const end = addDays(lastDayOfMonth(this.visibleMonths[this.monthsToShow - 1]), 1)
+      return isAfter(date, start) && isBefore(date, end)
+    },
     isDateDisabled(date) {
       const isDisabled = this.disabledDates.indexOf(date) > -1
       return isDisabled
@@ -657,17 +900,16 @@ export default {
       this.months.unshift(this.getMonth(this.startingDate))
       this.months.splice(this.months.length - 1, 1)
       this.$emit('previous-month', this.visibleMonths)
+      this.resetFocusedDate(false)
     },
     nextMonth() {
       this.startingDate = this.addMonths(
         this.months[this.months.length - 1].firstDateOfMonth
       )
       this.months.push(this.getMonth(this.startingDate))
-
-      setTimeout(() => {
-        this.months.splice(0, 1)
-        this.$emit('next-month', this.visibleMonths)
-      }, 100)
+      this.months.splice(0, 1)
+      this.$emit('next-month', this.visibleMonths)
+      this.resetFocusedDate(true)
     },
     subtractMonths(date) {
       return format(subMonths(date, 1), this.dateFormat)
@@ -690,6 +932,9 @@ export default {
       this.initialDate1 = this.dateOne
       this.initialDate2 = this.dateTwo
       this.$emit('opened')
+      this.$nextTick(() => {
+        if (!this.inline) this.setFocusedDate(this.focusedDate)
+      })
     },
     closeDatepickerCancel() {
       if (this.showDatepicker) {
@@ -704,8 +949,19 @@ export default {
         return
       }
       this.showDatepicker = false
+      this.showKeyboardShortcutsMenu = false
       this.triggerElement.classList.remove('datepicker-open')
       this.$emit('closed')
+    },
+    openKeyboardShortcutsMenu() {
+      this.showKeyboardShortcutsMenu = true
+      const shortcutMenuCloseBtn = this.$refs["keyboard-shortcus-menu-close"]
+      this.$nextTick(() => shortcutMenuCloseBtn.focus())
+    },
+    closeKeyboardShortcutsMenu() {
+      this.showKeyboardShortcutsMenu = false
+      this.$nextTick(() => this.setFocusedDate(this.focusedDate))
+
     },
     apply() {
       this.$emit('apply')
@@ -793,6 +1049,77 @@ $transition-time: 0.3s;
   &__datepicker-header {
     position: relative;
   }
+  &__keyboard-shortcuts-trigger-wrapper {
+    position: relative;
+  }
+  &__keyboard-shortcuts-trigger {
+    background-color: transparent;
+    cursor: pointer;
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    font: inherit;
+    border-width: 26px 33px 0px 0px;
+    border-top: 26px solid transparent;
+    border-right: 33px solid rgb(0, 166, 153);
+
+    span {
+      color: rgb(255, 255, 255);
+      position: absolute;
+      bottom: 0px;
+      right: -28px;
+    }
+  }
+  &__keyboard-shortcuts-show {
+    display: block !important;
+  }
+  &__keyboard-shortcuts-close {
+    background-color: transparent;
+    border: none;
+    position: absolute;
+    top: 7px;
+    right: 5px;
+    padding: 5px;
+    z-index: 100;
+    cursor: pointer;
+  }
+  &__keyboard-shortcuts-menu {
+    display: none;
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    z-index: 10;
+    overflow: auto;
+    background: rgb(255, 255, 255);
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(219, 219, 219);
+    border-image: initial;
+    border-radius: 2px;
+    padding: 22px;
+    margin: 33px;
+    text-align: left;
+  }
+  &__keyboard-shortcuts-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0px;
+  }
+  &__keyboard-shortcuts-list {
+    list-style: none;
+    margin: 6px 0px;
+    padding: 0px;
+    white-space: initial;
+  }
+  &__keyboard-shortcuts-symbol {
+    font-family: monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    background: rgb(242, 242, 242);
+    padding: 2px 6px;
+    margin-right: 4px;
+  }
   &__change-month-button {
     position: absolute;
     top: 12px;
@@ -875,11 +1202,14 @@ $transition-time: 0.3s;
     height: $size;
     padding: 0;
     overflow: hidden;
-
     &--enabled {
       border: $border;
       &:hover {
         background-color: #e4e7e7;
+      }
+      &:focus {
+        outline: auto 5px Highlight;
+        outline: auto 5px -webkit-focus-ring-color;
       }
     }
     &--disabled,
@@ -916,6 +1246,7 @@ $transition-time: 0.3s;
   &__action-buttons {
     min-height: 50px;
     padding-top: 10px;
+    margin-bottom: 12px;
     button {
       display: block;
       position: relative;
@@ -957,6 +1288,7 @@ $transition-time: 0.3s;
     }
   }
   &__mobile-close {
+    border: none;
     position: absolute;
     top: 7px;
     right: 5px;
