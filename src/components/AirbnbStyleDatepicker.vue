@@ -112,8 +112,8 @@
             :aria-label="ariaLabels.closeKeyboardShortcutsMenu"
           >
             <slot
-              v-if="$slots['close-icon']"
-              name="close-icon"
+              v-if="$slots['close-shortcuts-icon']"
+              name="close-shortcuts-icon"
             ></slot>
             <div v-else class="asd__mobile-close-icon" aria-hidden="true">X</div>
           </button>

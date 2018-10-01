@@ -513,12 +513,18 @@ describe('AirbnbStyleDatepicker', () => {
       expect(wrapper.findAll('.asd__day--today').length).toBe(1)
     })
     test('svg icons can be overridden by passing a slot', () => {
-      wrapper = createDatePickerInstance({}, {}, {
+      wrapper = createDatePickerInstance({
+        fullscreenMobile: true,
+        startOpen: true,
+      }, {}, {
         'close-icon': '<span id="close-override">x</span>',
+        'close-shortcuts-icon': '<span id="close-shortcuts-override">x</span>',
         'previous-month-icon': '<span id="previous-override">&larr;</span>',
         'next-month-icon': '<span id="next-override">&rarr;</span>',
       })
+      wrapper.setData({ isMobile: true })
       expect(wrapper.find('#close-override').exists()).toBe(true)
+      expect(wrapper.find('#close-shortcuts-override').exists()).toBe(true)
       expect(wrapper.find('#previous-override').exists()).toBe(true)
       expect(wrapper.find('#next-override').exists()).toBe(true)
     })
