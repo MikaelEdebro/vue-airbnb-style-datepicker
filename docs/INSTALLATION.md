@@ -201,7 +201,8 @@ Vue.use(AirBnbStyleDatepicker, {
 | @next-month        | Event emitted when user changes to next month. Returns array with first date in visible months. `['2019-09-01', '2019-10-01']`                                                                                                   |
 | previous-month-icon | Optional, slot used to override the previous month left arrow icon. Uses default icon if nothing is passed. |
 | next-month-icon | Optional, slot used to override the next month right arrow icon. Uses default icon if nothing is passed. |
-| close-icon | Optional, slot used to override the modal close X icon. Uses default icon if nothing is passed. |
+| close-icon | Optional, slot used to override the mobile close X icon. Uses default icon if nothing is passed. |
+| close-shortcuts-icon | Optional, slot used to override the modal close X icon in the keyboard shortcuts menu. Uses default icon if nothing is passed. |
 
 <br><br> _Example with all properties (not recommended, only to show values)_:
 
