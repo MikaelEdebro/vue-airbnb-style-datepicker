@@ -198,13 +198,14 @@ export default {
     inline: { type: Boolean },
     mobileHeader: { type: String },
     disabledDates: { type: Array, default: () => [] },
+    enabledDates: { type: Array, default: () => [] },
     showActionButtons: { type: Boolean, default: true },
     showShortcutsMenuTrigger: { type: Boolean, default: true },
     isTest: {
       type: Boolean,
-      default: () => process.env.NODE_ENV === 'test'
+      default: () => process.env.NODE_ENV === 'test',
     },
-    trigger: { type: Boolean, default: false }
+    trigger: { type: Boolean, default: false },
   },
   data() {
     return {
@@ -220,20 +221,20 @@ export default {
         selectedText: '#fff',
         text: '#565a5c',
         inRangeBorder: '#33dacd',
-        disabled: '#fff'
+        disabled: '#fff',
       },
       sundayFirst: false,
       ariaLabels: {
-        chooseDate: (date) => date,
-        chooseStartDate: (date) => `Choose ${date} as your start date.`,
-        chooseEndDate: (date) => `Choose ${date} as your end date.`,
-        selectedDate: (date) => `Selected. ${date}`,
-        unavailableDate: (date) => `Not available. ${date}`,
+        chooseDate: date => date,
+        chooseStartDate: date => `Choose ${date} as your start date.`,
+        chooseEndDate: date => `Choose ${date} as your end date.`,
+        selectedDate: date => `Selected. ${date}`,
+        unavailableDate: date => `Not available. ${date}`,
         previousMonth: 'Move backward to switch to the previous month.',
         nextMonth: 'Move forward to switch to the next month.',
         closeDatepicker: 'Close calendar',
         openKeyboardShortcutsMenu: 'Open keyboard shortcuts menu.',
-        closeKeyboardShortcutsMenu: 'Close keyboard shortcuts menu'
+        closeKeyboardShortcutsMenu: 'Close keyboard shortcuts menu',
       },
       monthNames: [
         'January',
@@ -247,31 +248,39 @@ export default {
         'September',
         'October',
         'November',
-        'December'
+        'December',
       ],
-      days: [
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday',
-        'Sunday'
-      ],
+      days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       daysShort: ['Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun'],
       texts: {
         apply: 'Apply',
         cancel: 'Cancel',
-        keyboardShortcuts: 'Keyboard Shortcuts'
+        keyboardShortcuts: 'Keyboard Shortcuts',
       },
       keyboardShortcuts: [
-        {symbol: '↵', label: 'Select the date in focus', symbolDescription: 'Enter key'},
-        {symbol: '←/→', label: 'Move backward (left) and forward (down) by one day.', symbolDescription: 'Left or right arrow keys'},
-        {symbol: '↑/↓', label: 'Move backward (up) and forward (down) by one week.', symbolDescription: 'Up or down arrow keys'},
-        {symbol: 'PgUp/PgDn', label: 'Switch months.', symbolDescription: 'PageUp and PageDown keys'},
-        {symbol: 'Home/End', label: 'Go to the first or last day of a week.', symbolDescription: 'Home or End keys'},
-        {symbol: 'Esc', label: 'Close this panel', symbolDescription: 'Escape key'},
-        {symbol: '?', label: 'Open this panel', symbolDescription: 'Question mark'}
+        { symbol: '↵', label: 'Select the date in focus', symbolDescription: 'Enter key' },
+        {
+          symbol: '←/→',
+          label: 'Move backward (left) and forward (down) by one day.',
+          symbolDescription: 'Left or right arrow keys',
+        },
+        {
+          symbol: '↑/↓',
+          label: 'Move backward (up) and forward (down) by one week.',
+          symbolDescription: 'Up or down arrow keys',
+        },
+        {
+          symbol: 'PgUp/PgDn',
+          label: 'Switch months.',
+          symbolDescription: 'PageUp and PageDown keys',
+        },
+        {
+          symbol: 'Home/End',
+          label: 'Go to the first or last day of a week.',
+          symbolDescription: 'Home or End keys',
+        },
+        { symbol: 'Esc', label: 'Close this panel', symbolDescription: 'Escape key' },
+        { symbol: '?', label: 'Open this panel', symbolDescription: 'Question mark' },
       ],
       keys: {
         arrowDown: 40,
@@ -279,10 +288,10 @@ export default {
         arrowRight: 39,
         arrowLeft: 37,
         enter: 13,
-        pgUp:	33,
-        pgDn:	34,
-        end:	35,
-        home:	36,
+        pgUp: 33,
+        pgDn: 34,
+        end: 35,
+        home: 36,
         questionMark: 191,
         esc: 27,
       },
@@ -300,7 +309,7 @@ export default {
       viewportWidth: window.innerWidth + 'px',
       isMobile: window.innerWidth < 768,
       isTablet: window.innerWidth >= 768 && window.innerWidth <= 1024,
-      triggerElement: undefined
+      triggerElement: undefined,
     }
   },
   computed: {
@@ -308,48 +317,36 @@ export default {
       return {
         'asd__wrapper--datepicker-open': this.showDatepicker,
         'asd__wrapper--full-screen': this.showFullscreen,
-        'asd__wrapper--inline': this.inline
+        'asd__wrapper--inline': this.inline,
       }
     },
     wrapperStyles() {
       return {
         position: this.inline ? 'static' : 'absolute',
-        top: this.inline
-          ? '0'
-          : this.triggerPosition.height + this.offsetY + 'px',
+        top: this.inline ? '0' : this.triggerPosition.height + this.offsetY + 'px',
         left: !this.alignRight
-          ? this.triggerPosition.left -
-            this.triggerWrapperPosition.left +
-            this.offsetX +
-            'px'
+          ? this.triggerPosition.left - this.triggerWrapperPosition.left + this.offsetX + 'px'
           : '',
         right: this.alignRight
-          ? this.triggerWrapperPosition.right -
-            this.triggerPosition.right +
-            this.offsetX +
-            'px'
+          ? this.triggerWrapperPosition.right - this.triggerPosition.right + this.offsetX + 'px'
           : '',
         width: this.width * this.showMonths + 'px',
-        zIndex: this.inline ? '0' : '100'
+        zIndex: this.inline ? '0' : '100',
       }
     },
     innerStyles() {
       return {
-        'margin-left': this.showFullscreen
-          ? '-' + this.viewportWidth
-          : `-${this.width}px`
+        'margin-left': this.showFullscreen ? '-' + this.viewportWidth : `-${this.width}px`,
       }
     },
     keyboardShortcutsMenuStyles() {
       return {
-        'left': this.showFullscreen
-          ? this.viewportWidth
-          : `${this.width}px`
+        left: this.showFullscreen ? this.viewportWidth : `${this.width}px`,
       }
     },
     monthWidthStyles() {
       return {
-        width: this.showFullscreen ? this.viewportWidth : this.width + 'px'
+        width: this.showFullscreen ? this.viewportWidth : this.width + 'px',
       }
     },
     mobileHeaderFallback() {
@@ -400,20 +397,16 @@ export default {
       for (let i = 0; i < this.showMonths; i++) {
         numberOfMonthsArray.push(i)
       }
-      return numberOfMonthsArray.map(
-        (_, index) => firstMonthArray[index].firstDateOfMonth
-      )
-    }
+      return numberOfMonthsArray.map((_, index) => firstMonthArray[index].firstDateOfMonth)
+    },
   },
   watch: {
     selectedDate1(newValue, oldValue) {
-      let newDate =
-        !newValue || newValue === '' ? '' : format(newValue, this.dateFormat)
+      let newDate = !newValue || newValue === '' ? '' : format(newValue, this.dateFormat)
       this.$emit('date-one-selected', newDate)
     },
     selectedDate2(newValue, oldValue) {
-      let newDate =
-        !newValue || newValue === '' ? '' : format(newValue, this.dateFormat)
+      let newDate = !newValue || newValue === '' ? '' : format(newValue, this.dateFormat)
       this.$emit('date-two-selected', newDate)
     },
     mode(newValue, oldValue) {
@@ -438,7 +431,7 @@ export default {
       if (newValue) {
         this.openDatepicker()
       }
-    }
+    },
   },
   created() {
     this.setupDatepicker()
@@ -493,17 +486,17 @@ export default {
 
       let styles = {
         width: (this.width - 30) / 7 + 'px',
-        background: isSelected
-          ? this.colors.selected
-          : isInRange ? this.colors.inRange : '',
+        background: isSelected ? this.colors.selected : isInRange ? this.colors.inRange : '',
         color: isSelected
           ? this.colors.selectedText
-          : isInRange ? this.colors.selectedText : this.colors.text,
+          : isInRange
+            ? this.colors.selectedText
+            : this.colors.text,
         border: isSelected
           ? '1px double ' + this.colors.selected
           : isInRange && this.allDatesSelected
             ? '1px double ' + this.colors.inRangeBorder
-            : ''
+            : '',
       }
 
       if (isDisabled) {
@@ -535,24 +528,20 @@ export default {
       }
     },
     handleClickOutside(event) {
-      if (
-        event.target.id === this.triggerElementId ||
-        !this.showDatepicker ||
-        this.inline
-      ) {
+      if (event.target.id === this.triggerElementId || !this.showDatepicker || this.inline) {
         return
       }
       this.closeDatepicker()
     },
     shouldHandleInput(event, key) {
-      return event.keyCode === key &&
-      (!event.shiftKey || event.keyCode === 191) &&
-      this.showDatepicker
+      return (
+        event.keyCode === key && (!event.shiftKey || event.keyCode === 191) && this.showDatepicker
+      )
     },
     handleTriggerInput(event) {
-       if (this.mode === 'single') {
-         this.setDateFromText(event.target.value)
-       }
+      if (this.mode === 'single') {
+        this.setDateFromText(event.target.value)
+      }
     },
     trapKeyboardInput(event) {
       // prevent keys that are used as keyboard shortcuts from propagating out of this element
@@ -564,71 +553,61 @@ export default {
     },
     handleKeyboardInput(event) {
       if (this.shouldHandleInput(event, this.keys.esc)) {
-       if (this.showKeyboardShortcutsMenu) {
-         this.closeKeyboardShortcutsMenu()
-       } else {
-         this.closeDatepicker()
-       }
-     } else if (this.showKeyboardShortcutsMenu) {
-      // if keyboard shortcutsMenu is open, then esc is the only key we want to have fire events
-     } else if (this.shouldHandleInput(event, this.keys.arrowDown)) {
+        if (this.showKeyboardShortcutsMenu) {
+          this.closeKeyboardShortcutsMenu()
+        } else {
+          this.closeDatepicker()
+        }
+      } else if (this.showKeyboardShortcutsMenu) {
+        // if keyboard shortcutsMenu is open, then esc is the only key we want to have fire events
+      } else if (this.shouldHandleInput(event, this.keys.arrowDown)) {
         const newDate = addWeeks(this.focusedDate, 1)
         const changeMonths = !isSameMonth(newDate, this.focusedDate)
         this.setFocusedDate(newDate)
         if (changeMonths) this.nextMonth()
-
       } else if (this.shouldHandleInput(event, this.keys.arrowUp)) {
         const newDate = subWeeks(this.focusedDate, 1)
         const changeMonths = !isSameMonth(newDate, this.focusedDate)
         this.setFocusedDate(newDate)
         if (changeMonths) this.previousMonth()
-
       } else if (this.shouldHandleInput(event, this.keys.arrowRight)) {
         const newDate = addDays(this.focusedDate, 1)
         const changeMonths = !isSameMonth(newDate, this.focusedDate)
         this.setFocusedDate(newDate)
         if (changeMonths) this.nextMonth()
-
       } else if (this.shouldHandleInput(event, this.keys.arrowLeft)) {
         const newDate = subDays(this.focusedDate, 1)
         const changeMonths = !isSameMonth(newDate, this.focusedDate)
         this.setFocusedDate(newDate)
         if (changeMonths) this.previousMonth()
-
       } else if (this.shouldHandleInput(event, this.keys.enter)) {
         // on enter key, only select the date if a date is currently in focus
         const target = event.target
-        if (!this.showKeyboardShortcutsMenu && target && target.tagName === "TD") {
+        if (!this.showKeyboardShortcutsMenu && target && target.tagName === 'TD') {
           this.selectDate(this.focusedDate)
         }
-
       } else if (this.shouldHandleInput(event, this.keys.pgUp)) {
         this.setFocusedDate(subMonths(this.focusedDate, 1))
         this.previousMonth()
-
       } else if (this.shouldHandleInput(event, this.keys.pgDn)) {
         this.setFocusedDate(addMonths(this.focusedDate, 1))
         this.nextMonth()
-
       } else if (this.shouldHandleInput(event, this.keys.home)) {
         const newDate = startOfWeek(this.focusedDate, {
-          weekStartsOn: this.sundayFirst ? 0 : 1
+          weekStartsOn: this.sundayFirst ? 0 : 1,
         })
         const changeMonths = !isSameMonth(newDate, this.focusedDate)
         this.setFocusedDate(newDate)
         if (changeMonths) this.previousMonth()
-
       } else if (this.shouldHandleInput(event, this.keys.end)) {
         const newDate = endOfWeek(this.focusedDate, {
-          weekStartsOn: this.sundayFirst ? 0 : 1
+          weekStartsOn: this.sundayFirst ? 0 : 1,
         })
         const changeMonths = !isSameMonth(newDate, this.focusedDate)
         this.setFocusedDate(newDate)
         if (changeMonths) this.nextMonth()
-
       } else if (this.shouldHandleInput(event, this.keys.questionMark)) {
         this.openKeyboardShortcutsMenu()
-
       }
     },
     setDateFromText(value) {
@@ -648,10 +627,7 @@ export default {
       }
       if (isFormatDayFirst) {
         //convert to YYYY-MM-DD
-        value = `${value.substring(6, 10)}-${value.substring(
-          3,
-          5
-        )}-${value.substring(0, 2)}`
+        value = `${value.substring(6, 10)}-${value.substring(3, 5)}-${value.substring(0, 2)}`
       }
 
       const valueAsDateObject = new Date(value)
@@ -694,11 +670,9 @@ export default {
         const colors = copyObject(this.$options.colors)
         this.colors.selected = colors.selected || this.colors.selected
         this.colors.inRange = colors.inRange || this.colors.inRange
-        this.colors.selectedText =
-          colors.selectedText || this.colors.selectedText
+        this.colors.selectedText = colors.selectedText || this.colors.selectedText
         this.colors.text = colors.text || this.colors.text
-        this.colors.inRangeBorder =
-          colors.inRangeBorder || this.colors.inRangeBorder
+        this.colors.inRangeBorder = colors.inRangeBorder || this.colors.inRangeBorder
         this.colors.disabled = colors.disabled || this.colors.disabled
       }
       if (this.$options.monthNames && this.$options.monthNames.length === 12) {
@@ -743,7 +717,7 @@ export default {
         firstDateOfMonth,
         monthName,
         monthNumber,
-        weeks: this.getWeeks(firstDateOfMonth)
+        weeks: this.getWeeks(firstDateOfMonth),
       }
     },
     getWeeks(date) {
@@ -769,7 +743,7 @@ export default {
         week.push({
           dayNumber,
           dayNumberFull: dayNumberFull,
-          fullDate: year + '-' + month + '-' + dayNumberFull
+          fullDate: year + '-' + month + '-' + dayNumberFull,
         })
 
         if (week.length === 7) {
@@ -786,11 +760,7 @@ export default {
       return weeks
     },
     selectDate(date) {
-      if (
-        this.isBeforeMinDate(date) ||
-        this.isAfterEndDate(date) ||
-        this.isDateDisabled(date)
-      ) {
+      if (this.isBeforeMinDate(date) || this.isAfterEndDate(date) || this.isDateDisabled(date)) {
         return
       }
 
@@ -830,7 +800,7 @@ export default {
     },
     resetFocusedDate(setToFirst) {
       if (this.focusedDate && !this.isDateVisible(this.focusedDate)) {
-        const visibleMonthIdx = setToFirst ? 0 : this.visibleMonths.length -1
+        const visibleMonthIdx = setToFirst ? 0 : this.visibleMonths.length - 1
         const targetMonth = this.visibleMonths[visibleMonthIdx]
         const monthIdx = getMonth(targetMonth)
         const year = getYear(targetMonth)
@@ -856,8 +826,7 @@ export default {
       }
 
       return (
-        (isAfter(date, this.selectedDate1) &&
-          isBefore(date, this.selectedDate2)) ||
+        (isAfter(date, this.selectedDate1) && isBefore(date, this.selectedDate2)) ||
         (isAfter(date, this.selectedDate1) &&
           isBefore(date, this.hoverDate) &&
           !this.allDatesSelected)
@@ -884,15 +853,14 @@ export default {
       return isAfter(date, start) && isBefore(date, end)
     },
     isDateDisabled(date) {
-      const isDisabled = this.disabledDates.indexOf(date) > -1
-      return isDisabled
+      if (this.enabledDates.length > 0) {
+        return this.enabledDates.indexOf(date) === -1
+      } else {
+        return this.disabledDates.indexOf(date) > -1
+      }
     },
     isDisabled(date) {
-      return (
-        this.isDateDisabled(date) ||
-        this.isBeforeMinDate(date) ||
-        this.isAfterEndDate(date)
-      )
+      return this.isDateDisabled(date) || this.isBeforeMinDate(date) || this.isAfterEndDate(date)
     },
     previousMonth() {
       this.startingDate = this.subtractMonths(this.months[0].firstDateOfMonth)
@@ -903,9 +871,7 @@ export default {
       this.resetFocusedDate(false)
     },
     nextMonth() {
-      this.startingDate = this.addMonths(
-        this.months[this.months.length - 1].firstDateOfMonth
-      )
+      this.startingDate = this.addMonths(this.months[this.months.length - 1].firstDateOfMonth)
       this.months.push(this.getMonth(this.startingDate))
       this.months.splice(0, 1)
       this.$emit('next-month', this.visibleMonths)
@@ -955,23 +921,19 @@ export default {
     },
     openKeyboardShortcutsMenu() {
       this.showKeyboardShortcutsMenu = true
-      const shortcutMenuCloseBtn = this.$refs["keyboard-shortcus-menu-close"]
+      const shortcutMenuCloseBtn = this.$refs['keyboard-shortcus-menu-close']
       this.$nextTick(() => shortcutMenuCloseBtn.focus())
     },
     closeKeyboardShortcutsMenu() {
       this.showKeyboardShortcutsMenu = false
       this.$nextTick(() => this.setFocusedDate(this.focusedDate))
-
     },
     apply() {
       this.$emit('apply')
       this.closeDatepicker()
     },
     positionDatepicker() {
-      const triggerWrapperElement = findAncestor(
-        this.triggerElement,
-        '.datepicker-trigger'
-      )
+      const triggerWrapperElement = findAncestor(this.triggerElement, '.datepicker-trigger')
       this.triggerPosition = this.triggerElement.getBoundingClientRect()
       if (triggerWrapperElement) {
         this.triggerWrapperPosition = triggerWrapperElement.getBoundingClientRect()
@@ -979,14 +941,15 @@ export default {
         this.triggerWrapperPosition = { left: 0, right: 0 }
       }
 
-      const viewportWidth =
-        document.documentElement.clientWidth || window.innerWidth
+      const viewportWidth = document.documentElement.clientWidth || window.innerWidth
       this.viewportWidth = viewportWidth + 'px'
       this.isMobile = viewportWidth < 768
       this.isTablet = viewportWidth >= 768 && viewportWidth <= 1024
       this.showMonths = this.isMobile
         ? 1
-        : this.isTablet && this.monthsToShow > 2 ? 2 : this.monthsToShow
+        : this.isTablet && this.monthsToShow > 2
+          ? 2
+          : this.monthsToShow
 
       this.$nextTick(function() {
         const datepickerWrapper = document.getElementById(this.wrapperId)
@@ -999,8 +962,8 @@ export default {
           datepickerWrapper.getBoundingClientRect().width
         this.alignRight = rightPosition > viewportWidth
       })
-    }
-  }
+    },
+  },
 }
 </script>
 
