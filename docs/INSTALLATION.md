@@ -12,7 +12,7 @@ With Yarn:
 yarn add vue-airbnb-style-datepicker
 ```
 
-NB: This plugin is dependant on VueJS 2.x and [date-fns](https://date-fns.org/) (for date manipulation). Make sure you have these dependencies installed.
+NB: This plugin is dependant on VueJS 2.x and [date-fns 1.x](https://date-fns.org/) (for date manipulation). Make sure you have these dependencies installed. Note that date-fns 2.x is currently not supported due to some breaking changes in the way they name their ES2015 modules. Either waiting for a fix on their end, or we will think of something when 2.0 is in stable release. For the moment, use date-fns 1.x.
 
 ## [Enable plugin in your app](#enable-plugin)
 
@@ -99,17 +99,17 @@ NB: Note that you need to wrap the datepicker in a `<div class="datepicker-trigg
 
 ## [Options for `Vue.use(AirbnbStyleDatepicker, datepickerOptions)`](#plugin-options)
 
-| Prop name   | Value                                                                                                                    |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------ |
-| sundayFirst | Do you want the week to start on sunday.<br>Type: Boolean, Default: false                                                |
-| days        | Name of days in your language. **Must start with monday**<br>Type: Array<string>                                         |
-| daysShort   | Short name of days in your language (what's shown in the days legend). **Must start with monday**<br>Type: Array<string> |
-| monthNames  | Names of months in your language.<br>Type: Array<string>                                                                 |
-| dateLabelFormat | Used to override the formatting string used for rendering aria labels. Defaults to 'dddd, MMMM D, YYYY'. <br>Type: String |
-| colors      | Override default colors. Use hex values (#efefef)<br>Type: Object                                                        |
-| texts       | Override default texts (currently only "Cancel", "Apply", and "Keyboard shortcuts")<br>Type: Object                                             |
-| ariaLabels | Override default aria-label texts. Current options include chooseDate, chooseStartDate, chooseEndDate, selectedDate, unavailableDate, previousMonth, nextMonth, close, openKeyboardShortcutsMenu, and openKeyboardShortcutsMenu. Labels that end in `Date` are functions which accept a date string for constructing the label text, the rest of the labels are plain strings.<br>Type: Object  |
-| keyboardShortcuts | Override the text/labels used inside the keyboard shortcuts menu | <br> Type: Array<object> |
+| Prop name         | Value                                                                                                                                                                                                                                                                                                                                                                                          |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| sundayFirst       | Do you want the week to start on sunday.<br>Type: Boolean, Default: false                                                                                                                                                                                                                                                                                                                      |
+| days              | Name of days in your language. **Must start with monday**<br>Type: Array<string>                                                                                                                                                                                                                                                                                                               |
+| daysShort         | Short name of days in your language (what's shown in the days legend). **Must start with monday**<br>Type: Array<string>                                                                                                                                                                                                                                                                       |
+| monthNames        | Names of months in your language.<br>Type: Array<string>                                                                                                                                                                                                                                                                                                                                       |
+| dateLabelFormat   | Used to override the formatting string used for rendering aria labels. Defaults to 'dddd, MMMM D, YYYY'. <br>Type: String                                                                                                                                                                                                                                                                      |
+| colors            | Override default colors. Use hex values (#efefef)<br>Type: Object                                                                                                                                                                                                                                                                                                                              |
+| texts             | Override default texts (currently only "Cancel", "Apply", and "Keyboard shortcuts")<br>Type: Object                                                                                                                                                                                                                                                                                            |
+| ariaLabels        | Override default aria-label texts. Current options include chooseDate, chooseStartDate, chooseEndDate, selectedDate, unavailableDate, previousMonth, nextMonth, close, openKeyboardShortcutsMenu, and openKeyboardShortcutsMenu. Labels that end in `Date` are functions which accept a date string for constructing the label text, the rest of the labels are plain strings.<br>Type: Object |
+| keyboardShortcuts | Override the text/labels used inside the keyboard shortcuts menu                                                                                                                                                                                                                                                                                                                               | <br> Type: Array<object> |
 
 _Example with all available options_:
 
@@ -156,53 +156,69 @@ Vue.use(AirBnbStyleDatepicker, {
     nextMonth: 'Flytta framåt för att växla till nästa månad.',
     closeDatepicker: 'Stäng kalender',
     openKeyboardShortcutsMenu: 'Öppna snabbtangentmenyn.',
-    closeKeyboardShortcutsMenu: 'Stäng snabbtangentmenyn.'
+    closeKeyboardShortcutsMenu: 'Stäng snabbtangentmenyn.',
   },
   keyboardShortcuts: [
-    {symbol: '↵', label: 'Välj datum i fokus', symbolDescription: 'Enter-tangent'},
-    {symbol: '←/→', label: 'Flytta bakåt (vänster) och framåt (nedåt) med en dag.', symbolDescription: 'Vänster eller höger piltangenter'},
-    {symbol: '↑/↓', label: 'Flytta bakåt (upp) och framåt (ner) med en vecka.', symbolDescription: 'Uppåt eller nedåtpil'},
-    {symbol: 'PgUp/PgDn', label: 'Byt månader.', symbolDescription: 'PageUp och PageDown-tangenterna'},
-    {symbol: 'Home/End', label: 'Gå till den första eller sista dagen i en vecka.', symbolDescription: 'Hem- eller Avsluta-tangenter'},
-    {symbol: 'Esc', label: 'Stäng den här panelen', symbolDescription: 'Escape-nyckel'},
-    {symbol: '?', label: 'Öppna den här panelen', symbolDescription: 'Frågetecken'}
+    { symbol: '↵', label: 'Välj datum i fokus', symbolDescription: 'Enter-tangent' },
+    {
+      symbol: '←/→',
+      label: 'Flytta bakåt (vänster) och framåt (nedåt) med en dag.',
+      symbolDescription: 'Vänster eller höger piltangenter',
+    },
+    {
+      symbol: '↑/↓',
+      label: 'Flytta bakåt (upp) och framåt (ner) med en vecka.',
+      symbolDescription: 'Uppåt eller nedåtpil',
+    },
+    {
+      symbol: 'PgUp/PgDn',
+      label: 'Byt månader.',
+      symbolDescription: 'PageUp och PageDown-tangenterna',
+    },
+    {
+      symbol: 'Home/End',
+      label: 'Gå till den första eller sista dagen i en vecka.',
+      symbolDescription: 'Hem- eller Avsluta-tangenter',
+    },
+    { symbol: 'Esc', label: 'Stäng den här panelen', symbolDescription: 'Escape-nyckel' },
+    { symbol: '?', label: 'Öppna den här panelen', symbolDescription: 'Frågetecken' },
   ],
 })
 ```
 
 ## [Properties, events & slots for `<AirbnbStyleDatepicker />`](#props-and-events)
 
-| Prop name          | Value                                                                                                                                                                                                                            |
-| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| triggerElementId   | The id of the element that user clicks on (without #).<br>Type: String, Required                                                                                                                                                 |
-| mode               | If datepicker should select a range or just a single date.<br>Type: String, Required, Values: `'single'` or `'range'`, Default: `'range'`                                                                                        |
-| dateOne            | Model for first date.<br>Type: String, Required                                                                                                                                                                                  |
-| dateTwo            | Model for second date.<br>Type: String, Required if using `mode="range"`                                                                                                                                                         |
-| minDate            | Disable dates before this.<br>Type: String                                                                                                                                                                                       |
-| endDate            | Disable dates after this.<br>Type: String                                                                                                                                                                                        |
-| offsetY            | Offset vertical position of datepicker (in pixels from `triggerElementId` bottom).<br>Type: Number, Default: 0                                                                                                                   |
-| offsetX            | Offset horisontal position of datepicker (in pixels from `triggerElementId` left or right depending on alignment).<br>Type: Number, Default: 0                                                                                   |
-| monthsToShow       | How many months to show. For mobile it's always 1.<br>Type: Number, Default: 2                                                                                                                                                   |
-| startOpen          | If you want the datepicker start open<br>Type: Boolean, Default: false                                                                                                                                                           |
-| fullscreenMobile   | Show fullscreen view on mobile.<br>Type: Boolean, Default: false                                                                                                                                                                 |
-| mobileHeader       | Text to show on mobile header<br>Type: String, Default: 'Select dates'                                                                                                                                                           |
-| inline             | Use inline mode (datepicker always showing)<br>Type: Boolean, Default: false                                                                                                                                                     |
-| disabledDates      | Disable specific dates.<br>Type: Array<string>                                                                                                                                                                                   |
-| showActionButtons  | Show/hide action buttons ("Apply", "Cancel")<br>Type: Boolean, Default: false                                                                                                                                                    |
-| showShortcutsMenuTrigger | Show/hide the keyboard shortcuts helper menu trigger ("?")<br>Type: Boolean, Default: true |
-| trigger            | To programmatically show datepicker. For example if you want to open the datepicker by clicking some other HTML element. You manually need to reset this variable though in the @closed method.<br>Type: Boolean, Default: false |
-| @date-one-selected | Event emitted when second date is selected.<br>Required                                                                                                                                                                          |
-| @date-two-selected | Event emitted when second date is selected.<br>Required if using `mode="range"`                                                                                                                                                  |
-| @opened            | Event emitted when datepicker is opened.                                                                                                                                                                                         |
-| @closed            | Event emitted when datepicker is closed.                                                                                                                                                                                         |
-| @cancelled         | Event emitted when user clicks "Cancel".                                                                                                                                                                                         |
-| @apply             | Event emitted when user clicks "Apply"                                                                                                                                                                                           |
-| @previous-month    | Event emitted when user changes to previous month. Returns array with first date in visible months. `['2019-09-01', '2019-10-01']`                                                                                               |
-| @next-month        | Event emitted when user changes to next month. Returns array with first date in visible months. `['2019-09-01', '2019-10-01']`                                                                                                   |
-| previous-month-icon | Optional, slot used to override the previous month left arrow icon. Uses default icon if nothing is passed. |
-| next-month-icon | Optional, slot used to override the next month right arrow icon. Uses default icon if nothing is passed. |
-| close-icon | Optional, slot used to override the mobile close X icon. Uses default icon if nothing is passed. |
-| close-shortcuts-icon | Optional, slot used to override the modal close X icon in the keyboard shortcuts menu. Uses default icon if nothing is passed. |
+| Prop name                | Value                                                                                                                                                                                                                            |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| triggerElementId         | The id of the element that user clicks on (without #).<br>Type: String, Required                                                                                                                                                 |
+| mode                     | If datepicker should select a range or just a single date.<br>Type: String, Required, Values: `'single'` or `'range'`, Default: `'range'`                                                                                        |
+| dateOne                  | Model for first date.<br>Type: String, Required                                                                                                                                                                                  |
+| dateTwo                  | Model for second date.<br>Type: String, Required if using `mode="range"`                                                                                                                                                         |
+| minDate                  | Disable dates before this.<br>Type: String                                                                                                                                                                                       |
+| endDate                  | Disable dates after this.<br>Type: String                                                                                                                                                                                        |
+| offsetY                  | Offset vertical position of datepicker (in pixels from `triggerElementId` bottom).<br>Type: Number, Default: 0                                                                                                                   |
+| offsetX                  | Offset horisontal position of datepicker (in pixels from `triggerElementId` left or right depending on alignment).<br>Type: Number, Default: 0                                                                                   |
+| monthsToShow             | How many months to show. For mobile it's always 1.<br>Type: Number, Default: 2                                                                                                                                                   |
+| startOpen                | If you want the datepicker start open<br>Type: Boolean, Default: false                                                                                                                                                           |
+| fullscreenMobile         | Show fullscreen view on mobile.<br>Type: Boolean, Default: false                                                                                                                                                                 |
+| mobileHeader             | Text to show on mobile header<br>Type: String, Default: 'Select dates'                                                                                                                                                           |
+| inline                   | Use inline mode (datepicker always showing)<br>Type: Boolean, Default: false                                                                                                                                                     |
+| disabledDates            | Disable specific dates.<br>Type: Array<string>                                                                                                                                                                                   |
+| showActionButtons        | Show/hide action buttons ("Apply", "Cancel")<br>Type: Boolean, Default: false                                                                                                                                                    |
+| showShortcutsMenuTrigger | Show/hide the keyboard shortcuts helper menu trigger ("?")<br>Type: Boolean, Default: true                                                                                                                                       |
+| trigger                  | To programmatically show datepicker. For example if you want to open the datepicker by clicking some other HTML element. You manually need to reset this variable though in the @closed method.<br>Type: Boolean, Default: false |
+| @date-one-selected       | Event emitted when second date is selected.<br>Required                                                                                                                                                                          |
+| @date-two-selected       | Event emitted when second date is selected.<br>Required if using `mode="range"`                                                                                                                                                  |
+| @opened                  | Event emitted when datepicker is opened.                                                                                                                                                                                         |
+| @closed                  | Event emitted when datepicker is closed.                                                                                                                                                                                         |
+| @cancelled               | Event emitted when user clicks "Cancel".                                                                                                                                                                                         |
+| @apply                   | Event emitted when user clicks "Apply"                                                                                                                                                                                           |
+| @previous-month          | Event emitted when user changes to previous month. Returns array with first date in visible months. `['2019-09-01', '2019-10-01']`                                                                                               |
+| @next-month              | Event emitted when user changes to next month. Returns array with first date in visible months. `['2019-09-01', '2019-10-01']`                                                                                                   |
+| previous-month-icon      | Optional, slot used to override the previous month left arrow icon. Uses default icon if nothing is passed.                                                                                                                      |
+| next-month-icon          | Optional, slot used to override the next month right arrow icon. Uses default icon if nothing is passed.                                                                                                                         |
+| close-icon               | Optional, slot used to override the mobile close X icon. Uses default icon if nothing is passed.                                                                                                                                 |
+| close-shortcuts-icon     | Optional, slot used to override the modal close X icon in the keyboard shortcuts menu. Uses default icon if nothing is passed.                                                                                                   |
 
 <br><br> _Example with all properties (not recommended, only to show values)_:
 
