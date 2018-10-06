@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Test CDN</title>
-  <link rel="stylesheet" href="https://unpkg.com/vue-airbnb-style-datepicker@latest/dist/vue-airbnb-style-datepicker.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/vue-airbnb-style-datepicker@latest/dist/no-dep/vue-airbnb-style-datepicker.min.css">
   <style>
   html, body {
     min-height: 100vh;
@@ -31,6 +31,9 @@
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="https://unpkg.com/vue-airbnb-style-datepicker@latest/dist/no-dep/vue-airbnb-style-datepicker.min.js"></script>
   <script>
+    var datepickerOptions = {}
+    Vue.use(window.AirbnbStyleDatepicker, datepickerOptions)
+
     var app = new Vue({
       el: '#app',
       data: {
