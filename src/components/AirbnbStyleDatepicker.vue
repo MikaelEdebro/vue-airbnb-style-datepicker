@@ -198,6 +198,7 @@ export default {
     inline: { type: Boolean },
     mobileHeader: { type: String },
     disabledDates: { type: Array, default: () => [] },
+    enabledDates: { type: Array, default: () => [] },
     showActionButtons: { type: Boolean, default: true },
     showShortcutsMenuTrigger: { type: Boolean, default: true },
     isTest: {
@@ -887,8 +888,11 @@ export default {
       return isAfter(date, start) && isBefore(date, end)
     },
     isDateDisabled(date) {
-      const isDisabled = this.disabledDates.indexOf(date) > -1
-      return isDisabled
+      if (this.enabledDates.length > 0) {
+        return this.enabledDates.indexOf(date) === -1
+      } else {
+        return this.disabledDates.indexOf(date) > -1
+      }
     },
     isDisabled(date) {
       return (
