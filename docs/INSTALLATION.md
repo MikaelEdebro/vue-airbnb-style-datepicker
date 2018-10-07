@@ -12,7 +12,7 @@ With Yarn:
 yarn add vue-airbnb-style-datepicker
 ```
 
-NB: This plugin is dependant on VueJS 2.x and [date-fns 1.x](https://date-fns.org/) (for date manipulation). Make sure you have these dependencies installed. Note that date-fns 2.x is currently not supported due to some breaking changes in the way they name their ES2015 modules. Either waiting for a fix on their end, or we will think of something when 2.0 is in stable release. For the moment, use date-fns 1.x.
+NB: This plugin is dependant on VueJS 2.x and [date-fns](https://date-fns.org/) (for date manipulation). Make sure you have these dependencies installed.
 
 ## [Enable plugin in your app](#enable-plugin)
 
@@ -117,19 +117,19 @@ _Example with all available options_:
 Vue.use(AirBnbStyleDatepicker, {
   sundayFirst: false,
   dateLabelFormat: 'dddd, MMMM D, YYYY',
-  days: ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'],
-  daysShort: ['Mån', 'Tis', 'Ons', 'Tors', 'Fre', 'Lör', 'Sön'],
+  days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+  daysShort: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
   monthNames: [
-    'Januari',
-    'Februari',
-    'Mars',
+    'January',
+    'February',
+    'March',
     'April',
-    'Maj',
-    'Juni',
-    'Juli',
-    'Augusti',
+    'May',
+    'June',
+    'July',
+    'August',
     'September',
-    'Oktober',
+    'October',
     'November',
     'December',
   ],
@@ -142,46 +142,30 @@ Vue.use(AirBnbStyleDatepicker, {
     disabled: '#fff',
   },
   texts: {
-    apply: 'Tillämpa',
-    cancel: 'Avbryt',
-    keyboardShortcuts: 'Tangentbordsgenvägar',
+    apply: 'Apply',
+    cancel: 'Cancel',
+    keyboardShortcuts: 'Keyboard Shortcuts',
   },
   ariaLabels: {
-    chooseDate: ({ date }) => date,
-    chooseStartDate: ({ date }) => `Välja ${date} som startdatum.`,
-    chooseEndDate: ({ date }) => `Choose ${date} som ditt slutdatum.`,
-    selectedDate: ({ date }) => `Vald. ${date}`,
-    unavailableDate: ({ date }) => `Inte tillgänglig. ${date}`,
-    previousMonth: 'Flytta bakåt för att växla till föregående månad.',
-    nextMonth: 'Flytta framåt för att växla till nästa månad.',
-    closeDatepicker: 'Stäng kalender',
-    openKeyboardShortcutsMenu: 'Öppna snabbtangentmenyn.',
-    closeKeyboardShortcutsMenu: 'Stäng snabbtangentmenyn.',
+    chooseDate: (date) => date,
+    chooseStartDate: (date) => `Choose ${date} as your start date.`,
+    chooseEndDate: (date) => `Choose ${date} as your end date.`,
+    selectedDate: (date) => `Selected. ${date}`,
+    unavailableDate: (date) => `Not available. ${date}`,
+    previousMonth: 'Move backward to switch to the previous month.',
+    nextMonth: 'Move forward to switch to the next month.',
+    closeDatepicker: 'Close calendar',
+    openKeyboardShortcutsMenu: 'Open keyboard shortcuts menu.',
+    closeKeyboardShortcutsMenu: 'Close keyboard shortcuts menu'
   },
   keyboardShortcuts: [
-    { symbol: '↵', label: 'Välj datum i fokus', symbolDescription: 'Enter-tangent' },
-    {
-      symbol: '←/→',
-      label: 'Flytta bakåt (vänster) och framåt (nedåt) med en dag.',
-      symbolDescription: 'Vänster eller höger piltangenter',
-    },
-    {
-      symbol: '↑/↓',
-      label: 'Flytta bakåt (upp) och framåt (ner) med en vecka.',
-      symbolDescription: 'Uppåt eller nedåtpil',
-    },
-    {
-      symbol: 'PgUp/PgDn',
-      label: 'Byt månader.',
-      symbolDescription: 'PageUp och PageDown-tangenterna',
-    },
-    {
-      symbol: 'Home/End',
-      label: 'Gå till den första eller sista dagen i en vecka.',
-      symbolDescription: 'Hem- eller Avsluta-tangenter',
-    },
-    { symbol: 'Esc', label: 'Stäng den här panelen', symbolDescription: 'Escape-nyckel' },
-    { symbol: '?', label: 'Öppna den här panelen', symbolDescription: 'Frågetecken' },
+    {symbol: '↵', label: 'Select the date in focus', symbolDescription: 'Enter key'},
+    {symbol: '←/→', label: 'Move backward (left) and forward (down) by one day.', symbolDescription: 'Left or right arrow keys'},
+    {symbol: '↑/↓', label: 'Move backward (up) and forward (down) by one week.', symbolDescription: 'Up or down arrow keys'},
+    {symbol: 'PgUp/PgDn', label: 'Switch months.', symbolDescription: 'PageUp and PageDown keys'},
+    {symbol: 'Home/End', label: 'Go to the first or last day of a week.', symbolDescription: 'Home or End keys'},
+    {symbol: 'Esc', label: 'Close this panel', symbolDescription: 'Escape key'},
+    {symbol: '?', label: 'Open this panel', symbolDescription: 'Question mark'}
   ],
 })
 ```
@@ -203,6 +187,7 @@ Vue.use(AirBnbStyleDatepicker, {
 | fullscreenMobile         | Show fullscreen view on mobile.<br>Type: Boolean, Default: false                                                                                                                                                                 |
 | mobileHeader             | Text to show on mobile header<br>Type: String, Default: 'Select dates'                                                                                                                                                           |
 | inline                   | Use inline mode (datepicker always showing)<br>Type: Boolean, Default: false                                                                                                                                                     |
+| enabledDates             | Disable all dates, except these ones.<br>Type: Array<string>                                                                                                                                                                     |
 | disabledDates            | Disable specific dates.<br>Type: Array<string>                                                                                                                                                                                   |
 | showActionButtons        | Show/hide action buttons ("Apply", "Cancel")<br>Type: Boolean, Default: false                                                                                                                                                    |
 | showShortcutsMenuTrigger | Show/hide the keyboard shortcuts helper menu trigger ("?")<br>Type: Boolean, Default: true                                                                                                                                       |
@@ -237,6 +222,7 @@ Vue.use(AirBnbStyleDatepicker, {
   :fullscreen-mobile="true"
   :mobile-header="'Mobile header text'"
   :inline="true"
+  :enabled-dates="['2018-12-01', '2018-12-08']"
   :disabled-dates="['2018-10-20', '2018-10-22']"
   :show-action-buttons="true"
   :trigger="someBooleanDataProp"
