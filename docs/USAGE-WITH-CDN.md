@@ -10,7 +10,7 @@ If you're not using Webpack (or any other JS module bundler), and is just using 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Test CDN</title>
-  <link rel="stylesheet" href="https://unpkg.com/vue-airbnb-style-datepicker@2.0.2/dist/vue-airbnb-style-datepicker.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/vue-airbnb-style-datepicker@2.1.0/dist/vue-airbnb-style-datepicker.min.css">
   <style>
   html, body {
     min-height: 100vh;
@@ -33,7 +33,7 @@ If you're not using Webpack (or any other JS module bundler), and is just using 
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  <script src="https://unpkg.com/vue-airbnb-style-datepicker@2.0.2/dist/vue-airbnb-style-datepicker.min.js"></script>
+  <script src="https://unpkg.com/vue-airbnb-style-datepicker@2.1.0/dist/vue-airbnb-style-datepicker.min.js"></script>
   <script>
     // define options (optional)
     var datepickerOptions = {
@@ -57,7 +57,7 @@ If you're not using Webpack (or any other JS module bundler), and is just using 
 This version comes with the the neccesary [date-fns](https://date-fns.org/) methods bundled, so no need to add date-fns as a dependency. If you however are already using date-fns for your other site logic, I would highly recommend using the version without bundled dependencies. This is much smaller and there's no need to have duplicated code:
 
 ```html
-<script src="https://unpkg.com/vue-airbnb-style-datepicker@2.0.2/dist/no-dep/vue-airbnb-style-datepicker.min.js"></script>
+<script src="https://unpkg.com/vue-airbnb-style-datepicker@2.1.0/dist/no-dep/vue-airbnb-style-datepicker.min.js"></script>
 ```
 
 The methods used (and that you need to include in your app) are the following. Note, this only applies if you're using the `no-dep` version:
