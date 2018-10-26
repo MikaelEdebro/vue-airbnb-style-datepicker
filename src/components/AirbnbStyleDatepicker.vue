@@ -77,6 +77,7 @@
                       'asd__day--selected': fullDate && (selectedDate1 === fullDate || selectedDate2 === fullDate),
                       'asd__day--in-range': isInRange(fullDate),
                       'asd__day--today': fullDate && isToday(fullDate),
+                      'asd__day--hovered': isHoveredInRange(fullDate),
                       'asd__selected-date-one': fullDate && fullDate === selectedDate1,
                       'asd__selected-date-two': fullDate && fullDate === selectedDate2,
                     }"
@@ -221,7 +222,8 @@ export default {
         selectedText: '#fff',
         text: '#565a5c',
         inRangeBorder: '#33dacd',
-        disabled: '#fff'
+        disabled: '#fff',
+        hoveredInRange: '#67f6ee',
       },
       sundayFirst: false,
       ariaLabels: {
@@ -494,18 +496,21 @@ export default {
       const isSelected = this.isSelected(date)
       const isInRange = this.isInRange(date)
       const isDisabled = this.isDisabled(date)
+      const isHoveredInRange = this.isHoveredInRange(date)
 
       let styles = {
         width: (this.width - 30) / 7 + 'px',
         background: isSelected
           ? this.colors.selected
-          : isInRange ? this.colors.inRange : '',
+          : isHoveredInRange ?
+                this.colors.hoveredInRange
+                : isInRange ? this.colors.inRange : '',
         color: isSelected
           ? this.colors.selectedText
-          : isInRange ? this.colors.selectedText : this.colors.text,
+          : isInRange || isHoveredInRange ? this.colors.selectedText : this.colors.text,
         border: isSelected
           ? '1px double ' + this.colors.selected
-          : isInRange && this.allDatesSelected
+          : (isInRange && this.allDatesSelected) || isHoveredInRange
             ? '1px double ' + this.colors.inRangeBorder
             : ''
       }
@@ -698,6 +703,7 @@ export default {
         const colors = copyObject(this.$options.colors)
         this.colors.selected = colors.selected || this.colors.selected
         this.colors.inRange = colors.inRange || this.colors.inRange
+        this.colors.hoveredInRange = colors.hoveredInRange || this.colors.hoveredInRange
         this.colors.selectedText =
           colors.selectedText || this.colors.selectedText
         this.colors.text = colors.text || this.colors.text
@@ -866,6 +872,14 @@ export default {
           isBefore(date, this.hoverDate) &&
           !this.allDatesSelected)
       )
+    },
+    isHoveredInRange(date) {
+        if (this.isSingleMode || this.allDatesSelected) {
+            return false
+        }
+
+        return ((isAfter(date, this.selectedDate1) && isBefore(date, this.hoverDate)) ||
+                (isAfter(date, this.hoverDate) && isBefore(date, this.selectedDate1)));
     },
     isBeforeMinDate(date) {
       if (!this.minDate) {
