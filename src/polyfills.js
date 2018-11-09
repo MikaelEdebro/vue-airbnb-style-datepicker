@@ -92,3 +92,16 @@ if (!Array.prototype.findIndex) {
     },
   })
 }
+
+// from:https://github.com/jserz/js_piece/blob/master/DOM/ChildNode/remove()/remove().md
+if (!Element.prototype.remove) {
+  Object.defineProperty(Element.prototype, 'remove', {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    value: function remove() {
+      if (this.parentNode !== null)
+        this.parentNode.removeChild(this);
+    }
+  });
+}
