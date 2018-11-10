@@ -57,7 +57,32 @@
             :class="{hidden: monthIndex === 0 || monthIndex > showMonths}"
             :style="monthWidthStyles"
           >
-            <div class="asd__month-name">{{ month.monthName }} {{ month.year }}</div>
+            <div class="asd__month-name">
+              <select
+                v-if="showMonthYearSelect"
+                v-model="month.monthName"
+                class="asd__month-year-select"
+                @change="updateMonth(monthIndex, month.year, $event)"
+                v-resize-select
+              >
+                <option v-for="monthName in monthNames" :value="monthName" :key="`month-${monthIndex}-${monthName}`">
+                  {{ monthName }}
+                </option>
+              </select>
+              <span v-else>{{ month.monthName }}</span>
+
+              <select
+                v-if="showMonthYearSelect"
+                class="asd__month-year-select"
+                v-model="month.year"
+                @change="updateYear(monthIndex, month.monthNumber - 1, $event)"
+              >
+                <option v-for="year in years" :value="year" :key="`month-${monthIndex}-${year}`">
+                  {{ year }}
+                </option>
+              </select>
+              <span v-else>{{ month.year }}</span>
+            </div>
 
             <table class="asd__month-table" role="presentation">
               <tbody>
@@ -201,6 +226,8 @@ export default {
     enabledDates: { type: Array, default: () => [] },
     showActionButtons: { type: Boolean, default: true },
     showShortcutsMenuTrigger: { type: Boolean, default: true },
+    showMonthYearSelect: { type: Boolean, default: false },
+    yearsForSelect: { type: Number, default: 10 },
     isTest: {
       type: Boolean,
       default: () => process.env.NODE_ENV === 'test'
@@ -289,6 +316,7 @@ export default {
       },
       startingDate: '',
       months: [],
+      years: [],
       width: 300,
       selectedDate1: '',
       selectedDate2: '',
@@ -423,12 +451,17 @@ export default {
     minDate() {
       this.setStartDates()
       this.generateMonths()
+      this.generateYears()
+    },
+    maxDate() {
+      this.generateYears()
     },
     datePropsCompound(newValue) {
       if (this.dateOne !== this.selectedDate1) {
         this.startingDate = this.dateOne
         this.setStartDates()
         this.generateMonths()
+        this.generateYears()
       }
       if (this.isDateTwoBeforeDateOne) {
         this.selectedDate2 = ''
@@ -472,6 +505,7 @@ export default {
 
     this.setStartDates()
     this.generateMonths()
+    this.generateYears()
 
     if (this.startOpen || this.inline) {
       this.openDatepicker()
@@ -672,13 +706,25 @@ export default {
       }
       this.startingDate = subMonths(formattedDate, 1)
       this.generateMonths()
+      this.generateYears()
       this.selectDate(formattedDate)
     },
     generateMonths() {
       this.months = []
+      let currentMonth = this.startingDate;
       for (let i = 0; i < this.showMonths + 2; i++) {
-        this.months.push(this.getMonth(this.startingDate))
-        this.startingDate = this.addMonths(this.startingDate)
+        this.months.push(this.getMonth(currentMonth))
+        currentMonth = this.addMonths(currentMonth)
+      }
+    },
+    generateYears() {
+      if (!this.showMonthYearSelect) return
+      this.years = [];
+      const currentYear = getYear(this.startingDate)
+      const startYear = this.minDate ? getYear(this.minDate) : currentYear - this.yearsForSelect
+      const endYear = this.maxDate ? getYear(this.maxDate) : currentYear + this.yearsForSelect
+      for (var year = startYear; year <= endYear; year++) {
+          this.years.push(year);
       }
     },
     setupDatepicker() {
@@ -826,6 +872,9 @@ export default {
     setHoverDate(date) {
       this.hoverDate = date
     },
+    log() {
+      console.log('out')
+    },
     setFocusedDate(date) {
       const formattedDate = format(date, this.dateFormat)
       this.focusedDate = formattedDate
@@ -930,6 +979,19 @@ export default {
       } else {
         this.openDatepicker()
       }
+    },
+    updateMonth(offset, year, event) {
+      const newMonth = event.target.value
+      const monthIdx = this.monthNames.indexOf(newMonth)
+      const newDate = setYear(setMonth(this.startingDate, monthIdx), year)
+      this.startingDate = subMonths(newDate, offset)
+      this.generateMonths()
+    },
+    updateYear(offset, monthIdx, event) {
+      const newYear = event.target.value
+      const newDate = setYear(setMonth(this.startingDate, monthIdx), newYear)
+      this.startingDate = subMonths(newDate, offset)
+      this.generateMonths()
     },
     openDatepicker() {
       this.positionDatepicker()
@@ -1201,6 +1263,16 @@ $transition-time: 0.3s;
     margin: 0 0 30px;
     line-height: 1.4em;
     font-weight: bold;
+  }
+  &__month-year-select {
+    -webkit-appearance: none;
+    border:none;
+    background-color: inherit;
+    cursor: pointer;
+    color: blue;
+    font-size:inherit;
+    font-weight: inherit;
+    padding: 0;
   }
 
   &__day {
