@@ -308,7 +308,7 @@ describe('AirbnbStyleDatepicker', () => {
       wrapper = createDatePickerInstance({
         mode: 'single',
         dateOne: '2018-12-20',
-        minDate: '2017-01-01',
+        minDate: '2017-01-03',
         endDate: '2019-12-31',
         showMonthYearSelect: true,
       })

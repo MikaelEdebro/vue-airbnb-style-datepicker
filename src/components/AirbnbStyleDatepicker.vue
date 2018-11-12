@@ -87,7 +87,12 @@
                 <option v-if="years.indexOf(month.year) === -1" :value="month.year" :key="`month-${monthIndex}-${year}`">
                   {{ month.year }}
                 </option>
-                <option v-for="year in years" :value="year" :key="`month-${monthIndex}-${year}`">
+                <option
+                  v-for="year in years"
+                  :value="year"
+                  :key="`month-${monthIndex}-${year}`"
+                  :disabled="isMonthDisabled(year, month.monthNumber - 1)"
+                >
                   {{ year }}
                 </option>
               </select>
@@ -209,6 +214,7 @@ import addDays from 'date-fns/add_days'
 import subDays from 'date-fns/sub_days'
 import addWeeks from 'date-fns/add_weeks'
 import subWeeks from 'date-fns/sub_weeks'
+import startOfMonth from 'date-fns/start_of_month'
 import startOfWeek from 'date-fns/start_of_week'
 import endOfWeek from 'date-fns/end_of_week'
 import isBefore from 'date-fns/is_before'
@@ -721,7 +727,10 @@ export default {
     },
     isMonthDisabled(year, monthIndex) {
       const monthDate = new Date(year, monthIndex)
-      return this.isBeforeMinDate(monthDate) || this.isAfterEndDate(monthDate)
+      if (this.hasMinDate && isBefore(monthDate, startOfMonth(this.minDate))) {
+        return true
+      }
+      return this.isAfterEndDate(monthDate)
     },
     generateMonths() {
       this.months = []
