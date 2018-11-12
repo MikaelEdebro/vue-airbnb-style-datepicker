@@ -595,7 +595,7 @@ export default {
     trapKeyboardInput(event) {
       // prevent keys that are used as keyboard shortcuts from propagating out of this element
       // except for the enter key, which is needed to activate buttons
-      const shortcutKeyCodes = Object.values(this.keys)
+      const shortcutKeyCodes = Object.keys(this.keys).map(key => this.keys[key])
       shortcutKeyCodes.splice(shortcutKeyCodes.indexOf(13), 1)
       const shouldPreventDefault = shortcutKeyCodes.indexOf(event.keyCode) > -1
       if (shouldPreventDefault) event.preventDefault()
