@@ -274,8 +274,8 @@ describe('AirbnbStyleDatepicker', () => {
         showMonthYearSelect: true,
       })
       expect(wrapper.vm.years.length).toEqual(21)
-      expect(wrapper.vm.years[0]).toEqual(2008)
-      expect(wrapper.vm.years[20]).toEqual(2028)
+      expect(wrapper.vm.years[0]).toEqual('2008')
+      expect(wrapper.vm.years[20]).toEqual('2028')
     })
 
     test('constructs year range based on yearsForSelect if present', () => {
@@ -286,8 +286,8 @@ describe('AirbnbStyleDatepicker', () => {
         yearsForSelect: 5,
       })
       expect(wrapper.vm.years.length).toEqual(11)
-      expect(wrapper.vm.years[0]).toEqual(2013)
-      expect(wrapper.vm.years[10]).toEqual(2023)
+      expect(wrapper.vm.years[0]).toEqual('2013')
+      expect(wrapper.vm.years[10]).toEqual('2023')
     })
 
     test('constructs year range based on minDate/endDate if present', () => {
@@ -300,9 +300,25 @@ describe('AirbnbStyleDatepicker', () => {
         showMonthYearSelect: true,
       })
       expect(wrapper.vm.years.length).toEqual(3)
-      expect(wrapper.vm.years[0]).toEqual(2017)
-      expect(wrapper.vm.years[2]).toEqual(2019)
+      expect(wrapper.vm.years[0]).toEqual('2017')
+      expect(wrapper.vm.years[2]).toEqual('2019')
     })
+
+    test('isMonthDisabled', () => {
+      wrapper = createDatePickerInstance({
+        mode: 'single',
+        dateOne: '2018-12-20',
+        minDate: '2017-01-01',
+        endDate: '2019-12-31',
+        showMonthYearSelect: true,
+      })
+      expect(wrapper.vm.isMonthDisabled(2016, 11)).toEqual(true)
+      expect(wrapper.vm.isMonthDisabled(2017, 0)).toEqual(false)
+      expect(wrapper.vm.isMonthDisabled(2020, 0)).toEqual(true)
+      expect(wrapper.vm.isMonthDisabled(2019, 11)).toEqual(false)
+      expect(wrapper.vm.isMonthDisabled(2018, 6)).toEqual(false)
+    })
+
 
     test('selecting a month updates months array according to offset', () => {
       wrapper = createDatePickerInstance({

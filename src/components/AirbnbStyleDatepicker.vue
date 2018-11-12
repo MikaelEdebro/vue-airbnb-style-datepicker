@@ -66,7 +66,12 @@
                 @change="updateMonth(monthIndex, month.year, $event)"
                 v-resize-select
               >
-                <option v-for="monthName in monthNames" :value="monthName" :key="`month-${monthIndex}-${monthName}`">
+                <option
+                  v-for="(monthName, idx) in monthNames"
+                  :value="monthName"
+                  :disabled="isMonthDisabled(month.year, idx)"
+                  :key="`month-${monthIndex}-${monthName}`"
+                >
                   {{ monthName }}
                 </option>
               </select>
@@ -713,6 +718,10 @@ export default {
       this.generateMonths()
       this.generateYears()
       this.selectDate(formattedDate)
+    },
+    isMonthDisabled(year, monthIndex) {
+      const monthDate = new Date(year, monthIndex)
+      return this.isBeforeMinDate(monthDate) || this.isAfterEndDate(monthDate)
     },
     generateMonths() {
       this.months = []
