@@ -729,7 +729,7 @@ export default {
       const startYear = this.minDate ? getYear(this.minDate) : currentYear - this.yearsForSelect
       const endYear = this.endDate ? getYear(this.endDate) : currentYear + this.yearsForSelect
       for (var year = startYear; year <= endYear; year++) {
-          this.years.push(year);
+          this.years.push(year.toString());
       }
     },
     setupDatepicker() {
