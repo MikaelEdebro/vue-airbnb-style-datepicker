@@ -455,7 +455,7 @@ export default {
       this.generateMonths()
       this.generateYears()
     },
-    maxDate() {
+    endDate() {
       this.generateYears()
     },
     datePropsCompound(newValue) {
@@ -724,7 +724,7 @@ export default {
       this.years = [];
       const currentYear = getYear(this.startingDate)
       const startYear = this.minDate ? getYear(this.minDate) : currentYear - this.yearsForSelect
-      const endYear = this.maxDate ? getYear(this.maxDate) : currentYear + this.yearsForSelect
+      const endYear = this.endDate ? getYear(this.endDate) : currentYear + this.yearsForSelect
       for (var year = startYear; year <= endYear; year++) {
           this.years.push(year);
       }
