@@ -11,5 +11,5 @@ function resizeSelect(el, binding, vnode) {
   select.appendChild(option)
   el.parentNode.appendChild(select)
   el.style.width = select.offsetWidth + 'px';
-  select.remove()
+  select.parentNode.removeChild(select)
 }
