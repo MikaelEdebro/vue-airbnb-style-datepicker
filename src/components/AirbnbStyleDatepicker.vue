@@ -62,6 +62,7 @@
                 v-if="showMonthYearSelect"
                 v-model="month.monthName"
                 class="asd__month-year-select"
+                :tabindex="monthIndex === 0 || monthIndex > showMonths ? -1 : 0"
                 @change="updateMonth(monthIndex, month.year, $event)"
                 v-resize-select
               >
@@ -74,6 +75,7 @@
               <select
                 v-if="showMonthYearSelect"
                 class="asd__month-year-select"
+                :tabindex="monthIndex === 0 || monthIndex > showMonths ? -1 : 0"
                 v-model="month.year"
                 @change="updateYear(monthIndex, month.monthNumber - 1, $event)"
               >
