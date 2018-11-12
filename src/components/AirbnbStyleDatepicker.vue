@@ -872,14 +872,12 @@ export default {
     setHoverDate(date) {
       this.hoverDate = date
     },
-    log() {
-      console.log('out')
-    },
     setFocusedDate(date) {
       const formattedDate = format(date, this.dateFormat)
       this.focusedDate = formattedDate
       const dateElement = this.$refs[`date-${formattedDate}`]
-      if (dateElement) dateElement[0].focus()
+      // handle .focus() on ie11 by adding a short timeout
+      if (dateElement) setTimeout(function() { dateElement[0].focus() }, 10);
     },
     resetFocusedDate(setToFirst) {
       if (this.focusedDate && !this.isDateVisible(this.focusedDate)) {
