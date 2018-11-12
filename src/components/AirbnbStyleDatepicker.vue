@@ -1263,6 +1263,9 @@ $transition-time: 0.3s;
     font-weight: bold;
   }
   &__month-year-select {
+    &::-ms-expand {
+        display: none;
+    }
     -webkit-appearance: none;
     border:none;
     background-color: inherit;
