@@ -290,13 +290,13 @@ describe('AirbnbStyleDatepicker', () => {
       expect(wrapper.vm.years[10]).toEqual(2023)
     })
 
-    test('constructs year range based on minDate/maxDate if present', () => {
+    test('constructs year range based on minDate/endDate if present', () => {
       wrapper = createDatePickerInstance({
         mode: 'single',
         dateOne: '2018-12-20',
-        yearsForSelect: 1,
+        yearsForSelect: 3,
         minDate: '2017-01-01',
-        maxDate: '2019-12-31',
+        endDate: '2019-12-31',
         showMonthYearSelect: true,
       })
       expect(wrapper.vm.years.length).toEqual(3)
