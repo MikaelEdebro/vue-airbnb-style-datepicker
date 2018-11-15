@@ -84,14 +84,18 @@
                 v-model="month.year"
                 @change="updateYear(monthIndex, month.monthNumber - 1, $event)"
               >
-                <option v-if="years.indexOf(month.year) === -1" :value="month.year" :key="`month-${monthIndex}-${year}`">
+                <option
+                  v-if="years.indexOf(month.year) === -1"
+                  :value="month.year"
+                  :key="`month-${monthIndex}-${year}`"
+                  :disabled="true"
+                >
                   {{ month.year }}
                 </option>
                 <option
                   v-for="year in years"
                   :value="year"
                   :key="`month-${monthIndex}-${year}`"
-                  :disabled="isMonthDisabled(year, month.monthNumber - 1)"
                 >
                   {{ year }}
                 </option>
