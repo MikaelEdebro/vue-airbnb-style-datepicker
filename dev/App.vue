@@ -20,6 +20,7 @@
             :min-date="'2018-08-28'"
             :months-to-show="2"
             :show-action-buttons="true"
+            :show-month-year-select="true"
             @date-one-selected="val => { inputDateOne = val }"
             @date-two-selected="val => { inputDateTwo = val }"
             @apply="applyMethod"
@@ -132,7 +133,7 @@ export default {
       sundayFirst: false,
       alignRight: false,
       showDatepickers: true,
-      trigger: false
+      trigger: false,
     }
   },
   computed: {},
@@ -177,8 +178,8 @@ export default {
     },
     changeMonthMethod(visibleMonths) {
       console.log('change months', visibleMonths)
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -187,8 +188,8 @@ html,
 body {
   min-height: 200vh;
   font-size: 14px;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell,
+    Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   line-height: 18px;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
