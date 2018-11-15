@@ -1,12 +1,14 @@
 import { shallow, createLocalVue } from '@vue/test-utils'
 import AirbnbStyleDatepicker from '@/components/AirbnbStyleDatepicker'
 import ClickOutside from '@/directives/ClickOutside'
+import ResizeSelect from '@/directives/ResizeSelect'
 import TestHelpers from 'test/test-helpers'
 import addMonths from 'date-fns/add_months'
 import format from 'date-fns/format'
 
 const localVue = createLocalVue()
 localVue.directive('click-outside', ClickOutside)
+localVue.directive('resize-select', ResizeSelect)
 let h
 
 const createDatePickerInstance = (propsData, options, slots) => {
@@ -261,6 +263,89 @@ describe('AirbnbStyleDatepicker', () => {
       h.click('.asd__change-month-button--previous button')
       jest.runAllTimers()
       expect(wrapper.emitted()['previous-month'][0][0]).toEqual(['2021-07-01', '2021-08-01'])
+    })
+  })
+
+  describe('month/year select', () => {
+    test('constructs year range based on default value of 10 for yearsForSelect', () => {
+      wrapper = createDatePickerInstance({
+        mode: 'single',
+        dateOne: '2018-12-20',
+        showMonthYearSelect: true,
+      })
+      expect(wrapper.vm.years.length).toEqual(21)
+      expect(wrapper.vm.years[0]).toEqual('2008')
+      expect(wrapper.vm.years[20]).toEqual('2028')
+    })
+
+    test('constructs year range based on yearsForSelect if present', () => {
+      wrapper = createDatePickerInstance({
+        mode: 'single',
+        dateOne: '2018-12-20',
+        showMonthYearSelect: true,
+        yearsForSelect: 5,
+      })
+      expect(wrapper.vm.years.length).toEqual(11)
+      expect(wrapper.vm.years[0]).toEqual('2013')
+      expect(wrapper.vm.years[10]).toEqual('2023')
+    })
+
+    test('constructs year range based on minDate/endDate if present', () => {
+      wrapper = createDatePickerInstance({
+        mode: 'single',
+        dateOne: '2018-12-20',
+        yearsForSelect: 3,
+        minDate: '2017-01-01',
+        endDate: '2019-12-31',
+        showMonthYearSelect: true,
+      })
+      expect(wrapper.vm.years.length).toEqual(3)
+      expect(wrapper.vm.years[0]).toEqual('2017')
+      expect(wrapper.vm.years[2]).toEqual('2019')
+    })
+
+    test('isMonthDisabled', () => {
+      wrapper = createDatePickerInstance({
+        mode: 'single',
+        dateOne: '2018-12-20',
+        minDate: '2017-01-03',
+        endDate: '2019-12-31',
+        showMonthYearSelect: true,
+      })
+      expect(wrapper.vm.isMonthDisabled(2016, 11)).toEqual(true)
+      expect(wrapper.vm.isMonthDisabled(2017, 0)).toEqual(false)
+      expect(wrapper.vm.isMonthDisabled(2020, 0)).toEqual(true)
+      expect(wrapper.vm.isMonthDisabled(2019, 11)).toEqual(false)
+      expect(wrapper.vm.isMonthDisabled(2018, 6)).toEqual(false)
+    })
+
+
+    test('selecting a month updates months array according to offset', () => {
+      wrapper = createDatePickerInstance({
+        mode: 'single',
+        dateOne: '2018-12-20',
+        showMonthYearSelect: true,
+        startOpen: true,
+      })
+      wrapper.vm.updateMonth(1, 2018, {target: {value: 'January'}})
+      expect(wrapper.vm.months[0].year).toEqual('2017')
+      expect(wrapper.vm.months[0].monthName).toEqual('December')
+      expect(wrapper.vm.months[1].year).toEqual('2018')
+      expect(wrapper.vm.months[1].monthName).toEqual('January')
+    })
+
+    test('selecting a year updates months array based on offset', () => {
+      wrapper = createDatePickerInstance({
+        mode: 'single',
+        dateOne: '2018-12-20',
+        showMonthYearSelect: true,
+      })
+
+      wrapper.vm.updateYear(1, 0, {target: {value: 2022}})
+      expect(wrapper.vm.months[0].year).toEqual('2021')
+      expect(wrapper.vm.months[0].monthName).toEqual('December')
+      expect(wrapper.vm.months[1].year).toEqual('2022')
+      expect(wrapper.vm.months[1].monthName).toEqual('January')
     })
   })
 
