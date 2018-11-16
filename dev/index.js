@@ -18,7 +18,7 @@ Vue.use(AirBnbStyleDatepicker, {
     'September',
     'Oktober',
     'November',
-    'December'
+    'December',
   ],
   colors: {
     selected: '#00a699',
@@ -26,16 +26,16 @@ Vue.use(AirBnbStyleDatepicker, {
     selectedText: '#fff',
     text: '#565a5c',
     inRangeBorder: '#33dacd',
-    disabled: '#fff'
+    disabled: '#fff',
   },
   texts: {
     apply: 'Tillämpa',
-    cancel: 'Avbryt'
-  }
+    cancel: 'Avbryt',
+  },
 })
 
 // eslint-disable-next-line
 new Vue({
   el: '#app',
-  render: h => h(App)
+  render: h => h(App),
 })

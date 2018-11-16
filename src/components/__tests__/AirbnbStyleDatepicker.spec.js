@@ -109,14 +109,14 @@ describe('AirbnbStyleDatepicker', () => {
         dateOne: '2018-11-10',
       })
 
-      wrapper.vm.setFocusedDate( '2018-11-01T07:00:00.000Z')
+      wrapper.vm.setFocusedDate('2018-11-01T07:00:00.000Z')
       expect(wrapper.vm.focusedDate).toEqual('2018-11-01')
     })
     test('resetFocusedDate moves the focused date forward/backward to be visible', () => {
       wrapper = createDatePickerInstance({
         mode: 'single',
         dateOne: '2018-12-10',
-        focusedDate: '2018-11-10'
+        focusedDate: '2018-11-10',
       })
       wrapper.vm.resetFocusedDate(true)
       expect(wrapper.vm.focusedDate).toEqual('2018-12-10')
@@ -124,7 +124,7 @@ describe('AirbnbStyleDatepicker', () => {
       wrapper = createDatePickerInstance({
         mode: 'single',
         dateOne: '2018-09-10',
-        focusedDate: '2018-10-10'
+        focusedDate: '2018-10-10',
       })
       wrapper.vm.resetFocusedDate(false)
       expect(wrapper.vm.focusedDate).toEqual('2018-09-10')
@@ -175,14 +175,18 @@ describe('AirbnbStyleDatepicker', () => {
       wrapper.setData({
         selectedDate1: '2018-01-30',
       })
-      expect(wrapper.vm.getAriaLabelForDate('2018-01-30')).toBe('Selected. Tuesday, January 30, 2018')
+      expect(wrapper.vm.getAriaLabelForDate('2018-01-30')).toBe(
+        'Selected. Tuesday, January 30, 2018'
+      )
     })
     test('aria-label generated correctly for unavailable date', () => {
-        wrapper.setData({
-          selectedDate1: '2018-01-30',
-          minDate: '2018-02-01',
-        })
-        expect(wrapper.vm.getAriaLabelForDate('2018-01-30')).toBe('Not available. Tuesday, January 30, 2018')
+      wrapper.setData({
+        selectedDate1: '2018-01-30',
+        minDate: '2018-02-01',
+      })
+      expect(wrapper.vm.getAriaLabelForDate('2018-01-30')).toBe(
+        'Not available. Tuesday, January 30, 2018'
+      )
     })
     test('aria-label generated correctly for first date selection', () => {
       wrapper.setData({
@@ -191,7 +195,9 @@ describe('AirbnbStyleDatepicker', () => {
         isSelectingDate1: true,
         minDate: undefined,
       })
-      expect(wrapper.vm.getAriaLabelForDate('2018-01-30')).toBe('Choose Tuesday, January 30, 2018 as your start date.')
+      expect(wrapper.vm.getAriaLabelForDate('2018-01-30')).toBe(
+        'Choose Tuesday, January 30, 2018 as your start date.'
+      )
     })
     test('aria-label generated correctly for second date selection', () => {
       wrapper.setData({
@@ -200,8 +206,9 @@ describe('AirbnbStyleDatepicker', () => {
         isSelectingDate1: false,
         minDate: undefined,
       })
-      expect(wrapper.vm.getAriaLabelForDate('2018-02-01')).toBe('Choose Thursday, February 1, 2018 as your end date.')
-
+      expect(wrapper.vm.getAriaLabelForDate('2018-02-01')).toBe(
+        'Choose Thursday, February 1, 2018 as your end date.'
+      )
     })
     test('aria-label generated correctly for single selection', () => {
       wrapper.setData({
@@ -319,7 +326,6 @@ describe('AirbnbStyleDatepicker', () => {
       expect(wrapper.vm.isMonthDisabled(2018, 6)).toEqual(false)
     })
 
-
     test('selecting a month updates months array according to offset', () => {
       wrapper = createDatePickerInstance({
         mode: 'single',
@@ -327,7 +333,7 @@ describe('AirbnbStyleDatepicker', () => {
         showMonthYearSelect: true,
         startOpen: true,
       })
-      wrapper.vm.updateMonth(1, 2018, {target: {value: 'January'}})
+      wrapper.vm.updateMonth(1, 2018, { target: { value: 'January' } })
       expect(wrapper.vm.months[0].year).toEqual('2017')
       expect(wrapper.vm.months[0].monthName).toEqual('December')
       expect(wrapper.vm.months[1].year).toEqual('2018')
@@ -341,7 +347,7 @@ describe('AirbnbStyleDatepicker', () => {
         showMonthYearSelect: true,
       })
 
-      wrapper.vm.updateYear(1, 0, {target: {value: 2022}})
+      wrapper.vm.updateYear(1, 0, { target: { value: 2022 } })
       expect(wrapper.vm.months[0].year).toEqual('2021')
       expect(wrapper.vm.months[0].monthName).toEqual('December')
       expect(wrapper.vm.months[1].year).toEqual('2022')
@@ -463,7 +469,7 @@ describe('AirbnbStyleDatepicker', () => {
         dateOne: '2018-10-20',
       })
       let arg
-      const resetFocusedDateSpy = (bool) => {
+      const resetFocusedDateSpy = bool => {
         arg = bool
       }
       wrapper.setMethods({ resetFocusedDate: resetFocusedDateSpy })
@@ -598,15 +604,19 @@ describe('AirbnbStyleDatepicker', () => {
       expect(wrapper.findAll('.asd__day--today').length).toBe(1)
     })
     test('svg icons can be overridden by passing a slot', () => {
-      wrapper = createDatePickerInstance({
-        fullscreenMobile: true,
-        startOpen: true,
-      }, {}, {
-        'close-icon': '<span id="close-override">x</span>',
-        'close-shortcuts-icon': '<span id="close-shortcuts-override">x</span>',
-        'previous-month-icon': '<span id="previous-override">&larr;</span>',
-        'next-month-icon': '<span id="next-override">&rarr;</span>',
-      })
+      wrapper = createDatePickerInstance(
+        {
+          fullscreenMobile: true,
+          startOpen: true,
+        },
+        {},
+        {
+          'close-icon': '<span id="close-override">x</span>',
+          'close-shortcuts-icon': '<span id="close-shortcuts-override">x</span>',
+          'previous-month-icon': '<span id="previous-override">&larr;</span>',
+          'next-month-icon': '<span id="next-override">&rarr;</span>',
+        }
+      )
       wrapper.setData({ isMobile: true })
       expect(wrapper.find('#close-override').exists()).toBe(true)
       expect(wrapper.find('#close-shortcuts-override').exists()).toBe(true)

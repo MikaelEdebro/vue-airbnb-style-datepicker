@@ -547,13 +547,13 @@ export default {
         color: isSelected
           ? this.colors.selectedText
           : isInRange
-            ? this.colors.selectedText
-            : this.colors.text,
+          ? this.colors.selectedText
+          : this.colors.text,
         border: isSelected
           ? '1px double ' + this.colors.selected
           : isInRange && this.allDatesSelected
-            ? '1px double ' + this.colors.inRangeBorder
-            : '',
+          ? '1px double ' + this.colors.inRangeBorder
+          : '',
       }
 
       if (isDisabled) {
@@ -1041,8 +1041,8 @@ export default {
       this.showMonths = this.isMobile
         ? 1
         : this.isTablet && this.monthsToShow > 2
-          ? 2
-          : this.monthsToShow
+        ? 2
+        : this.monthsToShow
 
       this.$nextTick(function() {
         const datepickerWrapper = document.getElementById(this.wrapperId)
