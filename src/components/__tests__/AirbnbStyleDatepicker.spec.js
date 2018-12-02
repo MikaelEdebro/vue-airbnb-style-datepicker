@@ -585,11 +585,23 @@ describe('AirbnbStyleDatepicker', () => {
         dateOne: undefined,
         dateTwo: '',
         mode: 'range',
-        openOnFocus: true,
       })
       wrapper.vm.triggerElement.dispatchEvent(new Event('focus'))
       wrapper.update()
       expect(wrapper.findAll('.asd__selected-date-one').length).toBe(0)
+    })
+
+    test('datepicker will close automatically if closeOnSelect is true, and all dates have been selected', () => {
+      wrapper = createDatePickerInstance({
+        dateOne: '',
+        dateTwo: '',
+        closeAfterSelect: true,
+      })
+      wrapper.setData({ showDatepicker: true })
+      h.wrapperHasClass('asd__wrapper--datepicker-open')
+      h.click('[data-date="2018-12-12"] > button')
+      h.click('[data-date="2018-12-15"] > button')
+      h.wrapperHasNotClass('asd__wrapper--datepicker-open')
     })
 
     test('sets css class for todays date', () => {

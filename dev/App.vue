@@ -1,5 +1,11 @@
 <template>
   <div class="app" :class="{'align-right': alignRight}">
+    <h1>Examples</h1>
+    <div class="buttons">
+      <button @click="toggleDatepickers">Hide datepickers</button>
+      <button @click="toggleAlign">Toggle alignment</button>
+      <button @click="toggleTrigger">Toggle trigger</button>
+    </div>
     <div v-if="showDatepickers">
 
       <div class="datepicker-container with-input">
@@ -23,11 +29,6 @@
             :show-month-year-select="true"
             @date-one-selected="val => { inputDateOne = val }"
             @date-two-selected="val => { inputDateTwo = val }"
-            @apply="applyMethod"
-            @closed="closedMethod"
-            @cancelled="cancelledMethod"
-            @previous-month="changeMonthMethod"
-            @next-month="changeMonthMethod"
           />
         </div>
       </div>
@@ -47,14 +48,7 @@
             :mode="'single'"
             :date-one="inputSingleDateOne"
             :date-two="inputSingleDateTwo"
-            :months-to-show="1"
-            :inline="true"
             @date-one-selected="val => { inputSingleDateOne = val }"
-            @apply="applyMethod"
-            @closed="closedMethod"
-            @cancelled="cancelledMethod"
-            @previous-month="changeMonthMethod"
-            @next-month="changeMonthMethod"
           />
         </div>
       </div>
@@ -74,14 +68,9 @@
             :months-to-show="2"
             :trigger="trigger"
             :offset-y="10"
+            :close-after-select="true"
             @date-one-selected="val => { buttonDateOne = val }"
-            @date-two-selected="val => { buttonDateTwo = val }"
-            @apply="applyMethod"
-            @closed="closedMethod"
-            @cancelled="cancelledMethod"
-            @opened="openedMethod"
-            @previous-month="changeMonthMethod"
-            @next-month="changeMonthMethod"
+            @date-two-selected="val => { buttonDateTwo = val; trigger = false }"
           />
         </div>
       </div>
@@ -100,21 +89,56 @@
           :inline="true"
           :fullscreen-mobile="false"
           :date-one="inlineDateOne"
-          :months-to-show="3"
+          :months-to-show="2"
           :disabled-dates="['2018-04-30', '2018-05-10', '2018-12-14']"
           @date-one-selected="val => { inlineDateOne = val }"
-          @apply="applyMethod"
-          @closed="closedMethod"
-          @cancelled="cancelledMethod"
-          @previous-month="changeMonthMethod"
-          @next-month="changeMonthMethod"
         />
       </div>
-    </div>
 
-    <button @click="toggleDatepickers">Hide datepickers</button>
-    <button @click="toggleAlign">Toggle alignment</button>
-    <button @click="toggleTrigger">Toggle trigger</button>
+      <div class="datepicker-container inline-with-input">
+        <h3>Inline datepicker with disabled dates</h3>
+        <input
+          id="datepicker-disabled-dates-trigger"
+          :value="formatDates(withDisabledDatesDateOne)"
+          type="text"
+          placeholder="Select date"
+        >
+        <airbnb-style-datepicker
+          :trigger-element-id="'datepicker-disabled-dates-trigger'"
+          :mode="'single'"
+          :inline="true"
+          :date-one="withDisabledDatesDateOne"
+          :months-to-show="2"
+          :disabled-dates="disabledDates"
+          @date-one-selected="val => { withDisabledDatesDateOne = val }"
+        />
+      </div>
+
+      <div class="datepicker-container with-button">
+        <h3>Test callback methods</h3>
+        <div class="datepicker-trigger">
+          <button id="datepicker-callback-trigger">{{ formatDates(callbackDateOne, callbackDateTwo) || 'Select dates' }}</button>
+
+          <airbnb-style-datepicker
+            :trigger-element-id="'datepicker-callback-trigger'"
+            :mode="'range'"
+            :date-one="callbackDateOne"
+            :date-two="callbackDateTwo"
+            :fullscreen-mobile="true"
+            :months-to-show="2"
+            :offset-y="10"
+            @date-one-selected="val => { callbackDateOne = val }"
+            @date-two-selected="val => { callbackDateTwo = val }"
+            @apply="applyMethod"
+            @closed="closedMethod"
+            @cancelled="cancelledMethod"
+            @opened="openedMethod"
+            @previous-month="changeMonthMethod"
+            @next-month="changeMonthMethod"
+          />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -132,19 +156,25 @@ export default {
       buttonDateOne: '',
       buttonDateTwo: '',
       inlineDateOne: '',
-      sundayDateOne: '',
+      withDisabledDatesDateOne: '',
+      callbackDateOne: '',
+      callbackDateTwo: '',
       sundayFirst: false,
       alignRight: false,
       showDatepickers: true,
       trigger: false,
     }
   },
-  computed: {},
+  computed: {
+    disabledDates() {
+      return ['2018-12-30', '2018-12-10', '2018-12-14']
+    },
+  },
   created() {
-    // setTimeout(() => {
-    //   this.inputDateOne = '2019-01-12'
-    //   this.inputDateTwo = '2019-01-15'
-    // }, 5000)
+    setTimeout(() => {
+      this.inputDateOne = '2019-01-12'
+      this.inputDateTwo = ''
+    }, 5000)
   },
   methods: {
     formatDates(dateOne, dateTwo) {
@@ -203,12 +233,19 @@ body {
     text-align: right;
   }
 }
+
 h1 {
   font-size: 1.8em;
   line-height: 1.5em;
+  text-align: center;
 }
 .datepicker-container {
-  margin-bottom: 30px;
+  padding: 0 30px 20px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.01);
+  max-width: 600px;
+  margin: 0 auto 30px;
+  border-radius: 12px;
 }
 
 #datepicker-button-trigger {
@@ -242,4 +279,9 @@ input {
 //     width: 100%;
 //   }
 // }
+.buttons {
+  max-width: 500px;
+  margin: 0 auto 30px;
+  text-align: center;
+}
 </style>

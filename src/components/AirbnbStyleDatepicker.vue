@@ -259,6 +259,7 @@ export default {
       default: () => process.env.NODE_ENV === 'test',
     },
     trigger: { type: Boolean, default: false },
+    closeAfterSelect: { type: Boolean, default: false },
   },
   data() {
     return {
@@ -869,6 +870,10 @@ export default {
         } else if (this.showActionButtons) {
           // if user has selected both dates, focus the apply button for accessibility
           this.$refs['apply-button'].focus()
+        }
+
+        if (this.allDatesSelected && this.closeAfterSelect) {
+          this.closeDatepicker()
         }
       }
     },

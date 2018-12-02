@@ -46,6 +46,12 @@ class TestHelpers {
   hasAttribute(selector, attribute) {
     return this.expect(this.find(selector).attributes()[attribute]).toBeTruthy()
   }
+  wrapperHasClass(className) {
+    return this.expect(this.wrapper.vm.$el.classList.contains(className)).toBeTruthy()
+  }
+  wrapperHasNotClass(className) {
+    return this.expect(this.wrapper.vm.$el.classList.contains(className)).toBeFalsy()
+  }
 }
 
 export default TestHelpers
