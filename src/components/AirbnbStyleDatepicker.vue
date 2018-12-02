@@ -225,9 +225,15 @@ import isBefore from 'date-fns/is_before'
 import isAfter from 'date-fns/is_after'
 import isValid from 'date-fns/is_valid'
 import { debounce, copyObject, findAncestor, randomString } from './../helpers'
+import vClickOutside from 'v-click-outside'
+import ResizeSelect from '../directives/ResizeSelect'
 
 export default {
   name: 'AirbnbStyleDatepicker',
+  directives: {
+    clickOutside: vClickOutside.directive,
+    resizeSelect: ResizeSelect,
+  },
   props: {
     triggerElementId: { type: String },
     dateOne: { type: [String, Date] },
@@ -509,7 +515,6 @@ export default {
       }
     }
     window.addEventListener('resize', this._handleWindowResizeEvent)
-    window.addEventListener('click', this._handleWindowClickEvent)
 
     this.triggerElement = this.isTest
       ? document.createElement('input')
@@ -526,6 +531,7 @@ export default {
     this.$el.addEventListener('keyup', this.handleKeyboardInput)
     this.$el.addEventListener('keydown', this.trapKeyboardInput)
     this.triggerElement.addEventListener('keyup', this.handleTriggerInput)
+    this.triggerElement.addEventListener('click', this._handleWindowClickEvent)
   },
   destroyed() {
     window.removeEventListener('resize', this._handleWindowResizeEvent)
@@ -534,6 +540,7 @@ export default {
     this.$el.removeEventListener('keyup', this.handleKeyboardInput)
     this.$el.removeEventListener('keydown', this.trapKeyboardInput)
     this.triggerElement.removeEventListener('keyup', this.handleTriggerInput)
+    this.triggerElement.removeEventListener('click', this._handleWindowClickEvent)
   },
   methods: {
     getDayStyles(date) {

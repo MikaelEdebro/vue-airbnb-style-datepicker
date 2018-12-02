@@ -46,7 +46,9 @@
             :trigger-element-id="'datepicker-input-single-trigger'"
             :mode="'single'"
             :date-one="inputSingleDateOne"
-            :months-to-show="2"
+            :date-two="inputSingleDateTwo"
+            :months-to-show="1"
+            :inline="true"
             @date-one-selected="val => { inputSingleDateOne = val }"
             @apply="applyMethod"
             @closed="closedMethod"
@@ -126,6 +128,7 @@ export default {
       inputDateOne: '',
       inputDateTwo: '',
       inputSingleDateOne: '',
+      inputSingleDateTwo: '',
       buttonDateOne: '',
       buttonDateTwo: '',
       inlineDateOne: '',

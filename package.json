@@ -78,5 +78,8 @@
     "hooks": {
       "pre-commit": "pretty-quick --staged"
     }
+  },
+  "dependencies": {
+    "v-click-outside": "^2.0.1"
   }
 }
