@@ -9,7 +9,7 @@ const AirbnbStyleDatepickerPlugin = {
     })
   },
 }
-console.log('hello')
+
 // User has to install the component by themselves, to allow to pass options
 if (typeof window !== 'undefined' && window.Vue) {
   window.AirbnbStyleDatepicker = AirbnbStyleDatepickerPlugin
