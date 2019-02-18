@@ -315,7 +315,7 @@ export default {
         { symbol: '↵', label: 'Select the date in focus', symbolDescription: 'Enter key' },
         {
           symbol: '←/→',
-          label: 'Move backward (left) and forward (down) by one day.',
+          label: 'Move backward (left) and forward (right) by one day.',
           symbolDescription: 'Left or right arrow keys',
         },
         {
