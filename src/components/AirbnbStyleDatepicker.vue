@@ -9,7 +9,7 @@
       v-click-outside="handleClickOutside"
     >
       <div class="asd__mobile-header asd__mobile-only" v-if="showFullscreen">
-        <button class="asd__mobile-close" @click="closeDatepicker" :aria-label="ariaLabels.closeDatepicker">
+        <button type="button" class="asd__mobile-close" @click="closeDatepicker" :aria-label="ariaLabels.closeDatepicker">
           <slot
             v-if="$slots['close-icon']"
             name="close-icon"
