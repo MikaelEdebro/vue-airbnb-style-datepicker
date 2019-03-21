@@ -477,7 +477,9 @@ export default {
     },
     trigger(newValue, oldValue) {
       if (newValue) {
-        this.openDatepicker()
+        setTimeout(() => {
+          this.openDatepicker()
+        }, 0)
       }
     },
   },
