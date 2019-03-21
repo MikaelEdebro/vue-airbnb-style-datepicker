@@ -58,7 +58,7 @@
             v-for="(month, monthIndex) in months"
             :key="month.firstDateOfMonth"
             class="asd__month"
-            :class="{hidden: monthIndex === 0 || monthIndex > showMonths}"
+            :class="{'asd__month--hidden': monthIndex === 0 || monthIndex > showMonths}"
             :style="monthWidthStyles"
           >
             <div class="asd__month-name">
