@@ -9,11 +9,13 @@
       v-click-outside="handleClickOutside"
     >
       <div class="asd__mobile-header asd__mobile-only" v-if="showFullscreen">
-        <button class="asd__mobile-close" @click="closeDatepicker" :aria-label="ariaLabels.closeDatepicker">
-          <slot
-            v-if="$slots['close-icon']"
-            name="close-icon"
-          ></slot>
+        <button
+          type="button"
+          class="asd__mobile-close"
+          @click="closeDatepicker"
+          :aria-label="ariaLabels.closeDatepicker"
+        >
+          <slot v-if="$slots['close-icon']" name="close-icon"></slot>
           <div v-else class="asd__mobile-close-icon" aria-hidden="true">X</div>
         </button>
         <h3>{{ mobileHeader || mobileHeaderFallback }}</h3>
@@ -21,20 +23,22 @@
       <div class="asd__datepicker-header">
         <div class="asd__change-month-button asd__change-month-button--previous">
           <button @click="previousMonth" type="button" :aria-label="ariaLabels.previousMonth">
-            <slot
-              v-if="$slots['previous-month-icon']"
-              name="previous-month-icon"
-            ></slot>
-            <svg v-else viewBox="0 0 1000 1000"><path d="M336.2 274.5l-210.1 210h805.4c13 0 23 10 23 23s-10 23-23 23H126.1l210.1 210.1c11 11 11 21 0 32-5 5-10 7-16 7s-11-2-16-7l-249.1-249c-11-11-11-21 0-32l249.1-249.1c21-21.1 53 10.9 32 32z" /></svg>
+            <slot v-if="$slots['previous-month-icon']" name="previous-month-icon"></slot>
+            <svg v-else viewBox="0 0 1000 1000">
+              <path
+                d="M336.2 274.5l-210.1 210h805.4c13 0 23 10 23 23s-10 23-23 23H126.1l210.1 210.1c11 11 11 21 0 32-5 5-10 7-16 7s-11-2-16-7l-249.1-249c-11-11-11-21 0-32l249.1-249.1c21-21.1 53 10.9 32 32z"
+              ></path>
+            </svg>
           </button>
         </div>
         <div class="asd__change-month-button asd__change-month-button--next">
           <button @click="nextMonth" type="button" :aria-label="ariaLabels.nextMonth">
-            <slot
-              v-if="$slots['next-month-icon']"
-              name="next-month-icon"
-            ></slot>
-            <svg v-else viewBox="0 0 1000 1000"><path d="M694.4 242.4l249.1 249.1c11 11 11 21 0 32L694.4 772.7c-5 5-10 7-16 7s-11-2-16-7c-11-11-11-21 0-32l210.1-210.1H67.1c-13 0-23-10-23-23s10-23 23-23h805.4L662.4 274.5c-21-21.1 11-53.1 32-32.1z" /></svg>
+            <slot v-if="$slots['next-month-icon']" name="next-month-icon"></slot>
+            <svg v-else viewBox="0 0 1000 1000">
+              <path
+                d="M694.4 242.4l249.1 249.1c11 11 11 21 0 32L694.4 772.7c-5 5-10 7-16 7s-11-2-16-7c-11-11-11-21 0-32l210.1-210.1H67.1c-13 0-23-10-23-23s10-23 23-23h805.4L662.4 274.5c-21-21.1 11-53.1 32-32.1z"
+              ></path>
+            </svg>
           </button>
         </div>
 
@@ -54,7 +58,7 @@
             v-for="(month, monthIndex) in months"
             :key="month.firstDateOfMonth"
             class="asd__month"
-            :class="{hidden: monthIndex === 0 || monthIndex > showMonths}"
+            :class="{'asd__month--hidden': monthIndex === 0 || monthIndex > showMonths}"
             :style="monthWidthStyles"
           >
             <div class="asd__month-name">
@@ -71,9 +75,7 @@
                   :value="monthName"
                   :disabled="isMonthDisabled(month.year, idx)"
                   :key="`month-${monthIndex}-${monthName}`"
-                >
-                  {{ monthName }}
-                </option>
+                >{{ monthName }}</option>
               </select>
               <span v-else>{{ month.monthName }}</span>
 
@@ -89,16 +91,12 @@
                   :value="month.year"
                   :key="`month-${monthIndex}-${year}`"
                   :disabled="true"
-                >
-                  {{ month.year }}
-                </option>
+                >{{ month.year }}</option>
                 <option
                   v-for="year in years"
                   :value="year"
                   :key="`month-${monthIndex}-${year}`"
-                >
-                  {{ year }}
-                </option>
+                >{{ year }}</option>
               </select>
               <span v-else>{{ month.year }}</span>
             </div>
@@ -155,40 +153,30 @@
             @click="closeKeyboardShortcutsMenu"
             :aria-label="ariaLabels.closeKeyboardShortcutsMenu"
           >
-            <slot
-              v-if="$slots['close-shortcuts-icon']"
-              name="close-shortcuts-icon"
-            ></slot>
+            <slot v-if="$slots['close-shortcuts-icon']" name="close-shortcuts-icon"></slot>
             <div v-else class="asd__mobile-close-icon" aria-hidden="true">X</div>
           </button>
           <ul class="asd__keyboard-shortcuts-list">
             <li v-for="(shortcut, i) in keyboardShortcuts" :key="i">
-              <span class="asd__keyboard-shortcuts-symbol" :aria-label="shortcut.symbolDescription">{{ shortcut.symbol }}</span>
+              <span
+                class="asd__keyboard-shortcuts-symbol"
+                :aria-label="shortcut.symbolDescription"
+              >{{ shortcut.symbol }}</span>
               {{ shortcut.label }}
             </li>
           </ul>
         </div>
       </div>
       <div class="asd__action-buttons" v-if="mode !== 'single' && showActionButtons">
-        <button
-          @click="closeDatepickerCancel"
-          type="button"
-        >
-          {{ texts.cancel }}
-        </button>
+        <button @click="closeDatepickerCancel" type="button">{{ texts.cancel }}</button>
         <button
           ref="apply-button"
           @click="apply"
           :style="{color: colors.selected}"
           type="button"
-        >
-          {{ texts.apply }}
-        </button>
+        >{{ texts.apply }}</button>
       </div>
-      <div
-        v-if="showShortcutsMenuTrigger"
-        class="asd__keyboard-shortcuts-trigger-wrapper"
-      >
+      <div v-if="showShortcutsMenuTrigger" class="asd__keyboard-shortcuts-trigger-wrapper">
         <button
           class="asd__keyboard-shortcuts-trigger"
           :aria-label="ariaLabels.openKeyboardShortcutsMenu"
@@ -317,7 +305,7 @@ export default {
         { symbol: '↵', label: 'Select the date in focus', symbolDescription: 'Enter key' },
         {
           symbol: '←/→',
-          label: 'Move backward (left) and forward (down) by one day.',
+          label: 'Move backward (left) and forward (right) by one day.',
           symbolDescription: 'Left or right arrow keys',
         },
         {
