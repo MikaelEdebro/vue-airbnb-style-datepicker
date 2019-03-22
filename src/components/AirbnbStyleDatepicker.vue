@@ -239,7 +239,6 @@ export default {
     disabledDates: { type: Array, default: () => [] },
     enabledDates: { type: Array, default: () => [] },
     customizedDates: { type: Array, default: () => [] },
-    customizedGroups: { type: Array, default: () => [] },
     showActionButtons: { type: Boolean, default: true },
     showShortcutsMenuTrigger: { type: Boolean, default: true },
     showMonthYearSelect: { type: Boolean, default: false },
@@ -943,10 +942,10 @@ export default {
     },
     customizedDateClass(date) {
       var customizedClasses = ''
-      if (this.customizedDates.length > 0 && this.customizedGroups.length > 0) {
+      if (this.customizedDates.length > 0) {
         for(var i = 0; i < this.customizedDates.length; i++) {
-          if(this.customizedDates[i].indexOf(date) > -1)
-            customizedClasses += ` asd__day--${this.customizedGroups[i]}`
+          if(this.customizedDates[i].dates.indexOf(date) > -1)
+            customizedClasses += ` asd__day--${this.customizedDates[i].cssClass}`
         }
       }
       return customizedClasses;
