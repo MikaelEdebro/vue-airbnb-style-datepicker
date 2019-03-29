@@ -189,6 +189,7 @@ Vue.use(AirBnbStyleDatepicker, {
 | inline                   | Use inline mode (datepicker always showing)<br>Type: Boolean, Default: false                                                                                                                                                     |
 | enabledDates             | Disable all dates, except these ones.<br>Type: Array<string>                                                                                                                                                                     |
 | disabledDates            | Disable specific dates.<br>Type: Array<string>                                                                                                                                                                                   |
+| customizedDates          | Apply provided css class to specific dates.<br>Type: Array of Hashmaps<br> keys: `dates` (Array), `cssClass` (String)                                                                                                                                                                                   |
 | showActionButtons        | Show/hide action buttons ("Apply", "Cancel")<br>Type: Boolean, Default: false                                                                                                                                                    |
 | showShortcutsMenuTrigger | Show/hide the keyboard shortcuts helper menu trigger ("?")<br>Type: Boolean, Default: true                                                                                                                                       |
 | showMonthYearSelect      | Show/hide the month/year select dropdowns <br>Type: Boolean, Default: false           |
@@ -227,6 +228,7 @@ Vue.use(AirBnbStyleDatepicker, {
   :inline="true"
   :enabled-dates="['2018-12-01', '2018-12-08']"
   :disabled-dates="['2018-10-20', '2018-10-22']"
+  :customized-dates="[{ dates: ['2019-03-20', '2019-03-21'], cssClass: 'booked' }, { dates: ['2019-04-24', '2019-03-25'], cssClass: 'not-available' }]"
   :show-action-buttons="true"
   :trigger="someBooleanDataProp"
   :close-after-select="true"
