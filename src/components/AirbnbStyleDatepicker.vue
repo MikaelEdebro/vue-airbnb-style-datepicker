@@ -112,7 +112,7 @@
                     :ref="`date-${fullDate}`"
                     :tabindex="isDateVisible(fullDate) && isSameDate(focusedDate, fullDate) ? 0 : -1"
                     :aria-label="isDateVisible(fullDate) ? getAriaLabelForDate(fullDate) : false"
-                    :class="{
+                    :class="[{
                       'asd__day--enabled': dayNumber !== 0,
                       'asd__day--empty': dayNumber === 0,
                       'asd__day--disabled': isDisabled(fullDate),
@@ -121,7 +121,7 @@
                       'asd__day--today': fullDate && isToday(fullDate),
                       'asd__selected-date-one': fullDate && fullDate === selectedDate1,
                       'asd__selected-date-two': fullDate && fullDate === selectedDate2,
-                    }"
+                    }, customizedDateClass(fullDate)]"
                     :style="getDayStyles(fullDate)"
                     @mouseover="() => { setHoverDate(fullDate) }"
                   >
@@ -238,6 +238,7 @@ export default {
     mobileHeader: { type: String },
     disabledDates: { type: Array, default: () => [] },
     enabledDates: { type: Array, default: () => [] },
+    customizedDates: { type: Array, default: () => [] },
     showActionButtons: { type: Boolean, default: true },
     showShortcutsMenuTrigger: { type: Boolean, default: true },
     showMonthYearSelect: { type: Boolean, default: false },
@@ -940,6 +941,16 @@ export default {
       } else {
         return this.disabledDates.indexOf(date) > -1
       }
+    },
+    customizedDateClass(date) {
+      var customizedClasses = ''
+      if (this.customizedDates.length > 0) {
+        for(var i = 0; i < this.customizedDates.length; i++) {
+          if(this.customizedDates[i].dates.indexOf(date) > -1)
+            customizedClasses += ` asd__day--${this.customizedDates[i].cssClass}`
+        }
+      }
+      return customizedClasses;
     },
     isDisabled(date) {
       return this.isDateDisabled(date) || this.isBeforeMinDate(date) || this.isAfterEndDate(date)
