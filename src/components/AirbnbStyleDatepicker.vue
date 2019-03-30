@@ -876,10 +876,11 @@ export default {
       this.focusedDate = formattedDate
       const dateElement = this.$refs[`date-${formattedDate}`]
       // handle .focus() on ie11 by adding a short timeout
-      if (dateElement)
+      if (dateElement && dateElement.length) {
         setTimeout(function() {
           dateElement[0].focus()
         }, 10)
+      }
     },
     resetFocusedDate(setToFirst) {
       if (this.focusedDate && !this.isDateVisible(this.focusedDate)) {
@@ -945,12 +946,12 @@ export default {
     customizedDateClass(date) {
       var customizedClasses = ''
       if (this.customizedDates.length > 0) {
-        for(var i = 0; i < this.customizedDates.length; i++) {
-          if(this.customizedDates[i].dates.indexOf(date) > -1)
+        for (var i = 0; i < this.customizedDates.length; i++) {
+          if (this.customizedDates[i].dates.indexOf(date) > -1)
             customizedClasses += ` asd__day--${this.customizedDates[i].cssClass}`
         }
       }
-      return customizedClasses;
+      return customizedClasses
     },
     isDisabled(date) {
       return this.isDateDisabled(date) || this.isBeforeMinDate(date) || this.isAfterEndDate(date)
