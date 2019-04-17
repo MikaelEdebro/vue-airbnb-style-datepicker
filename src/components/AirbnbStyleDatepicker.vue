@@ -547,17 +547,21 @@ export default {
         width: (this.width - 30) / 7 + 'px',
         background: isSelected
           ? this.colors.selected
-          : isHoveredInRange ?
-                this.colors.hoveredInRange
-                : isInRange ? this.colors.inRange : '',
+          : isHoveredInRange
+          ? this.colors.hoveredInRange
+          : isInRange
+          ? this.colors.inRange
+          : '',
         color: isSelected
           ? this.colors.selectedText
-          : isInRange || isHoveredInRange ? this.colors.selectedText : this.colors.text,
+          : isInRange || isHoveredInRange
+          ? this.colors.selectedText
+          : this.colors.text,
         border: isSelected
           ? '1px double ' + this.colors.selected
           : (isInRange && this.allDatesSelected) || isHoveredInRange
-            ? '1px double ' + this.colors.inRangeBorder
-            : ''
+          ? '1px double ' + this.colors.inRangeBorder
+          : '',
       }
 
       if (isDisabled) {
@@ -923,12 +927,14 @@ export default {
       )
     },
     isHoveredInRange(date) {
-        if (this.isSingleMode || this.allDatesSelected) {
-          return false
-        }
+      if (this.isSingleMode || this.allDatesSelected) {
+        return false
+      }
 
-        return ((isAfter(date, this.selectedDate1) && isBefore(date, this.hoverDate)) ||
-                (isAfter(date, this.hoverDate) && isBefore(date, this.selectedDate1)));
+      return (
+        (isAfter(date, this.selectedDate1) && isBefore(date, this.hoverDate)) ||
+        (isAfter(date, this.hoverDate) && isBefore(date, this.selectedDate1))
+      )
     },
     isBeforeMinDate(date) {
       if (!this.minDate) {

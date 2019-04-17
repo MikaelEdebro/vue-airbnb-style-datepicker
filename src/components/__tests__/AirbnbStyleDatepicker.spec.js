@@ -4,6 +4,7 @@ import ClickOutside from '@/directives/ClickOutside'
 import ResizeSelect from '@/directives/ResizeSelect'
 import TestHelpers from 'test/test-helpers'
 import addMonths from 'date-fns/add_months'
+import addDays from 'date-fns/add_days'
 import format from 'date-fns/format'
 
 const localVue = createLocalVue()
@@ -599,8 +600,10 @@ describe('AirbnbStyleDatepicker', () => {
       })
       wrapper.setData({ showDatepicker: true })
       h.wrapperHasClass('asd__wrapper--datepicker-open')
-      h.click('[data-date="2018-12-12"] > button')
-      h.click('[data-date="2018-12-15"] > button')
+      const date1 = format(new Date(), 'YYYY-MM-DD')
+      const date2 = format(addDays(new Date(), 4), 'YYYY-MM-DD')
+      h.click('[data-date="' + date1 + '"] > button')
+      h.click('[data-date="' + date2 + '"] > button')
       h.wrapperHasNotClass('asd__wrapper--datepicker-open')
     })
 
