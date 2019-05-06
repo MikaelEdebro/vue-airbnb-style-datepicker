@@ -130,22 +130,9 @@
                     v-if="dayNumber"
                     :date="fullDate"
                     :disabled="isDisabled(fullDate)"
-                    :tabindex="
-                      isDateVisible(fullDate) &&
-                      isSameDate(focusedDate, fullDate)
-                        ? 0
-                        : -1
-                    "
-                    :aria-label="
-                      isDateVisible(fullDate)
-                        ? getAriaLabelForDate(fullDate)
-                        : false
-                    "
-                    @click="
-                      () => {
-                        selectDate(fullDate);
-                      }
-                    "
+                    :tabindex="isDateVisible(fullDate) && isSameDate(focusedDate, fullDate) ? 0 : -1"
+                    :aria-label="isDateVisible(fullDate) ? getAriaLabelForDate(fullDate) : false"
+                    @click="() => { selectDate(fullDate) }"
                   >{{ dayNumber }}</button>
                   </td>
                 </tr>
