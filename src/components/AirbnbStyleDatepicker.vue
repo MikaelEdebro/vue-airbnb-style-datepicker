@@ -108,7 +108,6 @@
                     class="asd__day"
                     v-for="({fullDate, dayNumber}, index) in week"
                     :key="index + '_' + dayNumber"
-                    :data-date="fullDate"
                     :ref="`date-${fullDate}`"
                     :class="[{
                       'asd__day--enabled': dayNumber !== 0,
@@ -128,6 +127,7 @@
                     class="asd__day-button"
                     type="button"
                     v-if="dayNumber"
+                    :data-date="fullDate"
                     :date="fullDate"
                     :disabled="isDisabled(fullDate)"
                     :tabindex="isDateVisible(fullDate) && isSameDate(focusedDate, fullDate) ? 0 : -1"
@@ -1303,7 +1303,6 @@ $transition-time: 0.3s;
     line-height: $size;
     height: $size;
     padding: 0;
-    overflow: hidden;
     &--enabled {
       border: $border;
       &:hover {
