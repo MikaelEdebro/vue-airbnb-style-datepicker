@@ -110,8 +110,6 @@
                     :key="index + '_' + dayNumber"
                     :data-date="fullDate"
                     :ref="`date-${fullDate}`"
-                    :tabindex="isDateVisible(fullDate) && isSameDate(focusedDate, fullDate) ? 0 : -1"
-                    :aria-label="isDateVisible(fullDate) ? getAriaLabelForDate(fullDate) : false"
                     :class="[{
                       'asd__day--enabled': dayNumber !== 0,
                       'asd__day--empty': dayNumber === 0,
@@ -126,15 +124,29 @@
                     :style="getDayStyles(fullDate)"
                     @mouseover="() => { setHoverDate(fullDate) }"
                   >
-                    <button
-                      class="asd__day-button"
-                      type="button"
-                      v-if="dayNumber"
-                      tabindex="-1"
-                      :date="fullDate"
-                      :disabled="isDisabled(fullDate)"
-                      @click="() => { selectDate(fullDate) }"
-                    >{{ dayNumber }}</button>
+                  <button
+                    class="asd__day-button"
+                    type="button"
+                    v-if="dayNumber"
+                    :date="fullDate"
+                    :disabled="isDisabled(fullDate)"
+                    :tabindex="
+                      isDateVisible(fullDate) &&
+                      isSameDate(focusedDate, fullDate)
+                        ? 0
+                        : -1
+                    "
+                    :aria-label="
+                      isDateVisible(fullDate)
+                        ? getAriaLabelForDate(fullDate)
+                        : false
+                    "
+                    @click="
+                      () => {
+                        selectDate(fullDate);
+                      }
+                    "
+                  >{{ dayNumber }}</button>
                   </td>
                 </tr>
               </tbody>
