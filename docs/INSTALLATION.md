@@ -140,6 +140,7 @@ Vue.use(AirBnbStyleDatepicker, {
     text: '#565a5c',
     inRangeBorder: '#33dacd',
     disabled: '#fff',
+    hoveredInRange: '#67f6ee'
   },
   texts: {
     apply: 'Apply',
