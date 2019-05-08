@@ -234,7 +234,7 @@ export default {
     offsetX: { type: Number, default: 0 },
     monthsToShow: { type: Number, default: 2 },
     startOpen: { type: Boolean },
-    fullscreenMobile: { type: Boolean },
+    fullscreenMobile: { type: Boolean, default: false },
     inline: { type: Boolean },
     mobileHeader: { type: String },
     disabledDates: { type: Array, default: () => [] },
