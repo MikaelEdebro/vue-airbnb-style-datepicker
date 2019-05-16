@@ -540,6 +540,21 @@ describe('AirbnbStyleDatepicker', () => {
       disabledDate.find('button').trigger('click')
       expect(wrapper.emitted()['date-one-selected'][0]).not.toEqual(['2018-10-20'])
     })
+    test('isDayBlocked dates are not selectable', () => {
+      wrapper = createDatePickerInstance({
+        mode: 'single',
+        dateOne: '2018-10-10',
+        isDayBlocked: (date) => date === '2018-10-20',
+        openOnFocus: true,
+      })
+      wrapper.vm.triggerElement.dispatchEvent(new Event('focus'))
+      wrapper.update()
+      const disabledDate = wrapper.find('.asd__day[data-date="2018-10-20"]')
+      expect(disabledDate.classes()).toContain('asd__day--disabled')
+
+      disabledDate.find('button').trigger('click')
+      expect(wrapper.emitted()['date-one-selected'][0]).not.toEqual(['2018-10-20'])
+    })
     test('date are set if user types a valid date in input', () => {
       wrapper = createDatePickerInstance({
         mode: 'single',

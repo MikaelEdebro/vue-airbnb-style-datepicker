@@ -238,6 +238,7 @@ export default {
     inline: { type: Boolean },
     mobileHeader: { type: String },
     disabledDates: { type: Array, default: () => [] },
+    isDayBlocked: { type: Function },
     enabledDates: { type: Array, default: () => [] },
     customizedDates: { type: Array, default: () => [] },
     showActionButtons: { type: Boolean, default: true },
@@ -973,8 +974,15 @@ export default {
       }
       return customizedClasses
     },
+    checkIsDayBlocked(date) {
+      if (this.isDayBlocked === undefined || this.isDayBlocked === null) {
+        return false;
+      }
+
+      return this.isDayBlocked(date);
+    },
     isDisabled(date) {
-      return this.isDateDisabled(date) || this.isBeforeMinDate(date) || this.isAfterEndDate(date)
+      return this.checkIsDayBlocked(date) || this.isDateDisabled(date) || this.isBeforeMinDate(date) || this.isAfterEndDate(date)
     },
     previousMonth() {
       this.startingDate = this.subtractMonths(this.months[0].firstDateOfMonth)
