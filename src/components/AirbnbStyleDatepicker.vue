@@ -233,6 +233,7 @@ export default {
     offsetY: { type: Number, default: 0 },
     offsetX: { type: Number, default: 0 },
     monthsToShow: { type: Number, default: 2 },
+    monthsToShowMd: { type: Number },
     startOpen: { type: Boolean },
     fullscreenMobile: { type: Boolean },
     inline: { type: Boolean },
@@ -445,6 +446,11 @@ export default {
       }
       return numberOfMonthsArray.map((_, index) => firstMonthArray[index].firstDateOfMonth)
     },
+    showMonthsMd() {
+      let months = this.monthsToShowMd ? this.monthsToShowMd : this.monthsToShow
+      return months > 2 ? 2 : months
+    }
+
   },
   watch: {
     selectedDate1(newValue, oldValue) {
@@ -1074,8 +1080,8 @@ export default {
       this.isTablet = viewportWidth >= 768 && viewportWidth <= 1024
       this.showMonths = this.isMobile
         ? 1
-        : this.isTablet && this.monthsToShow > 2
-        ? 2
+        : this.isTablet
+        ? this.showMonthsMd
         : this.monthsToShow
 
       this.$nextTick(function() {
