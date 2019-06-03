@@ -467,7 +467,7 @@ export default {
       this.generateYears()
     },
     datePropsCompound(newValue) {
-      if (this.dateOne !== this.selectedDate1) {
+      if (this.dateOne !== this.selectedDate1 || (this.selectedDate2 && this.dateTwo !== this.selectedDate2)) {
         this.startingDate = this.dateOne
         this.setStartDates()
         this.generateMonths()
