@@ -146,7 +146,7 @@
           :class="{ 'asd__keyboard-shortcuts-menu': true, 'asd__keyboard-shortcuts-show': showKeyboardShortcutsMenu}"
           :style="keyboardShortcutsMenuStyles"
         >
-          <div class="asd__keyboard-shortcuts-title">{{ texts.keyboardShortcuts }}</div>
+          <div class="asd__keyboard-shortcuts-title">{{ keyboardShortcutsText }}</div>
           <button
             class="asd__keyboard-shortcuts-close"
             ref="keyboard-shortcus-menu-close"
@@ -169,13 +169,13 @@
         </div>
       </div>
       <div class="asd__action-buttons" v-if="mode !== 'single' && showActionButtons">
-        <button @click="closeDatepickerCancel" type="button">{{ texts.cancel }}</button>
+        <button @click="closeDatepickerCancel" type="button">{{ cancelDatesText }}</button>
         <button
           ref="apply-button"
           @click="apply"
           :style="{color: colors.selected}"
           type="button"
-        >{{ texts.apply }}</button>
+        >{{ applyDatesText }}</button>
       </div>
       <div v-if="showShortcutsMenuTrigger" class="asd__keyboard-shortcuts-trigger-wrapper">
         <button
@@ -250,6 +250,9 @@ export default {
     },
     trigger: { type: Boolean, default: false },
     closeAfterSelect: { type: Boolean, default: false },
+    applyDatesText: { type: String, default: 'Apply' },
+    cancelDatesText: { type: String, default: 'Cancel' },
+    keyboardShortcutsText: { type: String, default: 'Keyboard Shortcuts' },
   },
   data() {
     return {
@@ -297,11 +300,6 @@ export default {
       ],
       days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       daysShort: ['Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun'],
-      texts: {
-        apply: 'Apply',
-        cancel: 'Cancel',
-        keyboardShortcuts: 'Keyboard Shortcuts',
-      },
       keyboardShortcuts: [
         { symbol: '↵', label: 'Select the date in focus', symbolDescription: 'Enter key' },
         {
@@ -768,11 +766,6 @@ export default {
       }
       if (this.$options.daysShort && this.$options.daysShort.length === 7) {
         this.daysShort = copyObject(this.$options.daysShort)
-      }
-      if (this.$options.texts) {
-        const texts = copyObject(this.$options.texts)
-        this.texts.apply = texts.apply || this.texts.apply
-        this.texts.cancel = texts.cancel || this.texts.cancel
       }
     },
     setStartDates() {
