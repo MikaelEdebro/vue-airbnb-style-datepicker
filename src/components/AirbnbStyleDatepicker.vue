@@ -346,7 +346,6 @@ export default {
       width: 300,
       selectedDate1: '',
       selectedDate2: '',
-      isSelectingDate1: true,
       hoverDate: '',
       focusedDate: '',
       alignRight: false,
@@ -359,6 +358,14 @@ export default {
     }
   },
   computed: {
+    isSelectingDate1: {
+      get() {
+        return (this.dateOne && !this.dateTwo) ? false : true
+      },
+      set(newValue) {
+        return newValue
+      }
+    },
     wrapperClasses() {
       return {
         'asd__wrapper--datepicker-open': this.showDatepicker,
