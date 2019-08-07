@@ -250,6 +250,7 @@ export default {
     },
     trigger: { type: Boolean, default: false },
     closeAfterSelect: { type: Boolean, default: false },
+    closeAfterClickOutside: { type: Boolean, default: true }
   },
   data() {
     return {
@@ -593,7 +594,7 @@ export default {
       }
     },
     handleClickOutside(event) {
-      if (event.target.id === this.triggerElementId || !this.showDatepicker || this.inline) {
+      if (event.target.id === this.triggerElementId || !this.showDatepicker || this.inline || !this.closeAfterClickOutside) {
         return
       }
       this.closeDatepicker()
