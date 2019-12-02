@@ -23,7 +23,7 @@
             :mode="'range'"
             :date-one="inputDateOne"
             :date-two="inputDateTwo"
-            :min-date="'2018-08-28'"
+            :min-date="new Date('2018-08-28')"
             :months-to-show="2"
             :show-action-buttons="true"
             :show-month-year-select="true"
@@ -63,7 +63,7 @@
             :mode="'range'"
             :date-one="buttonDateOne"
             :date-two="buttonDateTwo"
-            :min-date="'2018-04-18'"
+            :min-date="new Date('2018-04-18')"
             :fullscreen-mobile="true"
             :months-to-show="2"
             :trigger="trigger"
@@ -90,8 +90,8 @@
           :fullscreen-mobile="false"
           :date-one="inlineDateOne"
           :months-to-show="2"
-          :disabled-dates="['2018-04-30', '2018-05-10', '2018-12-14']"
-          :customized-dates="[{ dates: ['2019-03-21', '2019-03-22', '2019-03-23', '2019-03-24'], cssClass: 'booked' }, { dates: ['2019-03-21', '2019-03-22', '2019-03-23', '2019-04-24'], cssClass: 'not-available' }]"
+          :disabled-dates="[new Date('2018-04-30'), new Date('2018-05-10'), new Date('2018-12-14')]"
+          :customized-dates="[{ dates: [new Date('2019-03-21'), new Date('2019-03-22'), new Date('2019-03-23'), new Date('2019-03-24')], cssClass: 'booked' }, { dates: [new Date('2019-03-21'), new Date('2019-03-22'), new Date('2019-03-23'), new Date('2019-04-24')], cssClass: 'not-available' }]"
           @date-one-selected="val => { inlineDateOne = val }"
         />
       </div>
@@ -149,17 +149,17 @@ import format from 'date-fns/format'
 export default {
   data() {
     return {
-      dateFormat: 'YYYY-MM-DD', //'D MMM',
-      inputDateOne: '',
-      inputDateTwo: '',
-      inputSingleDateOne: '',
-      inputSingleDateTwo: '',
-      buttonDateOne: '',
-      buttonDateTwo: '',
-      inlineDateOne: '',
-      withDisabledDatesDateOne: '',
-      callbackDateOne: '',
-      callbackDateTwo: '',
+      dateFormat: 'yyyy-MM-dd', //'d MMM',
+      inputDateOne: null,
+      inputDateTwo: null,
+      inputSingleDateOne: null,
+      inputSingleDateTwo: null,
+      buttonDateOne: null,
+      buttonDateTwo: null,
+      inlineDateOne: null,
+      withDisabledDatesDateOne: null,
+      callbackDateOne: null,
+      callbackDateTwo: null,
       sundayFirst: false,
       alignRight: false,
       showDatepickers: true,
@@ -168,13 +168,13 @@ export default {
   },
   computed: {
     disabledDates() {
-      return ['2018-12-30', '2018-12-10', '2018-12-14']
+      return [new Date('2018-12-30'), new Date('2018-12-10'), new Date('2018-12-14')]
     },
   },
   created() {
     setTimeout(() => {
-      this.inputDateOne = '2019-01-12'
-      this.inputDateTwo = ''
+      this.inputDateOne = new Date('2019-01-12')
+      // this.inputDateTwo = ''
     }, 5000)
   },
   methods: {
