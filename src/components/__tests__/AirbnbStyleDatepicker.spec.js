@@ -233,14 +233,14 @@ describe('AirbnbStyleDatepicker', () => {
       const dateTwo = '2018-02-10'
       wrapper.vm.selectDate(dateOne)
       wrapper.vm.selectDate(dateTwo)
-      wrapper.vm.$nextTick(function() {
+      wrapper.vm.$nextTick(function () {
         expect(wrapper.emitted()['date-one-selected'][0]).toEqual([dateOne])
         expect(wrapper.emitted()['date-two-selected'][0]).toEqual([dateTwo])
       })
     })
     test('month of minDate is shown first', () => {
       wrapper = createDatePickerInstance({
-        minDate: format(addMonths(new Date(), 2), 'YYYY-MM-DD'),
+        minDate: format(addMonths(new Date(), 2), 'yyyy-MM-dd'),
         startOpen: true,
       })
       const firstVisibleMonth = wrapper.vm.months[1]
@@ -250,7 +250,7 @@ describe('AirbnbStyleDatepicker', () => {
       wrapper = createDatePickerInstance()
       wrapper.setData({ triggerElement: document.createElement('div') })
       wrapper.vm.closeDatepicker()
-      wrapper.vm.$nextTick(function() {
+      wrapper.vm.$nextTick(function () {
         expect(wrapper.emitted().closed).toBeTruthy()
       })
     })
@@ -600,8 +600,8 @@ describe('AirbnbStyleDatepicker', () => {
       })
       wrapper.setData({ showDatepicker: true })
       h.wrapperHasClass('asd__wrapper--datepicker-open')
-      const date1 = format(new Date(), 'YYYY-MM-DD')
-      const date2 = format(addDays(new Date(), 4), 'YYYY-MM-DD')
+      const date1 = format(new Date(), 'yyyy-MM-dd')
+      const date2 = format(addDays(new Date(), 4), 'yyyy-MM-dd')
       h.click('[data-date="' + date1 + '"] > button')
       h.click('[data-date="' + date2 + '"] > button')
       h.wrapperHasNotClass('asd__wrapper--datepicker-open')
