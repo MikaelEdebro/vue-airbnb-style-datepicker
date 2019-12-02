@@ -3,8 +3,8 @@ import AirbnbStyleDatepicker from '@/components/AirbnbStyleDatepicker'
 import ClickOutside from '@/directives/ClickOutside'
 import ResizeSelect from '@/directives/ResizeSelect'
 import TestHelpers from 'test/test-helpers'
-import addMonths from 'date-fns/add_months'
-import addDays from 'date-fns/add_days'
+import addMonths from 'date-fns/addMonths'
+import addDays from 'date-fns/addDays'
 import format from 'date-fns/format'
 
 const localVue = createLocalVue()
