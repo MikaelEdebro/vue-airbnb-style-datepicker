@@ -149,6 +149,7 @@
           <div class="asd__keyboard-shortcuts-title">{{ texts.keyboardShortcuts }}</div>
           <button
             class="asd__keyboard-shortcuts-close"
+            type="button"
             ref="keyboard-shortcus-menu-close"
             tabindex="0"
             @click="closeKeyboardShortcutsMenu"
@@ -180,6 +181,7 @@
       <div v-if="showShortcutsMenuTrigger" class="asd__keyboard-shortcuts-trigger-wrapper">
         <button
           class="asd__keyboard-shortcuts-trigger"
+          type="button"
           :aria-label="ariaLabels.openKeyboardShortcutsMenu"
           tabindex="0"
           @click="openKeyboardShortcutsMenu"
