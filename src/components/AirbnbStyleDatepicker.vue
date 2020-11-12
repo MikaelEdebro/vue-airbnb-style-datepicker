@@ -103,7 +103,7 @@
               <span v-else>{{ month.year }}</span>
             </div>
 
-            <table class="asd__month-table" role="presentation">
+            <table class="asd__month-table">
               <tbody>
                 <tr class="asd__week" v-for="(week, index) in month.weeks" :key="index">
                   <td
