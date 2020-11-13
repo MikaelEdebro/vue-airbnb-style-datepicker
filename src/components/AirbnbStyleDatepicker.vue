@@ -37,15 +37,6 @@
             <svg v-else viewBox="0 0 1000 1000"><path d="M694.4 242.4l249.1 249.1c11 11 11 21 0 32L694.4 772.7c-5 5-10 7-16 7s-11-2-16-7c-11-11-11-21 0-32l210.1-210.1H67.1c-13 0-23-10-23-23s10-23 23-23h805.4L662.4 274.5c-21-21.1 11-53.1 32-32.1z" /></svg>
           </button>
         </div>
-
-        <div
-          class="asd__days-legend"
-          v-for="(month, index) in showMonths"
-          :key="month"
-          :style="[monthWidthStyles, {left: (width * index) + 'px'}]"
-        >
-          <div class="asd__day-title" v-for="day in daysShort" :key="day">{{ day }}</div>
-        </div>
       </div>
 
       <div class="asd__inner-wrapper" :style="innerStyles">
@@ -104,6 +95,13 @@
             </div>
 
             <table class="asd__month-table">
+              <thead aria-hidden="true">
+                <tr
+                  class="asd__days-legend"
+                >
+                  <th class="asd__day-title" v-for="(day, index) in daysShort" :key="index">{{ day }}</th>
+                </tr>
+              </thead>
               <tbody>
                 <tr class="asd__week" v-for="(week, index) in month.weeks" :key="index">
                   <td
@@ -1210,19 +1208,13 @@ $transition-time: 0.3s;
     }
   }
 
-  &__days-legend {
-    position: absolute;
-    top: 50px;
-    left: 10px;
-    padding: 0 10px;
-  }
   &__day-title {
-    display: inline-block;
     width: percentage(1/7);
     text-align: center;
     margin-bottom: 4px;
     color: rgba(0, 0, 0, 0.7);
     font-size: 0.8em;
+    font-weight: 400;
     margin-left: -1px;
   }
 
@@ -1247,7 +1239,7 @@ $transition-time: 0.3s;
   &__month-name {
     font-size: 1.3em;
     text-align: center;
-    margin: 0 0 30px;
+    margin: 0 0 10px;
     line-height: 1.4em;
     font-weight: bold;
   }
