@@ -37,15 +37,6 @@
             <svg v-else viewBox="0 0 1000 1000"><path d="M694.4 242.4l249.1 249.1c11 11 11 21 0 32L694.4 772.7c-5 5-10 7-16 7s-11-2-16-7c-11-11-11-21 0-32l210.1-210.1H67.1c-13 0-23-10-23-23s10-23 23-23h805.4L662.4 274.5c-21-21.1 11-53.1 32-32.1z" /></svg>
           </button>
         </div>
-
-        <div
-          class="asd__days-legend"
-          v-for="(month, index) in showMonths"
-          :key="month"
-          :style="[monthWidthStyles, {left: (width * index) + 'px'}]"
-        >
-          <div class="asd__day-title" v-for="day in daysShort" :key="day">{{ day }}</div>
-        </div>
       </div>
 
       <div class="asd__inner-wrapper" :style="innerStyles">
@@ -58,52 +49,82 @@
             :style="monthWidthStyles"
           >
             <div class="asd__month-name">
-              <select
+              <div
                 v-if="showMonthYearSelect"
-                v-model="month.monthName"
-                class="asd__month-year-select"
-                :tabindex="monthIndex === 0 || monthIndex > showMonths ? -1 : 0"
-                @change="updateMonth(monthIndex, month.year, $event)"
-                v-resize-select
+                class="asd__month-year-select-container"
               >
-                <option
-                  v-for="(monthName, idx) in monthNames"
-                  :value="monthName"
-                  :disabled="isMonthDisabled(month.year, idx)"
-                  :key="`month-${monthIndex}-${monthName}`"
+                <select
+                  v-model="month.monthName"
+                  class="asd__month-year-select"
+                  :tabindex="monthIndex === 0 || monthIndex > showMonths ? -1 : 0"
+                  @change="updateMonth(monthIndex, month.year, $event)"
+                  v-resize-select
                 >
-                  {{ monthName }}
-                </option>
-              </select>
+                  <option
+                    v-for="(monthName, idx) in monthNames"
+                    :value="monthName"
+                    :disabled="isMonthDisabled(month.year, idx)"
+                    :key="`month-${monthIndex}-${monthName}`"
+                  >{{ monthName }}</option>
+                </select>
+                <slot v-if="showMonthYearSelect" name="select-icon">
+                  <svg
+                    class="asd__month-year-select-icon"
+                    aria-hidden="true"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M12 16C12.2735 16 12.5213 15.8902 12.7018 15.7123L17.707 10.7071C18.0976 10.3166 18.0976 9.68345 17.707 9.29293C17.3165 8.90241 16.6834 8.90241 16.2928 9.29293L12.0003 13.5855L7.70479 9.29004C7.31376 8.90241 6.68255 8.90327 6.29289 9.29293C5.90237 9.68345 5.90237 10.3166 6.29289 10.7071C6.29746 10.7117 7.95743 12.3715 11.2728 15.6865C11.4551 15.8795 11.7135 16 12 16Z"></path>
+                  </svg>
+                </slot>
+              </div>
               <span v-else>{{ month.monthName }}</span>
 
-              <select
+              <div
                 v-if="showMonthYearSelect"
-                class="asd__month-year-select"
-                :tabindex="monthIndex === 0 || monthIndex > showMonths ? -1 : 0"
-                v-model="month.year"
-                @change="updateYear(monthIndex, month.monthNumber - 1, $event)"
+                class="asd__month-year-select-container"
               >
-                <option
-                  v-if="years.indexOf(month.year) === -1"
-                  :value="month.year"
-                  :key="`month-${monthIndex}-${year}`"
-                  :disabled="true"
+                <select
+                  v-if="showMonthYearSelect"
+                  class="asd__month-year-select"
+                  :tabindex="monthIndex === 0 || monthIndex > showMonths ? -1 : 0"
+                  v-model="month.year"
+                  @change="updateYear(monthIndex, month.monthNumber - 1, $event)"
                 >
-                  {{ month.year }}
-                </option>
-                <option
-                  v-for="year in years"
-                  :value="year"
-                  :key="`month-${monthIndex}-${year}`"
-                >
-                  {{ year }}
-                </option>
-              </select>
+                  <option
+                    v-if="years.indexOf(month.year) === -1"
+                    :value="month.year"
+                    :key="`month-${monthIndex}-${year}`"
+                    :disabled="true"
+                  >{{ month.year }}</option>
+                  <option
+                    v-for="year in years"
+                    :value="year"
+                    :key="`month-${monthIndex}-${year}`"
+                  >{{ year }}</option>
+                </select>
+                <slot v-if="showMonthYearSelect" name="select-icon">
+                  <svg
+                    class="asd__month-year-select-icon"
+                    aria-hidden="true"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M12 16C12.2735 16 12.5213 15.8902 12.7018 15.7123L17.707 10.7071C18.0976 10.3166 18.0976 9.68345 17.707 9.29293C17.3165 8.90241 16.6834 8.90241 16.2928 9.29293L12.0003 13.5855L7.70479 9.29004C7.31376 8.90241 6.68255 8.90327 6.29289 9.29293C5.90237 9.68345 5.90237 10.3166 6.29289 10.7071C6.29746 10.7117 7.95743 12.3715 11.2728 15.6865C11.4551 15.8795 11.7135 16 12 16Z"></path>
+                  </svg>
+                </slot>
+              </div>
               <span v-else>{{ month.year }}</span>
             </div>
 
-            <table class="asd__month-table" role="presentation">
+            <table class="asd__month-table">
+              <thead aria-hidden="true">
+                <tr
+                  class="asd__days-legend"
+                >
+                  <th class="asd__day-title" v-for="(day, index) in daysShort" :key="index">{{ day }}</th>
+                </tr>
+              </thead>
               <tbody>
                 <tr class="asd__week" v-for="(week, index) in month.weeks" :key="index">
                   <td
@@ -345,7 +366,7 @@ export default {
       startingDate: '',
       months: [],
       years: [],
-      width: 300,
+      width: 320,
       selectedDate1: '',
       selectedDate2: '',
       isSelectingDate1: true,
@@ -1210,19 +1231,13 @@ $transition-time: 0.3s;
     }
   }
 
-  &__days-legend {
-    position: absolute;
-    top: 50px;
-    left: 10px;
-    padding: 0 10px;
-  }
   &__day-title {
-    display: inline-block;
     width: percentage(1/7);
     text-align: center;
     margin-bottom: 4px;
     color: rgba(0, 0, 0, 0.7);
     font-size: 0.8em;
+    font-weight: 400;
     margin-left: -1px;
   }
 
@@ -1247,7 +1262,7 @@ $transition-time: 0.3s;
   &__month-name {
     font-size: 1.3em;
     text-align: center;
-    margin: 0 0 30px;
+    margin: 0 0 10px;
     line-height: 1.4em;
     font-weight: bold;
   }
@@ -1262,7 +1277,23 @@ $transition-time: 0.3s;
     color: blue;
     font-size: inherit;
     font-weight: inherit;
-    padding: 0;
+    padding-right: 24px;
+
+    &-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    &-icon {
+      position: absolute;
+      transform: translateY(-45%);
+      top: 50%;
+      right: 0;
+      width: 24px;
+      height: 24px;
+      fill: #4E4D49;
+      pointer-events: none;
+    }
   }
 
   &__day {

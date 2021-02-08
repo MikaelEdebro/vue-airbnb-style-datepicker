@@ -17,6 +17,7 @@
     "build:main": "bili --js buble --format cjs,es,umd,umd-min --plugin vue",
     "build:no-dep": "bili --js buble --outDir dist/no-dep --format umd,umd-min --plugin vue --no-inline --global.date-fns/format dateFns.format --global.date-fns/sub_months dateFns.subMonths --global.date-fns/add_months dateFns.addMonths --global.date-fns/get_days_in_month dateFns.getDaysInMonth --global.date-fns/last_day_of_month dateFns.lastDayOfMonth --global.date-fns/get_month dateFns.getMonth --global.date-fns/set_month dateFns.setMonth --global.date-fns/get_year dateFns.getYear --global.date-fns/set_year dateFns.setYear --global.date-fns/is_same_month dateFns.isSameMonth --global.date-fns/is_same_day dateFns.isSameDay --global.date-fns/add_days dateFns.addDays --global.date-fns/sub_days dateFns.subDays --global.date-fns/add_weeks dateFns.addWeeks --global.date-fns/sub_weeks dateFns.subWeeks --global.date-fns/start_of_month dateFns.startOfMonth --global.date-fns/start_of_week dateFns.startOfWeek --global.date-fns/end_of_week dateFns.endOfWeek --global.date-fns/is_before dateFns.isBefore --global.date-fns/is_after dateFns.isAfter --global.date-fns/is_valid dateFns.isValid",
     "dev": "poi",
+    "prepare": "npm run build",
     "test": "jest --runInBand",
     "test:watch": "jest --watch",
     "test:debug": "node --inspect --inspect-brk node_modules/jest/bin/jest.js"
