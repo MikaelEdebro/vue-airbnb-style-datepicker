@@ -42,7 +42,7 @@
     "eslint-plugin-vue": "^4.3.0",
     "jest": "^22.4.3",
     "jest-serializer-vue": "^1.0.0",
-    "node-sass": "^4.9.3",
+    "node-sass": "^5.0.0",
     "poi": "^9.6.13",
     "poi-preset-eslint": "^9.1.1",
     "prettier": "^1.15.2",
