@@ -17,7 +17,8 @@
             :mode="'range'"
             :date-one="inputDateOne"
             :date-two="inputDateTwo"
-            :min-date="'2018-08-28'"
+            :min-date="minDate"
+            :end-date="maxDate"
             :months-to-show="2"
             :show-action-buttons="true"
             :show-month-year-select="true"
@@ -123,6 +124,8 @@ export default {
   data() {
     return {
       dateFormat: 'YYYY-MM-DD', //'D MMM',
+      minDate: '',
+      endDate: '',
       inputDateOne: '',
       inputDateTwo: '',
       inputSingleDateOne: '',
@@ -138,6 +141,19 @@ export default {
   },
   computed: {},
   created() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    const date = now.getDate();
+
+    this.minDate = (() => {
+      const UTCtoday = new Date(Date.UTC(year, month, date));
+      return UTCtoday.toISOString().substring(0, 10);
+    })();
+    this.endDate = (() => {
+      const threeYearsFromToday = new Date(Date.UTC(year + 3, month, date));
+      return threeYearsFromToday.toISOString().substring(0, 10);
+    })();
     // setTimeout(() => {
     //   this.inputDateOne = '2019-01-12'
     //   this.inputDateTwo = '2019-01-15'
