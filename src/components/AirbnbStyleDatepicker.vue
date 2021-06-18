@@ -63,7 +63,7 @@
                   <option
                     v-for="(monthName, idx) in monthNames"
                     :value="monthName"
-                    :disabled="isMonthDisabled(month.year, idx)"
+                    :aria-disabled="isMonthDisabled(month.year, idx)"
                     :key="`month-${monthIndex}-${monthName}`"
                   >{{ monthName }}</option>
                 </select>
@@ -1004,8 +1004,12 @@ export default {
     updateMonth(offset, year, event) {
       const newMonth = event.target.value
       const monthIdx = this.monthNames.indexOf(newMonth)
-      const newDate = setYear(setMonth(this.startingDate, monthIdx), year)
-      this.startingDate = subMonths(newDate, offset)
+
+      if (!this.isMonthDisabled(year, monthIdx)) {
+        const newDate = setYear(setMonth(this.startingDate, monthIdx), year)
+        this.startingDate = subMonths(newDate, offset)
+      }
+
       this.generateMonths()
     },
     updateYear(offset, monthIdx, event) {
@@ -1303,6 +1307,16 @@ $transition-time: 0.3s;
       height: 24px;
       fill: #4E4D49;
       pointer-events: none;
+    }
+
+    option[aria-disabled="true"] {
+      color: rgb(86, 90, 92);
+      pointer-events: none;
+      &:hover,
+      &:focus {
+        background-color: transparent;
+        outline: none;
+      }
     }
   }
 
