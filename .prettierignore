@@ -2,3 +2,4 @@
 /client/build/**
 /tests/unit/coverage/**
 *.vue
+*.md
