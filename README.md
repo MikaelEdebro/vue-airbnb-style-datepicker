@@ -9,6 +9,7 @@ This is a VueJs version of the popular AirBnb datepicker. Supports range selecti
 ## Development
 - Requires Node 10
 - Run `npm run dev` and visit [http://localhost:5050]()
+
 ## Documentation
 [Full documentation on GitBooks](https://mikaeledebro.gitbooks.io/vue-airbnb-style-datepicker/)
 
