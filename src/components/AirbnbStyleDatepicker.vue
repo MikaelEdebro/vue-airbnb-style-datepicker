@@ -297,6 +297,8 @@ export default {
         chooseStartDate: date => `Choose ${date} as your start date.`,
         chooseEndDate: date => `Choose ${date} as your end date.`,
         selectedDate: date => `Selected. ${date}`,
+        selectedStartDate: date => `Selected ${date} as your start date.`,
+        selectedEndDate: date => `Selected ${date} as your end date.`,
         unavailableDate: date => `Not available. ${date}`,
         previousMonth: 'Move backward to switch to the previous month.',
         nextMonth: 'Move forward to switch to the next month.',
@@ -591,7 +593,15 @@ export default {
       }
 
       const isSelected = this.isSelected(date)
+
       if (isSelected) {
+        if (this.isRangeMode) {
+          if (this.dateOne === this.selectedDate1) {
+            return this.ariaLabels.selectedStartDate(dateLabel)
+          } else {
+            return this.ariaLabels.selectedEndDate(dateLabel)
+          }
+        }
         return this.ariaLabels.selectedDate(dateLabel)
       }
 

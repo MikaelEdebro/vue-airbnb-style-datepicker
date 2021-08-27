@@ -6,6 +6,10 @@ This is a VueJs version of the popular AirBnb datepicker. Supports range selecti
 <img src="https://raw.githubusercontent.com/MikaelEdebro/vue-airbnb-style-datepicker/master/docs/images/datepicker-tablet.gif" width="1124" alt="Datepicker on tablet">
 <img src="https://raw.githubusercontent.com/MikaelEdebro/vue-airbnb-style-datepicker/master/docs/images/datepicker-mobile.gif" width="425" alt="Datepicker on mobile">
 
+## Development
+- Requires Node 10
+- Run `npm run dev` and visit [http://localhost:5050]()
+
 ## Documentation
 [Full documentation on GitBooks](https://mikaeledebro.gitbooks.io/vue-airbnb-style-datepicker/)
 
