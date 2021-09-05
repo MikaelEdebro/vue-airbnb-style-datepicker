@@ -63,7 +63,7 @@
                   <option
                     v-for="(monthName, idx) in monthNames"
                     :value="monthName"
-                    :disabled="isMonthDisabled(month.year, idx)"
+                    :aria-disabled="isMonthDisabled(month.year, idx)"
                     :key="`month-${monthIndex}-${monthName}`"
                   >{{ monthName }}</option>
                 </select>
@@ -74,7 +74,7 @@
                     viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg"
                   >
-                    <path d="M12 16C12.2735 16 12.5213 15.8902 12.7018 15.7123L17.707 10.7071C18.0976 10.3166 18.0976 9.68345 17.707 9.29293C17.3165 8.90241 16.6834 8.90241 16.2928 9.29293L12.0003 13.5855L7.70479 9.29004C7.31376 8.90241 6.68255 8.90327 6.29289 9.29293C5.90237 9.68345 5.90237 10.3166 6.29289 10.7071C6.29746 10.7117 7.95743 12.3715 11.2728 15.6865C11.4551 15.8795 11.7135 16 12 16Z"></path>
+                    <path d="M12 16C12.2735 16 12.5213 15.8902 12.7018 15.7123L17.707 10.7071C18.0976 10.3166 18.0976 9.68345 17.707 9.29293C17.3165 8.90241 16.6834 8.90241 16.2928 9.29293L12.0003 13.5855L7.70479 9.29004C7.31376 8.90241 6.68255 8.90327 6.29289 9.29293C5.90237 9.68345 5.90237 10.3166 6.29289 10.7071C6.29746 10.7117 7.95743 12.3715 11.2728 15.6865C11.4551 15.8795 11.7135 16 12 16Z"/>
                   </svg>
                 </slot>
               </div>
@@ -110,7 +110,7 @@
                     viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg"
                   >
-                    <path d="M12 16C12.2735 16 12.5213 15.8902 12.7018 15.7123L17.707 10.7071C18.0976 10.3166 18.0976 9.68345 17.707 9.29293C17.3165 8.90241 16.6834 8.90241 16.2928 9.29293L12.0003 13.5855L7.70479 9.29004C7.31376 8.90241 6.68255 8.90327 6.29289 9.29293C5.90237 9.68345 5.90237 10.3166 6.29289 10.7071C6.29746 10.7117 7.95743 12.3715 11.2728 15.6865C11.4551 15.8795 11.7135 16 12 16Z"></path>
+                    <path d="M12 16C12.2735 16 12.5213 15.8902 12.7018 15.7123L17.707 10.7071C18.0976 10.3166 18.0976 9.68345 17.707 9.29293C17.3165 8.90241 16.6834 8.90241 16.2928 9.29293L12.0003 13.5855L7.70479 9.29004C7.31376 8.90241 6.68255 8.90327 6.29289 9.29293C5.90237 9.68345 5.90237 10.3166 6.29289 10.7071C6.29746 10.7117 7.95743 12.3715 11.2728 15.6865C11.4551 15.8795 11.7135 16 12 16Z"/>
                   </svg>
                 </slot>
               </div>
@@ -1004,8 +1004,12 @@ export default {
     updateMonth(offset, year, event) {
       const newMonth = event.target.value
       const monthIdx = this.monthNames.indexOf(newMonth)
-      const newDate = setYear(setMonth(this.startingDate, monthIdx), year)
-      this.startingDate = subMonths(newDate, offset)
+
+      if (!this.isMonthDisabled(year, monthIdx)) {
+        const newDate = setYear(setMonth(this.startingDate, monthIdx), year)
+        this.startingDate = subMonths(newDate, offset)
+      }
+
       this.generateMonths()
     },
     updateYear(offset, monthIdx, event) {
@@ -1303,6 +1307,16 @@ $transition-time: 0.3s;
       height: 24px;
       fill: #4E4D49;
       pointer-events: none;
+    }
+
+    option[aria-disabled="true"] {
+      color: rgb(86, 90, 92);
+      pointer-events: none;
+      &:hover,
+      &:focus {
+        background-color: transparent;
+        outline: none;
+      }
     }
   }
 
