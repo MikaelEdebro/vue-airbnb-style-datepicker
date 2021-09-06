@@ -22,8 +22,5 @@ iOS: 6 and higher
 
 However, these tests have not been extensive. More or less just trying the datepicker out, and see that it doesn't throw any console errors etc. If you're planning on using this in production, make sure that it runs smoothly in the browsers that you're planning on supporting.
 
-## Contribute
-I gladly accept contributions to improve this datepicker. **But before you start hacking away, please first create an issue where you explain what it is that you think needs to be done and why, so we can agree that the changes makes sense.** I wan't to keep this datepicker as close as possible to the original Airbnb datepicker, and not add strange edge cases that complicates the API and makes the size bigger. And it sucks having to deny a PR that someone spent time on, just because the feature/implementation doesn't cut it.
-
-## Roadmap/todo:s
-- Improve logic for positioning of datepicker. Support for showing the datepicker above the input if it doesn't fit below.
+## Contribute?
+This project is no longer maintained.
