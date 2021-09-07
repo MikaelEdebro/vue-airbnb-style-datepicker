@@ -90,6 +90,7 @@
           :fullscreen-mobile="false"
           :date-one="inlineDateOne"
           :months-to-show="2"
+          :months-to-show-md="1"
           :disabled-dates="['2018-04-30', '2018-05-10', '2018-12-14']"
           :customized-dates="[{ dates: ['2019-03-21', '2019-03-22', '2019-03-23', '2019-03-24'], cssClass: 'booked' }, { dates: ['2019-03-21', '2019-03-22', '2019-03-23', '2019-04-24'], cssClass: 'not-available' }]"
           @date-one-selected="val => { inlineDateOne = val }"
