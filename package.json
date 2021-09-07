@@ -15,7 +15,7 @@
   "scripts": {
     "build": "rimraf dist/ && npm run build:main && npm run build:no-dep",
     "build:main": "bili --js buble --format cjs,es,umd,umd-min --plugin vue",
-    "build:no-dep": "bili --js buble --outDir dist/no-dep --format umd,umd-min --plugin vue --no-inline --global.date-fns/format dateFns.format --global.date-fns/sub_months dateFns.subMonths --global.date-fns/add_months dateFns.addMonths --global.date-fns/get_days_in_month dateFns.getDaysInMonth --global.date-fns/last_day_of_month dateFns.lastDayOfMonth --global.date-fns/get_month dateFns.getMonth --global.date-fns/set_month dateFns.setMonth --global.date-fns/get_year dateFns.getYear --global.date-fns/set_year dateFns.setYear --global.date-fns/is_same_month dateFns.isSameMonth --global.date-fns/is_same_day dateFns.isSameDay --global.date-fns/add_days dateFns.addDays --global.date-fns/sub_days dateFns.subDays --global.date-fns/add_weeks dateFns.addWeeks --global.date-fns/sub_weeks dateFns.subWeeks --global.date-fns/start_of_month dateFns.startOfMonth --global.date-fns/start_of_week dateFns.startOfWeek --global.date-fns/end_of_week dateFns.endOfWeek --global.date-fns/is_before dateFns.isBefore --global.date-fns/is_after dateFns.isAfter --global.date-fns/is_valid dateFns.isValid",
+    "build:no-dep": "bili --js buble --outDir dist/no-dep --format umd,umd-min --plugin vue --no-inline --global.date-fns/format dateFns.format --global.date-fns/subMonths dateFns.subMonths --global.date-fns/addMonths dateFns.addMonths --global.date-fns/getDaysInMonth dateFns.getDaysInMonth --global.date-fns/lastDayOfMonth dateFns.lastDayOfMonth --global.date-fns/getMonth dateFns.getMonth --global.date-fns/setMonth dateFns.setMonth --global.date-fns/getYear dateFns.getYear --global.date-fns/setYear dateFns.setYear --global.date-fns/isSameMonth dateFns.isSameMonth --global.date-fns/isSameDay dateFns.isSameDay --global.date-fns/addDays dateFns.addDays --global.date-fns/subDays dateFns.subDays --global.date-fns/addWeeks dateFns.addWeeks --global.date-fns/subWeeks dateFns.subWeeks --global.date-fns/startOfMonth dateFns.startOfMonth --global.date-fns/startOfWeek dateFns.startOfWeek --global.date-fns/endOfWeek dateFns.endOfWeek --global.date-fns/isBefore dateFns.isBefore --global.date-fns/isAfter dateFns.isAfter --global.date-fns/isValid dateFns.isValid",
     "dev": "poi",
     "test": "jest --runInBand",
     "test:watch": "jest --watch",
@@ -30,7 +30,6 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-stage-2": "^6.24.1",
     "bili": "^3.1.2",
-    "date-fns": "^1.29.0",
     "eslint": "^4.19.0",
     "eslint-config-prettier": "^3.0.1",
     "eslint-config-standard": "^11.0.0",
@@ -41,7 +40,7 @@
     "eslint-plugin-vue": "^4.3.0",
     "jest": "^22.4.3",
     "jest-serializer-vue": "^1.0.0",
-    "node-sass": "^4.9.3",
+    "node-sass": "^4.13.0",
     "poi": "^9.6.13",
     "poi-preset-eslint": "^9.1.1",
     "prettier": "^1.15.2",
@@ -53,7 +52,7 @@
     "vue-template-compiler": "^2.5.13"
   },
   "peerDependencies": {
-    "date-fns": "1.x",
+    "date-fns": "2.x",
     "vue": "2.x"
   },
   "jest": {
@@ -80,6 +79,7 @@
     }
   },
   "dependencies": {
+    "date-fns": "^2.8.1",
     "v-click-outside": "^2.0.1"
   }
 }

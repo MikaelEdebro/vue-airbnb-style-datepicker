@@ -8,36 +8,62 @@
       :style="showFullscreen ? undefined : wrapperStyles"
       v-click-outside="handleClickOutside"
     >
-      <div class="asd__mobile-header asd__mobile-only" v-if="showFullscreen">
+      <div
+        class="asd__mobile-header asd__mobile-only"
+        v-if="showFullscreen"
+      >
         <button
           type="button"
           class="asd__mobile-close"
           @click="closeDatepicker"
           :aria-label="ariaLabels.closeDatepicker"
         >
-          <slot v-if="$slots['close-icon']" name="close-icon"></slot>
-          <div v-else class="asd__mobile-close-icon" aria-hidden="true">X</div>
+          <slot
+            v-if="$slots['close-icon']"
+            name="close-icon"
+          ></slot>
+          <div
+            v-else
+            class="asd__mobile-close-icon"
+            aria-hidden="true"
+          >X</div>
         </button>
         <h3>{{ mobileHeader || mobileHeaderFallback }}</h3>
       </div>
       <div class="asd__datepicker-header">
         <div class="asd__change-month-button asd__change-month-button--previous">
-          <button @click="previousMonth" type="button" :aria-label="ariaLabels.previousMonth">
-            <slot v-if="$slots['previous-month-icon']" name="previous-month-icon"></slot>
-            <svg v-else viewBox="0 0 1000 1000">
-              <path
-                d="M336.2 274.5l-210.1 210h805.4c13 0 23 10 23 23s-10 23-23 23H126.1l210.1 210.1c11 11 11 21 0 32-5 5-10 7-16 7s-11-2-16-7l-249.1-249c-11-11-11-21 0-32l249.1-249.1c21-21.1 53 10.9 32 32z"
-              ></path>
+          <button
+            @click="previousMonth"
+            type="button"
+            :aria-label="ariaLabels.previousMonth"
+          >
+            <slot
+              v-if="$slots['previous-month-icon']"
+              name="previous-month-icon"
+            ></slot>
+            <svg
+              v-else
+              viewBox="0 0 1000 1000"
+            >
+              <path d="M336.2 274.5l-210.1 210h805.4c13 0 23 10 23 23s-10 23-23 23H126.1l210.1 210.1c11 11 11 21 0 32-5 5-10 7-16 7s-11-2-16-7l-249.1-249c-11-11-11-21 0-32l249.1-249.1c21-21.1 53 10.9 32 32z"></path>
             </svg>
           </button>
         </div>
         <div class="asd__change-month-button asd__change-month-button--next">
-          <button @click="nextMonth" type="button" :aria-label="ariaLabels.nextMonth">
-            <slot v-if="$slots['next-month-icon']" name="next-month-icon"></slot>
-            <svg v-else viewBox="0 0 1000 1000">
-              <path
-                d="M694.4 242.4l249.1 249.1c11 11 11 21 0 32L694.4 772.7c-5 5-10 7-16 7s-11-2-16-7c-11-11-11-21 0-32l210.1-210.1H67.1c-13 0-23-10-23-23s10-23 23-23h805.4L662.4 274.5c-21-21.1 11-53.1 32-32.1z"
-              ></path>
+          <button
+            @click="nextMonth"
+            type="button"
+            :aria-label="ariaLabels.nextMonth"
+          >
+            <slot
+              v-if="$slots['next-month-icon']"
+              name="next-month-icon"
+            ></slot>
+            <svg
+              v-else
+              viewBox="0 0 1000 1000"
+            >
+              <path d="M694.4 242.4l249.1 249.1c11 11 11 21 0 32L694.4 772.7c-5 5-10 7-16 7s-11-2-16-7c-11-11-11-21 0-32l210.1-210.1H67.1c-13 0-23-10-23-23s10-23 23-23h805.4L662.4 274.5c-21-21.1 11-53.1 32-32.1z"></path>
             </svg>
           </button>
         </div>
@@ -48,12 +74,22 @@
           :key="month"
           :style="[monthWidthStyles, {left: (width * index) + 'px'}]"
         >
-          <div class="asd__day-title" v-for="(day, index) in daysShort" :key="index">{{ day }}</div>
+          <div
+            class="asd__day-title"
+            v-for="(day, index) in daysShort"
+            :key="index"
+          >{{ day }}</div>
         </div>
       </div>
 
-      <div class="asd__inner-wrapper" :style="innerStyles">
-        <transition-group name="asd__list-complete" tag="div">
+      <div
+        class="asd__inner-wrapper"
+        :style="innerStyles"
+      >
+        <transition-group
+          name="asd__list-complete"
+          tag="div"
+        >
           <div
             v-for="(month, monthIndex) in months"
             :key="month.firstDateOfMonth"
@@ -101,9 +137,16 @@
               <span v-else>{{ month.year }}</span>
             </div>
 
-            <table class="asd__month-table" role="presentation">
+            <table
+              class="asd__month-table"
+              role="presentation"
+            >
               <tbody>
-                <tr class="asd__week" v-for="(week, index) in month.weeks" :key="index">
+                <tr
+                  class="asd__week"
+                  v-for="(week, index) in month.weeks"
+                  :key="index"
+                >
                   <td
                     class="asd__day"
                     v-for="({fullDate, dayNumber}, index) in week"
@@ -154,11 +197,21 @@
             @click="closeKeyboardShortcutsMenu"
             :aria-label="ariaLabels.closeKeyboardShortcutsMenu"
           >
-            <slot v-if="$slots['close-shortcuts-icon']" name="close-shortcuts-icon"></slot>
-            <div v-else class="asd__mobile-close-icon" aria-hidden="true">X</div>
+            <slot
+              v-if="$slots['close-shortcuts-icon']"
+              name="close-shortcuts-icon"
+            ></slot>
+            <div
+              v-else
+              class="asd__mobile-close-icon"
+              aria-hidden="true"
+            >X</div>
           </button>
           <ul class="asd__keyboard-shortcuts-list">
-            <li v-for="(shortcut, i) in keyboardShortcuts" :key="i">
+            <li
+              v-for="(shortcut, i) in keyboardShortcuts"
+              :key="i"
+            >
               <span
                 class="asd__keyboard-shortcuts-symbol"
                 :aria-label="shortcut.symbolDescription"
@@ -168,8 +221,14 @@
           </ul>
         </div>
       </div>
-      <div class="asd__action-buttons" v-if="mode !== 'single' && showActionButtons">
-        <button @click="closeDatepickerCancel" type="button">{{ texts.cancel }}</button>
+      <div
+        class="asd__action-buttons"
+        v-if="mode !== 'single' && showActionButtons"
+      >
+        <button
+          @click="closeDatepickerCancel"
+          type="button"
+        >{{ texts.cancel }}</button>
         <button
           ref="apply-button"
           @click="apply"
@@ -177,7 +236,10 @@
           type="button"
         >{{ texts.apply }}</button>
       </div>
-      <div v-if="showShortcutsMenuTrigger" class="asd__keyboard-shortcuts-trigger-wrapper">
+      <div
+        v-if="showShortcutsMenuTrigger"
+        class="asd__keyboard-shortcuts-trigger-wrapper"
+      >
         <button
           class="asd__keyboard-shortcuts-trigger"
           :aria-label="ariaLabels.openKeyboardShortcutsMenu"
@@ -193,26 +255,26 @@
 
 <script>
 import format from 'date-fns/format'
-import subMonths from 'date-fns/sub_months'
-import addMonths from 'date-fns/add_months'
-import getDaysInMonth from 'date-fns/get_days_in_month'
-import lastDayOfMonth from 'date-fns/last_day_of_month'
-import getMonth from 'date-fns/get_month'
-import setMonth from 'date-fns/set_month'
-import getYear from 'date-fns/get_year'
-import setYear from 'date-fns/set_year'
-import isSameMonth from 'date-fns/is_same_month'
-import isSameDay from 'date-fns/is_same_day'
-import addDays from 'date-fns/add_days'
-import subDays from 'date-fns/sub_days'
-import addWeeks from 'date-fns/add_weeks'
-import subWeeks from 'date-fns/sub_weeks'
-import startOfMonth from 'date-fns/start_of_month'
-import startOfWeek from 'date-fns/start_of_week'
-import endOfWeek from 'date-fns/end_of_week'
-import isBefore from 'date-fns/is_before'
-import isAfter from 'date-fns/is_after'
-import isValid from 'date-fns/is_valid'
+import subMonths from 'date-fns/subMonths'
+import addMonths from 'date-fns/addMonths'
+import getDaysInMonth from 'date-fns/getDaysInMonth'
+import lastDayOfMonth from 'date-fns/lastDayOfMonth'
+import getMonth from 'date-fns/getMonth'
+import setMonth from 'date-fns/setMonth'
+import getYear from 'date-fns/getYear'
+import setYear from 'date-fns/setYear'
+import isSameMonth from 'date-fns/isSameMonth'
+import isSameDay from 'date-fns/isSameDay'
+import addDays from 'date-fns/addDays'
+import subDays from 'date-fns/subDays'
+import addWeeks from 'date-fns/addWeeks'
+import subWeeks from 'date-fns/subWeeks'
+import startOfMonth from 'date-fns/startOfMonth'
+import startOfWeek from 'date-fns/startOfWeek'
+import endOfWeek from 'date-fns/endOfWeek'
+import isBefore from 'date-fns/isBefore'
+import isAfter from 'date-fns/isAfter'
+import isValid from 'date-fns/isValid'
 import { debounce, copyObject, findAncestor, randomString } from './../helpers'
 import vClickOutside from 'v-click-outside'
 import ResizeSelect from '../directives/ResizeSelect'
@@ -225,10 +287,10 @@ export default {
   },
   props: {
     triggerElementId: { type: String },
-    dateOne: { type: [String, Date] },
-    dateTwo: { type: [String, Date] },
-    minDate: { type: [String, Date] },
-    endDate: { type: [String, Date] },
+    dateOne: { type: Date },
+    dateTwo: { type: Date },
+    minDate: { type: Date },
+    endDate: { type: Date },
     mode: { type: String, default: 'range' },
     offsetY: { type: Number, default: 0 },
     offsetX: { type: Number, default: 0 },
@@ -254,8 +316,8 @@ export default {
   data() {
     return {
       wrapperId: 'airbnb-style-datepicker-wrapper-' + randomString(5),
-      dateFormat: 'YYYY-MM-DD',
-      dateLabelFormat: 'dddd, MMMM D, YYYY',
+      dateFormat: 'yyyy-LL-dd',
+      dateLabelFormat: 'iiii, LLLL d, yyyy',
       showDatepicker: false,
       showKeyboardShortcutsMenu: false,
       showMonths: 2,
@@ -340,15 +402,15 @@ export default {
         questionMark: 191,
         esc: 27,
       },
-      startingDate: '',
+      startingDate: null,
       months: [],
       years: [],
       width: 300,
-      selectedDate1: '',
-      selectedDate2: '',
+      selectedDate1: null,
+      selectedDate2: null,
       isSelectingDate1: true,
-      hoverDate: '',
-      focusedDate: '',
+      hoverDate: null,
+      focusedDate: null,
       alignRight: false,
       triggerPosition: {},
       triggerWrapperPosition: {},
@@ -679,7 +741,7 @@ export default {
       if (!value || value.length < 10) {
         return
       }
-      // make sure format is either 'YYYY-MM-DD' or 'DD.MM.YYYY'
+      // make sure format is either 'yyyy-LL-dd' or 'dd.LL.yyyy'
       const isFormatYearFirst = value.match(
         /^(\d{4})-(0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-9]|3[0-1])$/
       )
@@ -691,7 +753,7 @@ export default {
         return
       }
       if (isFormatDayFirst) {
-        //convert to YYYY-MM-DD
+        //convert to yyyy-LL-dd
         value = `${value.substring(6, 10)}-${value.substring(3, 5)}-${value.substring(0, 2)}`
       }
 
@@ -792,8 +854,8 @@ export default {
       this.daysShort.unshift(lastDayShort)
     },
     getMonth(date) {
-      const firstDateOfMonth = format(date, 'YYYY-MM-01')
-      const year = format(date, 'YYYY')
+      const firstDateOfMonth = format(date, 'yyyy-LL-01')
+      const year = format(date, 'yyyy')
       const monthNumber = parseInt(format(date, 'M'))
       const monthName = this.monthNames[monthNumber - 1]
 
@@ -808,9 +870,9 @@ export default {
     getWeeks(date) {
       const weekDayNotInMonth = { dayNumber: 0 }
       const daysInMonth = getDaysInMonth(date)
-      const year = format(date, 'YYYY')
-      const month = format(date, 'MM')
-      let firstDayInWeek = parseInt(format(date, this.sundayFirst ? 'd' : 'E'))
+      const year = format(date, 'yyyy')
+      const month = format(date, 'LL')
+      let firstDayInWeek = parseInt(format(date, 'i'))
       if (this.sundayFirst) {
         firstDayInWeek++
       }
