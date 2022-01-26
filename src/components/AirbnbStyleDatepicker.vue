@@ -598,7 +598,7 @@ export default {
 
       if (isSelected) {
         if (this.isRangeMode) {
-          if (this.dateOne === this.selectedDate1) {
+          if (date === this.selectedDate1) {
             return this.ariaLabels.selectedStartDate(dateLabel)
           } else {
             return this.ariaLabels.selectedEndDate(dateLabel)
