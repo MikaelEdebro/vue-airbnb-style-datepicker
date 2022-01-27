@@ -301,6 +301,7 @@ export default {
         selectedDate: date => `Selected. ${date}`,
         selectedStartDate: date => `Selected ${date} as your start date.`,
         selectedEndDate: date => `Selected ${date} as your end date.`,
+        selectedStartAndEndDate: date => `Selected ${date} as your start and end date.`,
         unavailableDate: date => `Not available. ${date}`,
         previousMonth: 'Move backward to switch to the previous month.',
         nextMonth: 'Move forward to switch to the next month.',
@@ -599,7 +600,9 @@ export default {
       if (isSelected) {
         if (this.isRangeMode) {
           if (date === this.selectedDate1) {
-            return this.ariaLabels.selectedStartDate(dateLabel)
+            return (date === this.selectedDate2)? 
+              this.ariaLabels.selectedStartAndEndDate(dateLabel) : 
+              this.ariaLabels.selectedStartDate(dateLabel)
           } else {
             return this.ariaLabels.selectedEndDate(dateLabel)
           }
@@ -608,7 +611,7 @@ export default {
       }
 
       if (this.isRangeMode) {
-        if (this.isSelectingDate1) {
+        if (this.isSelectingDate1 || isBefore(date, this.selectedDate1)) {
           return this.ariaLabels.chooseStartDate(dateLabel)
         } else {
           return this.ariaLabels.chooseEndDate(dateLabel)
