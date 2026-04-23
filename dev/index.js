@@ -1,22 +1,24 @@
-import Vue from 'vue'
+
+import { createApp } from 'vue'
 import App from './App.vue'
 import AirBnbStyleDatepicker from './../src/index'
 
-Vue.use(AirBnbStyleDatepicker, {
+const app = createApp(App)
+app.use(AirBnbStyleDatepicker, {
   sundayFirst: false,
-  days: ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'],
-  daysShort: ['Mån', 'Tis', 'Ons', 'Tors', 'Fre', 'Lör', 'Sön'],
+  days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+  daysShort: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
   monthNames: [
-    'Januari',
-    'Februari',
-    'Mars',
+    'January',
+    'February',
+    'March',
     'April',
-    'Maj',
-    'Juni',
-    'Juli',
-    'Augusti',
+    'May',
+    'June',
+    'July',
+    'August',
     'September',
-    'Oktober',
+    'October',
     'November',
     'December',
   ],
@@ -29,13 +31,8 @@ Vue.use(AirBnbStyleDatepicker, {
     disabled: '#fff',
   },
   texts: {
-    apply: 'Tillämpa',
-    cancel: 'Avbryt',
+    apply: 'Apply',
+    cancel: 'Cancel',
   },
 })
-
-// eslint-disable-next-line
-new Vue({
-  el: '#app',
-  render: h => h(App),
-})
+app.mount('#app')

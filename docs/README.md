@@ -18,3 +18,11 @@ Safari: 7.1 and higher<br>
 iOS: 6 and higher
 
 However, these tests have not been extensive. More or less just trying the datepicker out, and see that it doesn't throw any console errors etc. If you're planning on using this in production, make sure that it runs smoothly in the browsers that you're planning on supporting.
+
+## What's new (reservations + read‑only)
+
+- Visualize reservations with back‑to‑back support (end/start on same day).
+- Single floating badge per reservation (not per day), with built‑in soft shadow and smart placement.
+- Read‑only mode via `:selectable="false"` — perfect for availability calendars.
+- New `reservation-floating` slot for custom badges (works with any UI lib).
+- New props to tune placement and look (see Installation → Properties section).

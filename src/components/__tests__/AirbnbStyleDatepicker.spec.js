@@ -1,15 +1,12 @@
-import { shallow, createLocalVue } from '@vue/test-utils'
-import AirbnbStyleDatepicker from '@/components/AirbnbStyleDatepicker'
-import ClickOutside from '@/directives/ClickOutside'
-import ResizeSelect from '@/directives/ResizeSelect'
+import { shallowMount } from '@vue/test-utils'
+import AirbnbStyleDatepicker from '../../components/AirbnbStyleDatepicker.vue'
+import ClickOutside from '../../directives/ClickOutside'
+import ResizeSelect from '../../directives/ResizeSelect'
 import TestHelpers from 'test/test-helpers'
 import addMonths from 'date-fns/add_months'
 import addDays from 'date-fns/add_days'
 import format from 'date-fns/format'
 
-const localVue = createLocalVue()
-localVue.directive('click-outside', ClickOutside)
-localVue.directive('resize-select', ResizeSelect)
 let h
 
 const createDatePickerInstance = (propsData, options, slots) => {
@@ -27,10 +24,15 @@ const createDatePickerInstance = (propsData, options, slots) => {
     ...AirbnbStyleDatepicker,
     ...options,
   }
-  const wrapper = shallow(component, {
-    localVue,
-    propsData,
+  const wrapper = shallowMount(component, {
+    props: propsData,
     slots,
+    global: {
+      directives: {
+        'click-outside': ClickOutside,
+        'resize-select': ResizeSelect,
+      },
+    },
   })
   h = new TestHelpers(wrapper, expect)
   return wrapper
@@ -40,12 +42,12 @@ let wrapper
 
 describe('AirbnbStyleDatepicker', () => {
   beforeEach(() => {
-    jest.useFakeTimers()
-    jest.resetModules()
-    jest.clearAllMocks()
+    vi.useFakeTimers()
+    vi.resetModules()
+    vi.clearAllMocks()
   })
   afterEach(() => {
-    jest.useRealTimers()
+    vi.useRealTimers()
   })
 
   describe('lifecycle hooks', () => {
@@ -180,43 +182,45 @@ describe('AirbnbStyleDatepicker', () => {
         'Selected. Tuesday, January 30, 2018'
       )
     })
-    test('aria-label generated correctly for unavailable date', () => {
-      wrapper.setData({
-        selectedDate1: '2018-01-30',
+    test('aria-label generated correctly for unavailable date', async () => {
+      wrapper = createDatePickerInstance({
+        mode: 'single',
+        dateOne: '',
         minDate: '2018-02-01',
       })
+      await wrapper.setData({ selectedDate1: '2018-01-30' })
       expect(wrapper.vm.getAriaLabelForDate('2018-01-30')).toBe(
         'Not available. Tuesday, January 30, 2018'
       )
     })
-    test('aria-label generated correctly for first date selection', () => {
-      wrapper.setData({
-        selectedDate1: undefined,
+    test('aria-label generated correctly for first date selection', async () => {
+      wrapper = createDatePickerInstance({
         mode: 'range',
-        isSelectingDate1: true,
-        minDate: undefined,
+        dateOne: '',
+        dateTwo: '',
       })
+      await wrapper.setData({ selectedDate1: undefined, isSelectingDate1: true })
       expect(wrapper.vm.getAriaLabelForDate('2018-01-30')).toBe(
         'Choose Tuesday, January 30, 2018 as your start date.'
       )
     })
-    test('aria-label generated correctly for second date selection', () => {
-      wrapper.setData({
-        selectedDate1: '2018-01-30',
+    test('aria-label generated correctly for second date selection', async () => {
+      wrapper = createDatePickerInstance({
         mode: 'range',
-        isSelectingDate1: false,
-        minDate: undefined,
+        dateOne: '',
+        dateTwo: '',
       })
+      await wrapper.setData({ selectedDate1: '2018-01-30', isSelectingDate1: false })
       expect(wrapper.vm.getAriaLabelForDate('2018-02-01')).toBe(
         'Choose Thursday, February 1, 2018 as your end date.'
       )
     })
-    test('aria-label generated correctly for single selection', () => {
-      wrapper.setData({
-        selectedDate1: undefined,
+    test('aria-label generated correctly for single selection', async () => {
+      wrapper = createDatePickerInstance({
         mode: 'single',
-        minDate: undefined,
+        dateOne: '',
       })
+      await wrapper.setData({ selectedDate1: undefined })
       expect(wrapper.vm.getAriaLabelForDate('2018-01-30')).toBe('Tuesday, January 30, 2018')
     })
     test('date is in range', () => {
@@ -227,16 +231,149 @@ describe('AirbnbStyleDatepicker', () => {
       expect(wrapper.vm.isInRange('2018-03-22')).toBe(false)
       expect(wrapper.vm.isInRange('2018-02-22')).toBe(true)
     })
-    test('event is emitted when selecting date', () => {
-      wrapper = createDatePickerInstance()
+    test('event is emitted when selecting date', async () => {
+      wrapper = createDatePickerInstance({
+        mode: 'range',
+        dateOne: '',
+        dateTwo: '',
+      })
       const dateOne = '2018-01-10'
       const dateTwo = '2018-02-10'
+      await wrapper.vm.$nextTick()
+      const dateOneEmitsBefore = (wrapper.emitted()['date-one-selected'] || []).length
+      const dateTwoEmitsBefore = (wrapper.emitted()['date-two-selected'] || []).length
       wrapper.vm.selectDate(dateOne)
+      await wrapper.vm.$nextTick()
       wrapper.vm.selectDate(dateTwo)
-      wrapper.vm.$nextTick(function() {
-        expect(wrapper.emitted()['date-one-selected'][0]).toEqual([dateOne])
-        expect(wrapper.emitted()['date-two-selected'][0]).toEqual([dateTwo])
+      await wrapper.vm.$nextTick()
+      expect(wrapper.emitted()['date-one-selected'][dateOneEmitsBefore]).toEqual([dateOne])
+      expect(wrapper.emitted()['date-two-selected'][dateTwoEmitsBefore]).toEqual([dateTwo])
+    })
+    test('selection-changed emits unified payload on date click', async () => {
+      wrapper = createDatePickerInstance({
+        mode: 'range',
+        dateOne: '',
+        dateTwo: '',
       })
+      const before = (wrapper.emitted()['selection-changed'] || []).length
+      wrapper.vm.selectDate('2018-01-10')
+      await wrapper.vm.$nextTick()
+      const payload = wrapper.emitted()['selection-changed'][before][0]
+      expect(payload).toMatchObject({
+        mode: 'range',
+        strategy: 'reservation-aware-range',
+        startDate: '2018-01-10',
+        endDate: null,
+        isSelectingStart: false,
+        source: 'date-click',
+      })
+    })
+    test('blocked-date-clicked emits reason for disabled day', async () => {
+      wrapper = createDatePickerInstance({
+        mode: 'range',
+        dateOne: '',
+        dateTwo: '',
+        disabledDates: ['2018-01-11'],
+      })
+      wrapper.vm.selectDate('2018-01-11')
+      await wrapper.vm.$nextTick()
+      expect(wrapper.emitted()['blocked-date-clicked'][0][0]).toMatchObject({
+        date: '2018-01-11',
+        reason: 'disabled',
+        mode: 'range',
+      })
+    })
+    test('hover-range-changed emits preview payload while selecting end date', async () => {
+      wrapper = createDatePickerInstance({
+        mode: 'range',
+        dateOne: '',
+        dateTwo: '',
+      })
+      wrapper.vm.selectDate('2018-01-10')
+      await wrapper.vm.$nextTick()
+      const before = (wrapper.emitted()['hover-range-changed'] || []).length
+      wrapper.vm.setHoverDate('2018-01-14')
+      await wrapper.vm.$nextTick()
+      const payload = wrapper.emitted()['hover-range-changed'][before][0]
+      expect(payload).toMatchObject({
+        mode: 'range',
+        isPreviewingRange: true,
+        startDate: '2018-01-10',
+        hoverDate: '2018-01-14',
+        previewStartDate: '2018-01-10',
+        previewEndDate: '2018-01-14',
+      })
+    })
+    test('reservation-aware-range strategy clamps end selection to next reservation boundary', async () => {
+      wrapper = createDatePickerInstance({
+        mode: 'range',
+        selectionStrategy: 'reservation-aware-range',
+        dateOne: '',
+        dateTwo: '',
+        reservations: [{ id: 1, start: '2018-01-05', end: '2018-01-05', label: 'Boundary' }],
+      })
+      wrapper.vm.selectDate('2018-01-02')
+      await wrapper.vm.$nextTick()
+      wrapper.vm.selectDate('2018-01-10')
+      await wrapper.vm.$nextTick()
+      expect(wrapper.vm.selectedDate1).toEqual('2018-01-02')
+      expect(wrapper.vm.selectedDate2).toEqual('2018-01-05')
+    })
+    test('range strategy does not clamp to reservation boundary when no interior is blocked', async () => {
+      wrapper = createDatePickerInstance({
+        mode: 'range',
+        selectionStrategy: 'range',
+        dateOne: '',
+        dateTwo: '',
+        reservations: [{ id: 1, start: '2018-01-05', end: '2018-01-05', label: 'Boundary' }],
+      })
+      wrapper.vm.selectDate('2018-01-02')
+      await wrapper.vm.$nextTick()
+      wrapper.vm.selectDate('2018-01-10')
+      await wrapper.vm.$nextTick()
+      expect(wrapper.vm.selectedDate1).toEqual('2018-01-02')
+      expect(wrapper.vm.selectedDate2).toEqual('2018-01-10')
+    })
+    test('single strategy in range mode behaves like single-date selection', async () => {
+      wrapper = createDatePickerInstance({
+        mode: 'range',
+        selectionStrategy: 'single',
+        dateOne: '',
+        dateTwo: '',
+      })
+      wrapper.setData({ showDatepicker: true, triggerElement: document.createElement('div') })
+      await wrapper.vm.$nextTick()
+      wrapper.vm.selectDate('2018-01-12')
+      await wrapper.vm.$nextTick()
+      expect(wrapper.vm.selectedDate1).toEqual('2018-01-12')
+      expect(wrapper.vm.selectedDate2).toEqual('')
+      expect(wrapper.vm.isSelectingDate1).toEqual(true)
+      expect(wrapper.vm.showDatepicker).toEqual(false)
+    })
+    test('hover preview follows selected strategy constrain behavior', async () => {
+      wrapper = createDatePickerInstance({
+        mode: 'range',
+        selectionStrategy: 'reservation-aware-range',
+        dateOne: '',
+        dateTwo: '',
+        reservations: [{ id: 1, start: '2018-01-05', end: '2018-01-05', label: 'Boundary' }],
+      })
+      await wrapper.setData({ selectedDate1: '2018-01-02', isSelectingDate1: false })
+      wrapper.vm.setHoverDate('2018-01-10')
+      await wrapper.vm.$nextTick()
+      expect(wrapper.vm.hoverDate).toEqual('2018-01-05')
+
+      wrapper = createDatePickerInstance({
+        mode: 'range',
+        selectionStrategy: 'range',
+        dateOne: '',
+        dateTwo: '',
+        reservations: [{ id: 1, start: '2018-01-05', end: '2018-01-05', label: 'Boundary' }],
+      })
+      await wrapper.setData({ selectedDate1: '2018-01-02', isSelectingDate1: false })
+      wrapper.vm.setHoverDate('2018-01-10')
+      await wrapper.vm.$nextTick()
+      expect(wrapper.vm.hoverDate).toEqual('2018-01-10')
     })
     test('month of minDate is shown first', () => {
       wrapper = createDatePickerInstance({
@@ -250,7 +387,7 @@ describe('AirbnbStyleDatepicker', () => {
       wrapper = createDatePickerInstance()
       wrapper.setData({ triggerElement: document.createElement('div') })
       wrapper.vm.closeDatepicker()
-      wrapper.vm.$nextTick(function() {
+      wrapper.vm.$nextTick(() => {
         expect(wrapper.emitted().closed).toBeTruthy()
       })
     })
@@ -260,7 +397,7 @@ describe('AirbnbStyleDatepicker', () => {
         startOpen: true,
       })
       h.click('.asd__change-month-button--next button')
-      jest.runAllTimers()
+      vi.runAllTimers()
       expect(wrapper.emitted()['next-month'][0][0]).toEqual(['2023-01-01', '2023-02-01'])
     })
     test('emits event when clicking previous month', () => {
@@ -269,7 +406,7 @@ describe('AirbnbStyleDatepicker', () => {
         startOpen: true,
       })
       h.click('.asd__change-month-button--previous button')
-      jest.runAllTimers()
+      vi.runAllTimers()
       expect(wrapper.emitted()['previous-month'][0][0]).toEqual(['2021-07-01', '2021-08-01'])
     })
   })
@@ -473,7 +610,7 @@ describe('AirbnbStyleDatepicker', () => {
       const resetFocusedDateSpy = bool => {
         arg = bool
       }
-      wrapper.setMethods({ resetFocusedDate: resetFocusedDateSpy })
+      wrapper.vm.resetFocusedDate = resetFocusedDateSpy
       wrapper.vm.previousMonth()
       expect(arg).toEqual(false)
       arg = undefined
@@ -483,13 +620,13 @@ describe('AirbnbStyleDatepicker', () => {
   })
 
   describe('gui', () => {
-    test('months shows month and year', () => {
+    test('months shows month and year', async () => {
       wrapper = createDatePickerInstance({
         dateOne: '2017-12-10',
       })
-      wrapper.setData({ showDatepicker: true })
+      await wrapper.setData({ showDatepicker: true })
 
-      expect(wrapper.contains('.asd__month-name')).toBe(true)
+      expect(wrapper.find('.asd__month-name').exists()).toBe(true)
       expect(wrapper.find('.asd__month-name').text()).toContain('November 2017')
     })
     test('datepicker wrapper is correct width', () => {
@@ -501,43 +638,46 @@ describe('AirbnbStyleDatepicker', () => {
       let dWrapper = wrapper.find(datepickerWrapper)
       expect(dWrapper.element.style.width).toBe(wrapper.vm.width * 2 + 'px')
     })
-    test('selected date get selected class', () => {
+    test('selected date get selected class', async () => {
       wrapper = createDatePickerInstance({
         dateOne: '2017-12-10',
         dateTwo: '2017-12-15',
+        startOpen: true,
       })
-      wrapper.setData({ showDatepicker: true })
+      await wrapper.vm.$nextTick()
 
-      expect(wrapper.contains('.asd__day--selected')).toBe(true)
+      expect(wrapper.find('.asd__day--selected').exists()).toBe(true)
       expect(wrapper.findAll('.asd__day--selected').length).toBe(2)
-      expect(wrapper.contains('.asd__day--in-range')).toBe(true)
+      expect(wrapper.find('.asd__day--in-range').exists()).toBe(true)
       expect(wrapper.findAll('.asd__day--in-range').length).toBe(4)
     })
-    test('is fullscreen on mobile', () => {
+    test('is fullscreen on mobile', async () => {
       wrapper = createDatePickerInstance({
         fullscreenMobile: true,
         monthsToShow: 2,
+        startOpen: true,
       })
-      wrapper.vm.isMobile = true
-      wrapper.vm.viewportWidth = '650px'
-      wrapper.setData({ showDatepicker: true })
+      await wrapper.setData({
+        isMobile: true,
+        viewportWidth: '650px',
+        showDatepicker: true,
+      })
 
       let dWrapper = wrapper.find(datepickerWrapper)
       expect(dWrapper.classes()).toContain('asd__wrapper--full-screen')
     })
-    test('disabled dates are not selectable', () => {
+    test('disabled dates are not selectable', async () => {
       wrapper = createDatePickerInstance({
         mode: 'single',
         dateOne: '2018-10-10',
         disabledDates: ['2018-10-20'],
-        openOnFocus: true,
+        startOpen: true,
       })
-      wrapper.vm.triggerElement.dispatchEvent(new Event('focus'))
-      wrapper.update()
+      await wrapper.vm.$nextTick()
       const disabledDate = wrapper.find('.asd__day[data-date="2018-10-20"]')
       expect(disabledDate.classes()).toContain('asd__day--disabled')
 
-      disabledDate.find('button').trigger('click')
+      await disabledDate.find('button').trigger('click')
       expect(wrapper.emitted()['date-one-selected'][0]).not.toEqual(['2018-10-20'])
     })
     test('date are set if user types a valid date in input', () => {
@@ -560,23 +700,21 @@ describe('AirbnbStyleDatepicker', () => {
       expect(wrapper.vm.selectedDate1).not.toEqual('2018-10-32')
     })
 
-    test('sets classes for selected date', () => {
+    test('sets classes for selected date', async () => {
       wrapper = createDatePickerInstance({
         dateOne: '2019-01-01',
         dateTwo: '2019-01-03',
-        openOnFocus: true,
+        startOpen: true,
       })
-      wrapper.vm.triggerElement.dispatchEvent(new Event('focus'))
-      wrapper.update()
+      await wrapper.vm.$nextTick()
       expect(wrapper.findAll('.asd__selected-date-one').length).toBe(1)
       expect(wrapper.findAll('.asd__selected-date-two').length).toBe(1)
 
       wrapper = createDatePickerInstance({
         dateOne: '2019-01-01',
-        openOnFocus: true,
+        startOpen: true,
       })
-      wrapper.vm.triggerElement.dispatchEvent(new Event('focus'))
-      wrapper.update()
+      await wrapper.vm.$nextTick()
       expect(wrapper.findAll('.asd__selected-date-one').length).toBe(1)
       expect(wrapper.findAll('.asd__selected-date-two').length).toBe(0)
     })
@@ -588,37 +726,36 @@ describe('AirbnbStyleDatepicker', () => {
         mode: 'range',
       })
       wrapper.vm.triggerElement.dispatchEvent(new Event('focus'))
-      wrapper.update()
+      wrapper.vm.$forceUpdate()
       expect(wrapper.findAll('.asd__selected-date-one').length).toBe(0)
     })
 
-    test('datepicker will close automatically if closeOnSelect is true, and all dates have been selected', () => {
+    test('datepicker will close automatically if closeOnSelect is true, and all dates have been selected', async () => {
       wrapper = createDatePickerInstance({
         dateOne: '',
         dateTwo: '',
         closeAfterSelect: true,
       })
-      wrapper.setData({ showDatepicker: true })
-      h.wrapperHasClass('asd__wrapper--datepicker-open')
+      await wrapper.setData({ showDatepicker: true })
+      expect(wrapper.vm.showDatepicker).toBe(true)
       const date1 = format(new Date(), 'YYYY-MM-DD')
       const date2 = format(addDays(new Date(), 4), 'YYYY-MM-DD')
-      h.click('[data-date="' + date1 + '"] > button')
-      h.click('[data-date="' + date2 + '"] > button')
-      h.wrapperHasNotClass('asd__wrapper--datepicker-open')
+      await wrapper.find('[data-date="' + date1 + '"] > button').trigger('click')
+      await wrapper.find('[data-date="' + date2 + '"] > button').trigger('click')
+      expect(wrapper.vm.showDatepicker).toBe(false)
     })
 
-    test('sets css class for todays date', () => {
+    test('sets css class for todays date', async () => {
       wrapper = createDatePickerInstance({
         dateOne: '',
         dateTwo: '',
         mode: 'range',
-        openOnFocus: true,
+        startOpen: true,
       })
-      wrapper.vm.triggerElement.dispatchEvent(new Event('focus'))
-      wrapper.update()
+      await wrapper.vm.$nextTick()
       expect(wrapper.findAll('.asd__day--today').length).toBe(1)
     })
-    test('svg icons can be overridden by passing a slot', () => {
+    test('svg icons can be overridden by passing a slot', async () => {
       wrapper = createDatePickerInstance(
         {
           fullscreenMobile: true,
@@ -632,11 +769,153 @@ describe('AirbnbStyleDatepicker', () => {
           'next-month-icon': '<span id="next-override">&rarr;</span>',
         }
       )
-      wrapper.setData({ isMobile: true })
+      await wrapper.setData({ isMobile: true })
       expect(wrapper.find('#close-override').exists()).toBe(true)
       expect(wrapper.find('#close-shortcuts-override').exists()).toBe(true)
       expect(wrapper.find('#previous-override').exists()).toBe(true)
       expect(wrapper.find('#next-override').exists()).toBe(true)
+    })
+
+    test('reservation middle dates are disabled but edges are selectable', async () => {
+      wrapper = createDatePickerInstance({
+        mode: 'range',
+        dateOne: '2018-12-05',
+        monthsToShow: 2,
+        startOpen: true,
+        reservations: [
+          { start: '2018-12-10', end: '2018-12-15', label: 'Booked' },
+        ],
+      })
+      await wrapper.vm.$nextTick()
+
+      const startEl = wrapper.find('.asd__day[data-date="2018-12-10"]')
+      const midEl = wrapper.find('.asd__day[data-date="2018-12-12"]')
+      const endEl = wrapper.find('.asd__day[data-date="2018-12-15"]')
+
+      expect(startEl.classes()).not.toContain('asd__day--disabled')
+      expect(midEl.classes()).toContain('asd__day--disabled')
+      expect(endEl.classes()).not.toContain('asd__day--disabled')
+    })
+
+    test('reservation middle dates are not selectable, start/end are selectable', async () => {
+      wrapper = createDatePickerInstance({
+        mode: 'single',
+        dateOne: '2018-12-05',
+        reservations: [
+          { start: '2018-12-10', end: '2018-12-15', label: 'Booked' },
+        ],
+      })
+      expect(wrapper.vm.isDisabled('2018-12-12')).toBe(true)
+      expect(wrapper.vm.isDisabled('2018-12-10')).toBe(false)
+      expect(wrapper.vm.isDisabled('2018-12-15')).toBe(false)
+      await wrapper.vm.$nextTick()
+      const initialEmits = (wrapper.emitted()['date-one-selected'] || []).length
+
+      wrapper.vm.selectDate('2018-12-12')
+      await wrapper.vm.$nextTick()
+      expect((wrapper.emitted()['date-one-selected'] || []).length).toBe(initialEmits)
+
+      wrapper.vm.selectDate('2018-12-10')
+      await wrapper.vm.$nextTick()
+      expect(wrapper.emitted()['date-one-selected'][initialEmits]).toEqual(['2018-12-10'])
+
+      wrapper.vm.selectDate('2018-12-15')
+      await wrapper.vm.$nextTick()
+      expect(wrapper.emitted()['date-one-selected'][initialEmits + 1]).toEqual(['2018-12-15'])
+    })
+
+    test('clicking another date clears an already selected range', () => {
+      wrapper = createDatePickerInstance({
+        mode: 'range',
+        dateOne: '2018-12-10',
+        dateTwo: '2018-12-15',
+      })
+
+      wrapper.vm.selectDate('2018-12-20')
+      expect(wrapper.vm.selectedDate1).toBe('')
+      expect(wrapper.vm.selectedDate2).toBe('')
+      expect(wrapper.vm.isSelectingDate1).toBe(true)
+    })
+
+    test('clicking outside clears selected dates', () => {
+      wrapper = createDatePickerInstance({
+        mode: 'range',
+        dateOne: '2018-12-10',
+        dateTwo: '2018-12-15',
+      })
+
+      wrapper.setData({
+        showDatepicker: true,
+        triggerElement: document.createElement('div'),
+      })
+      wrapper.vm.handleClickOutside({ target: document.createElement('div') })
+
+      expect(wrapper.vm.selectedDate1).toBe('')
+      expect(wrapper.vm.selectedDate2).toBe('')
+    })
+
+    test('range end is clamped to next reservation start when selecting forward', () => {
+      wrapper = createDatePickerInstance({
+        mode: 'range',
+        dateOne: '',
+        dateTwo: '',
+        reservations: [
+          { start: '2018-12-05', end: '2018-12-08', label: 'R1' },
+        ],
+      })
+
+      wrapper.vm.selectDate('2018-12-02')
+      wrapper.vm.selectDate('2018-12-20')
+
+      expect(wrapper.vm.selectedDate1).toBe('2018-12-02')
+      expect(wrapper.vm.selectedDate2).toBe('2018-12-05')
+    })
+
+    test('range end is clamped to previous reservation end when selecting backward', () => {
+      wrapper = createDatePickerInstance({
+        mode: 'range',
+        dateOne: '',
+        dateTwo: '',
+        reservations: [
+          { start: '2018-12-01', end: '2018-12-02', label: 'R1' },
+        ],
+      })
+
+      wrapper.vm.selectDate('2018-12-05')
+      wrapper.vm.selectDate('2018-11-20')
+
+      expect(wrapper.vm.selectedDate1).toBe('2018-12-02')
+      expect(wrapper.vm.selectedDate2).toBe('2018-12-05')
+    })
+
+    test('range end is clamped before next disabled date when selecting forward', () => {
+      wrapper = createDatePickerInstance({
+        mode: 'range',
+        dateOne: '',
+        dateTwo: '',
+        disabledDates: ['2018-12-09'],
+      })
+
+      wrapper.vm.selectDate('2018-12-08')
+      wrapper.vm.selectDate('2018-12-12')
+
+      expect(wrapper.vm.selectedDate1).toBe('2018-12-08')
+      expect(wrapper.vm.selectedDate2).toBe('2018-12-08')
+    })
+
+    test('range end is clamped after previous disabled date when selecting backward', () => {
+      wrapper = createDatePickerInstance({
+        mode: 'range',
+        dateOne: '',
+        dateTwo: '',
+        disabledDates: ['2018-12-09'],
+      })
+
+      wrapper.vm.selectDate('2018-12-10')
+      wrapper.vm.selectDate('2018-12-01')
+
+      expect(wrapper.vm.selectedDate1).toBe('2018-12-10')
+      expect(wrapper.vm.selectedDate2).toBe('2018-12-10')
     })
   })
 })

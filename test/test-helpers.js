@@ -26,10 +26,10 @@ class TestHelpers {
     this.expect(this.find(selector).element.value).not.toBe(text)
   }
   domHas(selector) {
-    this.expect(this.wrapper.contains(selector)).toBe(true)
+    this.expect(this.wrapper.find(selector).exists()).toBe(true)
   }
   domHasNot(selector) {
-    this.expect(this.wrapper.contains(selector)).toBe(false)
+    this.expect(this.wrapper.find(selector).exists()).toBe(false)
   }
   domHasLength(selector, length) {
     this.expect(this.wrapper.findAll(selector).length).toBe(length)
@@ -47,10 +47,10 @@ class TestHelpers {
     return this.expect(this.find(selector).attributes()[attribute]).toBeTruthy()
   }
   wrapperHasClass(className) {
-    return this.expect(this.wrapper.vm.$el.classList.contains(className)).toBeTruthy()
+    return this.expect(this.wrapper.classes()).toContain(className)
   }
   wrapperHasNotClass(className) {
-    return this.expect(this.wrapper.vm.$el.classList.contains(className)).toBeFalsy()
+    return this.expect(this.wrapper.classes()).not.toContain(className)
   }
 }
 

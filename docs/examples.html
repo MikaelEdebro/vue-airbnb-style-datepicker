@@ -2,195 +2,315 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
-    />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Examples</title>
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="https://unpkg.com/vue-airbnb-style-datepicker@latest/dist/vue-airbnb-style-datepicker.min.css"
-    />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/1.29.0/date_fns.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Examples (Vue 3 Demo Copy)</title>
+    <!-- Use local UMD build and CSS from dist (run a build first) -->
+    <link rel="stylesheet" href="../dist/style.css" />
     <style>
-      html,
-      body {
-        min-height: 100vh;
-        font-size: 14px;
-        font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell,
-          Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-        line-height: 18px;
-        font-weight: 400;
-        -webkit-font-smoothing: antialiased;
-        padding: 10px;
-      }
-      .align-right {
-        text-align: right;
-      }
-      h1 {
-        font-size: 1.8em;
-        line-height: 1.5em;
-      }
-      .datepicker-container {
-        margin-bottom: 30px;
-      }
-
-      #datepicker-button-trigger {
-        background: #008489;
-        border: 1px solid #008489;
-        color: white;
-        padding: 6px 10px;
-        border-radius: 4px;
-        font-size: 15px;
-        font-weight: bold;
-        text-align: center;
-        min-width: 200px;
-      }
-      input {
-        padding: 6px 10px;
-        border: 1px solid rgba(0, 0, 0, 0.2);
-      }
-      .inline-with-input {
-        width: 300px;
-      }
-      .inline-with-input input {
-        width: 100%;
-      }
+      html, body { min-height: 100vh; font-size: 14px; font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif; line-height: 18px; font-weight: 400; -webkit-font-smoothing: antialiased; padding: 10px; }
+      h1 { font-size: 1.8em; line-height: 1.5em; text-align: center; }
+      .buttons { max-width: 800px; margin: 0 auto 20px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 10px 16px; flex-wrap: wrap; }
+      .datepicker-container { padding: 0 20px 16px; border: 1px solid rgba(0,0,0,0.2); background: rgba(0,0,0,0.01); max-width: 900px; width: 100%; margin: 0 auto 20px; border-radius: 12px; }
+      #datepicker-button-trigger, #datepicker-button-dark-trigger { background: #008489; border: 1px solid #008489; color: white; padding: 6px 10px; border-radius: 4px; font-size: 15px; font-weight: bold; text-align: center; min-width: 200px; }
+      input[type="text"] { padding: 6px 10px; border: 1px solid rgba(0,0,0,0.2); width: 100%; box-sizing: border-box; }
+      .demo-booking-row.demo-hovered { background: rgba(0, 166, 153, 0.09); border-radius: 6px; }
+      @media (max-width: 640px){ body { padding: 10px 8px; } .datepicker-container { padding: 0 12px 12px; } }
     </style>
   </head>
-
   <body>
-    <div id="app" class="app" :class="{'align-right': alignRight}">
+    <div id="app">
+      <h1>Examples</h1>
+
+      <div class="buttons">
+        <label><input type="checkbox" v-model="useDark" /> Dark mode</label>
+        <label>Locale: <select v-model="selectedLocale"><option v-for="loc in locales" :key="loc.id" :value="loc.id">{{ loc.label }}</option></select></label>
+      </div>
+
       <div class="datepicker-container with-input">
         <h3>Range datepicker with input</h3>
         <div class="datepicker-trigger">
-          <input
-            type="text"
-            id="datepicker-input-trigger"
-            :value="formatDates(inputDateOne, inputDateTwo)"
-            placeholder="Select dates"
-            readonly
-          />
-
+          <input type="text" id="datepicker-input-trigger" :value="formatDates(inputDateOne, inputDateTwo)" placeholder="Select dates" readonly />
           <airbnb-style-datepicker
             :trigger-element-id="'datepicker-input-trigger'"
             :mode="'range'"
             :date-one="inputDateOne"
-            :date-two="inputDateTwo"
-            :min-date="'2018-02-28'"
-            :end-date="'2018-12-10'"
-            v-on:date-one-selected="function(val) { inputDateOne = val }"
-            v-on:date-two-selected="function(val) { inputDateTwo = val }"
-            v-on:closed="onClosed"
-            v-on:previous-month="onMonthChange"
-            v-on:next-month="onMonthChange"
-          ></airbnb-style-datepicker>
+            :months-to-show="2"
+            :show-action-buttons="true"
+            :show-month-year-select="true"
+            :month-names-override="currentLocale.monthNames"
+            :days-override="currentLocale.days"
+            :days-short-override="currentLocale.daysShort"
+            :theme="demoTheme"
+            @date-one-selected="val => { inputDateOne = val }"
+            @date-two-selected="val => { inputDateTwo = val }"
+          />
+        </div>
+      </div>
+
+      <div class="datepicker-container single-with-input">
+        <h3>Single datepicker with input</h3>
+        <div class="datepicker-trigger">
+          <input type="text" id="datepicker-input-single-trigger" :value="formatDates(inputSingleDateOne)" placeholder="Select date" readonly />
+          <airbnb-style-datepicker
+            :trigger-element-id="'datepicker-input-single-trigger'"
+            :mode="'single'"
+            :date-one="inputSingleDateOne"
+            :month-names-override="currentLocale.monthNames"
+            :days-override="currentLocale.days"
+            :days-short-override="currentLocale.daysShort"
+            :theme="demoTheme"
+            @date-one-selected="val => { inputSingleDateOne = val }"
+          />
         </div>
       </div>
 
       <div class="datepicker-container with-button">
         <h3>Range datepicker with button</h3>
         <div class="datepicker-trigger">
-          <button id="datepicker-button-trigger">
-            {{ formatDates(buttonDateOne, buttonDateTwo) || 'Select dates' }}
-          </button>
-
+          <button id="datepicker-button-trigger">{{ formatDates(buttonDateOne, buttonDateTwo) || 'Select dates' }}</button>
           <airbnb-style-datepicker
             :trigger-element-id="'datepicker-button-trigger'"
             :mode="'range'"
             :date-one="buttonDateOne"
             :date-two="buttonDateTwo"
-            :min-date="'2018-02-28'"
-            :fullscreen-mobile="true"
             :months-to-show="2"
             :offset-y="10"
-            :trigger="trigger"
-            v-on:date-one-selected="function(val) { buttonDateOne = val }"
-            v-on:date-two-selected="function(val) { buttonDateTwo = val }"
-            v-on:closed="onClosed"
-            v-on:previous-month="onMonthChange"
-            v-on:next-month="onMonthChange"
-          ></airbnb-style-datepicker>
+            :close-after-select="true"
+            :month-names-override="currentLocale.monthNames"
+            :days-override="currentLocale.days"
+            :days-short-override="currentLocale.daysShort"
+            :theme="demoTheme"
+            @date-one-selected="val => { buttonDateOne = val }"
+            @date-two-selected="val => { buttonDateTwo = val }"
+          />
         </div>
       </div>
 
       <div class="datepicker-container inline-with-input">
-        <h3>Inline datepicker with input (single mode)</h3>
-        <input
-          id="datepicker-inline-trigger"
-          :value="formatDates(inlineDateOne)"
-          type="text"
-          placeholder="Select date"
-        />
+        <h3>Inline datepicker with input</h3>
+        <div class="buttons" style="justify-content:flex-start; max-width:900px;">
+          <label>Months to show: <input type="number" v-model.number="inlineMonthsToShow" min="1" max="6" style="width:70px; margin-left:6px;" /></label>
+          <label v-if="!demoAutoFitInline">Month width: <input type="range" min="260" max="360" step="2" v-model.number="demoMonthWidth" /></label>
+          <label><input type="checkbox" v-model="demoAutoFitInline" /> Auto-fit inline</label>
+          <label><input type="checkbox" v-model="showOutsideDaysDemo" /> Show outside days</label>
+          <label>Day number position:
+            <select v-model="demoDayPosition"><option value="center">Center</option><option value="top-left">Top left</option><option value="top-right">Top right</option><option value="bottom-left">Bottom left</option><option value="bottom-right">Bottom right</option></select>
+          </label>
+          <label>Extra content position:
+            <select v-model="demoDayExtraPosition"><option value="center">Center</option><option value="top">Top</option><option value="bottom">Bottom</option><option value="left">Left</option><option value="right">Right</option></select>
+          </label>
+        </div>
+        <input id="datepicker-inline-trigger" :value="formatDates(inlineDateOne)" type="text" placeholder="Select date" readonly />
         <airbnb-style-datepicker
           :trigger-element-id="'datepicker-inline-trigger'"
           :mode="'single'"
           :inline="true"
           :fullscreen-mobile="false"
           :date-one="inlineDateOne"
-          :months-to-show="1"
-          :disabled-dates="['2018-03-30', '2018-04-10']"
-          v-on:date-one-selected="function(val) { inlineDateOne = val }"
-          v-on:previous-month="onMonthChange"
-          v-on:next-month="onMonthChange"
-        ></airbnb-style-datepicker>
+          :months-to-show="inlineMonthsToShow"
+          :month-width="demoMonthWidth"
+          :auto-fit-inline="demoAutoFitInline"
+          :show-outside-days="showOutsideDaysDemo"
+          :day-number-position="demoDayPosition"
+          :day-extra-position="demoDayExtraPosition"
+          :theme="demoTheme"
+          :month-names-override="currentLocale.monthNames"
+          :days-override="currentLocale.days"
+          :days-short-override="currentLocale.daysShort"
+          @date-one-selected="val => { inlineDateOne = val }"
+        >
+          <template #day-extra="{ day, date }">
+            <small class="demo-price" :title="`Price for ${date}`">${{ priceFor(day) }}</small>
+          </template>
+        </airbnb-style-datepicker>
       </div>
 
-      <button v-on:click="toggleAlign">Toggle alignment</button>
-      <button v-on:click="triggerDatepicker">
-        Trigger "Range datepicker with button" datepicker
-      </button>
+      <div class="datepicker-container">
+        <h3>Reservations demo</h3>
+        <div style="display:flex; gap:12px; align-items:center; margin-bottom:8px;">
+          <label><input type="checkbox" v-model="showReservationsDemo" /> Show reservations</label>
+          <label>Selection strategy:
+            <select v-model="demoSelectionStrategy" style="margin-left:6px;">
+              <option value="reservation-aware-range">reservation-aware-range (default)</option>
+              <option value="range">range</option>
+              <option value="single">single</option>
+            </select>
+          </label>
+        </div>
+        <airbnb-style-datepicker
+          :inline="true"
+          :months-to-show="2"
+          :date-one="inlineDateOne"
+          :selection-strategy="demoSelectionStrategy"
+          :theme="demoTheme"
+          :month-names-override="currentLocale.monthNames"
+          :days-override="currentLocale.days"
+          :days-short-override="currentLocale.daysShort"
+          :reservations="showReservationsDemo ? demoReservations : []"
+          :disabled-dates="showReservationsDemo ? demoBlockedDates : []"
+          @date-one-selected="val => { inlineDateOne = val }"
+          @reservation-hovered="onReservationHovered"
+          @selection-changed="onSelectionChanged"
+          @hover-range-changed="onHoverRangeChanged"
+          @blocked-date-clicked="onBlockedDateClicked"
+        >
+          <template #reservation-floating="{ reservation }">
+            <span :style="{
+                    background: reservation.color,
+                    color: '#fff',
+                    padding: '2px 8px',
+                    borderRadius: '10px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    fontSize: '11px'
+                  }">
+              <img :src="'https://i.pravatar.cc/20?u=' + (reservation.id || reservation.label)"
+                   alt="" width="16" height="16"
+                   style="border-radius:50%; display:inline-block;" />
+              <span>{{ reservation.label }}</span>
+            </span>
+          </template>
+          <template #day-extra="{ day, date }">
+            <small class="demo-price" :title="`Price for ${date}`">${{ priceFor(day) }}</small>
+          </template>
+        </airbnb-style-datepicker>
+        <div v-if="showReservationsDemo" style="margin-top:12px;">
+          <h4>Bookings</h4>
+          <ul style="list-style:none; padding:0; margin:6px 0 0;">
+            <li v-for="(r, i) in demoReservations" :key="r.id || i" :class="['demo-booking-row', { 'demo-hovered': (hoveredBookingId === (r.id || i)) }]" style="display:flex; gap:10px; align-items:center; padding:6px 0;">
+              <span :style="{ width: '18px', height: '12px', background: r.color || '#bbb', display: 'inline-block', borderRadius: '3px', border: '1px solid rgba(0,0,0,0.08)' }"></span>
+              <span style="font-size:0.95em; font-weight:600; min-width: 140px;">{{ r.label || 'Guest' }}</span>
+              <span style="font-size:0.95em">{{ r.start }} — {{ r.end }} <small style="color:#666;">{{ r.color ? r.color : '(auto color)' }}</small></span>
+            </li>
+          </ul>
+        </div>
+        <div v-if="lastSelectionChangedMsg" style="margin-top:6px; color:#333;">
+          <strong>selection-changed:</strong> {{ lastSelectionChangedMsg }}
+        </div>
+        <div v-if="lastBlockedDateMsg" style="margin-top:6px; color:#333;">
+          <strong>blocked-date-clicked:</strong> {{ lastBlockedDateMsg }}
+        </div>
+        <div style="margin-top:6px; color:#666; font-size:12px;">
+          Preferred events: <code>selection-changed</code> and <code>hover-range-changed</code>. Legacy
+          <code>date-one-selected</code>/<code>date-two-selected</code> are still emitted for backwards compatibility.
+        </div>
+      </div>
+
+      <div class="datepicker-container">
+        <h3>Reservations (read-only)</h3>
+        <p style="margin:8px 0 12px; color:#555;">Dates are not selectable; useful for availability-only views.</p>
+        <airbnb-style-datepicker
+          :inline="true"
+          :months-to-show="2"
+          :selectable="false"
+          :theme="demoTheme"
+          :month-names-override="currentLocale.monthNames"
+          :days-override="currentLocale.days"
+          :days-short-override="currentLocale.daysShort"
+          :reservations="demoReservations"
+          :disabled-dates="demoBlockedDates"
+          @reservation-hovered="onReservationHovered"
+        >
+          <template #reservation-floating="{ reservation }">
+            <span :style="{
+                    background: reservation.color,
+                    color: '#fff',
+                    padding: '1px 6px',
+                    borderRadius: (reservation.isStart && reservation.isEnd) ? '10px' : (reservation.isStart ? '10px 0 0 10px' : (reservation.isEnd ? '0 10px 10px 0' : '0')),
+                    fontSize: '11px',
+                    boxShadow: '0 0 0 1px rgba(0,0,0,0.08) inset'
+                  }">{{ reservation.label }}</span>
+          </template>
+          <template #day-extra="{ day, date }">
+            <small class="demo-price" :title="`Price for ${date}`">${{ priceFor(day) }}</small>
+          </template>
+        </airbnb-style-datepicker>
+      </div>
     </div>
 
-    <script src="https://unpkg.com/vue-airbnb-style-datepicker@latest/dist/vue-airbnb-style-datepicker.min.js"></script>
+    <!-- Vue 3 and local UMD build -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="../dist/vue-airbnb-style-datepicker.js"></script>
     <script>
-      var datepickerOptions = {}
-      Vue.use(window.AirbnbStyleDatepicker, datepickerOptions)
-
-      var app = new Vue({
-        el: '#app',
-        data: {
-          dateFormat: 'D MMM',
-          inputDateOne: '',
-          inputDateTwo: '',
-          buttonDateOne: '',
-          buttonDateTwo: '',
-          inlineDateOne: '',
-          sundayDateOne: '',
-          sundayFirst: false,
-          alignRight: false,
-          trigger: false,
+      const { createApp } = Vue
+      const app = createApp({
+        data() {
+          return {
+            dateFormat: 'YYYY-MM-DD',
+            useDark: false,
+            selectedLocale: 'en',
+            locales: [
+              { id: 'en', label: 'English', monthNames: ['January','February','March','April','May','June','July','August','September','October','November','December'], days: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'], daysShort: ['Su','Mo','Tu','We','Th','Fr','Sa'] },
+              { id: 'sv', label: 'Svenska', monthNames: ['Januari','Februari','Mars','April','Maj','Juni','Juli','Augusti','September','Oktober','November','December'], days: ['Söndag','Måndag','Tisdag','Onsdag','Torsdag','Fredag','Lördag'], daysShort: ['Sö','Må','Ti','On','To','Fr','Lö'] },
+            ],
+            inputDateOne: '', inputDateTwo: '',
+            inputSingleDateOne: '',
+            buttonDateOne: '', buttonDateTwo: '',
+            inlineDateOne: '',
+            inlineMonthsToShow: 2,
+            demoMonthWidth: null,
+            demoAutoFitInline: true,
+            showOutsideDaysDemo: false,
+            demoDayPosition: 'top-left',
+            demoDayExtraPosition: 'bottom',
+            showReservationsDemo: true,
+            demoSelectionStrategy: 'reservation-aware-range',
+            hoveredBookingId: null,
+            lastSelectionChangedMsg: '',
+            lastBlockedDateMsg: '',
+            demoReservations: [
+              { id: 101, start: '2026-03-02', end: '2026-03-04', label: 'Alice Nguyen', tooltip: 'Guest: Alice Nguyen', color: '#e67e22' },
+              { id: 104, start: '2026-03-20', end: '2026-03-21', label: 'Day Guest', tooltip: 'Guest: Day Guest', color: '#8e44ad' },
+              { id: 105, start: '2026-03-24', end: '2026-03-27', label: 'Evelyn Park', tooltip: 'Guest: Evelyn Park' },
+              { id: 106, start: '2026-03-29', end: '2026-04-02', label: 'Felipe García', tooltip: 'Guest: Felipe García', color: '#16a085' },
+              // Back-to-back chain in April
+              { id: 109, start: '2026-04-02', end: '2026-04-05', label: 'Back-to-Back D1', tooltip: 'Adjacent chain start', color: '#d35400' },
+              { id: 110, start: '2026-04-05', end: '2026-04-08', label: 'Back-to-Back D2', tooltip: 'Adjacent to previous' },
+              { id: 111, start: '2026-04-08', end: '2026-04-10', label: 'Back-to-Back D3', tooltip: 'Adjacent to previous', color: '#2980b9' },
+              { id: 112, start: '2026-04-10', end: '2026-04-12', label: 'Back-to-Back D4', tooltip: 'Adjacent to previous' },
+              { id: 113, start: '2026-04-12', end: '2026-04-15', label: 'Back-to-Back D5', tooltip: 'Adjacent to previous', color: '#27ae60' },
+            ],
+            demoBlockedDates: ['2026-03-11','2026-03-18','2026-03-22','2026-03-31','2026-04-03','2026-04-09'],
+          }
+        },
+        computed: {
+          currentLocale(){ return this.locales.find(l => l.id === this.selectedLocale) || this.locales[0] },
+          demoTheme(){ return this.useDark ? 'dark' : undefined },
         },
         methods: {
-          formatDates: function(dateOne, dateTwo) {
-            var formattedDates = ''
-            if (dateOne) {
-              formattedDates = dateFns.format(dateOne, this.dateFormat)
+          priceFor(day){ const n = Number(day); return (!n || isNaN(n)) ? '—' : (n * 5).toFixed(0) },
+          formatDates(dateOne, dateTwo){
+            let s = ''
+            if (dateOne) s = dateOne
+            if (dateTwo) s += ' - ' + dateTwo
+            return s
+          },
+          onReservationHovered(payload){ this.hoveredBookingId = payload ? payload.id : null },
+          onSelectionChanged(payload){
+            try {
+              const start = payload && payload.startDate ? payload.startDate : '-'
+              const end = payload && payload.endDate ? payload.endDate : '-'
+              const strategy = payload && payload.strategy ? payload.strategy : this.demoSelectionStrategy
+              this.lastSelectionChangedMsg = `${start} -> ${end} (${strategy})`
+            } catch (e) {
+              this.lastSelectionChangedMsg = 'selection changed'
             }
-            if (dateTwo) {
-              formattedDates += ' - ' + dateFns.format(dateTwo, this.dateFormat)
+          },
+          onHoverRangeChanged(_payload){},
+          onBlockedDateClicked(payload){
+            try {
+              const date = payload && payload.date ? payload.date : '?'
+              const reason = payload && payload.reason ? payload.reason : 'blocked'
+              this.lastBlockedDateMsg = `${date} (${reason})`
+            } catch (e) {
+              this.lastBlockedDateMsg = 'blocked date'
             }
-            return formattedDates
           },
-          onClosed: function() {
-            var datesStr = this.formatDates(this.inputDateOne, this.inputDateTwo)
-            console.log('Dates Selected: ' + datesStr)
-            this.trigger = false
-          },
-          toggleAlign: function() {
-            this.alignRight = !this.alignRight
-          },
-          triggerDatepicker: function() {
-            this.trigger = !this.trigger
-          },
-          onMonthChange: function(dates) {
-            console.log('months changed', dates)
-          },
-        },
+        }
       })
+      app.use(window.AirbnbStyleDatepicker)
+      app.mount('#app')
     </script>
   </body>
 </html>

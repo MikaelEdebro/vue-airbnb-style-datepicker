@@ -1,6 +1,6 @@
 export default {
-  componentUpdated: resizeSelect,
-  inserted: resizeSelect,
+  updated: resizeSelect,
+  mounted: resizeSelect,
 }
 
 function resizeSelect(el, binding, vnode) {
